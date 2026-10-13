@@ -1,0 +1,1 @@
+{"name":"editor-video-ia-engine","private":true,"type":"module","dependencies":{"@remotion/cli":"4.0.530","@remotion/google-fonts":"4.0.530","react":"^18","react-dom":"^18","remotion":"4.0.530","simple-icons":"^16.33.0","typescript":"^5"}}
