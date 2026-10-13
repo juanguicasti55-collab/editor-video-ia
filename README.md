@@ -2,7 +2,7 @@
 
 Skill de Claude que edita videos grabados a cámara: corta pausas y tomas repetidas, pone subtítulos palabra por palabra, tarjetas animadas, zooms y música, y saca reels verticales del mismo material. Se usa hablándole a Claude: le dices qué video editar y él te hace unas preguntas antes de empezar.
 
-La armó **Juan González** y la usa para editar sus propios videos. Aquí la explica en video: https://youtu.be/mpx_eZ0sHls.
+La armó **Juan González** y la usa para editar sus propios videos. Aquí la explica en video: https://youtu.be/mpx_eZ0sHls
 
 ## Qué necesitas
 - Claude (la app de escritorio o Claude Code) con skills activadas.
