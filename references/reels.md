@@ -37,6 +37,9 @@ de Instagram (ManyChat u otra) para esa palabra.
 
 ## Reglas de diseño vertical (aprendidas)
 
+- **Gancho textual obligatorio**: título corto arriba desde el fotograma 0 hasta el segundo 3 como mínimo
+  (`HookTitle`, ver `gancho-textual.md`). Ningún reel sale sin él.
+
 - **Zonas seguras**: Instagram tapa arriba ~220 px y abajo ~330 px. Texto entre y=220 y y=1590.
 - **Estructura**: arriba pantalla o tarjeta (`SCR_TOP` / `ZONA_TARJETA`), en el medio subtítulos (automáticos
   según el encuadre, `subsY`), abajo la cámara (`CAM_BOTTOM`). Cámara completa (`CAM_FULL`) solo para

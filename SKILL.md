@@ -124,15 +124,17 @@ escenas lleva y qué conviene revisar escuchando (no puedes oír el audio: la me
 
 Leer `references/reels.md` y seguir ese flujo. Resumen:
 1. Transcribir con `prep.py` (si ya se hizo el largo, reutilizar esa carpeta).
-2. **Elegir fragmentos** que funcionen solos: gancho en los primeros 2 s, se entienden sin el resto,
+2. **Gancho textual en TODO reel (regla fija):** frase corta arriba que dice de qué trata el video, visible desde el
+   fotograma 0 y al menos 3 s (`HookTitle`). Ver `references/gancho-textual.md`.
+3. **Elegir fragmentos** que funcionen solos: gancho en los primeros 2 s, se entienden sin el resto,
    tienen desenlace. **Proponer la lista** (tabla: título, tramos, duración, gancho) y esperar el OK,
    salvo que la persona haya dicho "elige tú".
-3. Cortar cada reel: `scripts/reel_prep.py` (genera `cam.mp4` vertical y `camwide.mp4` con la cara completa
+4. Cortar cada reel: `scripts/reel_prep.py` (genera `cam.mp4` vertical y `camwide.mp4` con la cara completa
    para la pantalla dividida).
-4. Escenas en `reels/<n>/remotion/src/video.tsx` con `DualCam` (la cara NUNCA se recorta al achicar la cámara),
+5. Escenas en `reels/<n>/remotion/src/video.tsx` con `DualCam` (la cara NUNCA se recorta al achicar la cámara),
    `HookTitle` al inicio, tarjetas `CARD_SPLIT`, tomas `BrollTop` y `CommentCTA` al final con la palabra de la entrevista.
    Para efectos (Checklist, Phone mockup, Cover story, Headline wall, Zoom-through cut…) ver `references/efectos-17.md`.
-5. Fotogramas → render (`render.sh`), salida en una carpeta `Reels - <video>/`.
+6. Fotogramas → render (`render.sh`), salida en una carpeta `Reels - <video>/`.
 
 ---
 

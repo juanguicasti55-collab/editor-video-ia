@@ -214,16 +214,41 @@ export const subsY = (keys: CamKeyV[]) => (t: number) => {
 };
 
 // ---------- gancho inicial ----------
-/** Título-gancho arriba durante los primeros segundos. `mark` = palabra resaltada con marcador. */
-export const HookTitle: React.FC<{ to: number; lines: string[]; mark?: string; from?: number }> = ({
-  from = 0.1,
+/** Gancho textual (OBLIGATORIO en todo reel, ver references/gancho-textual.md): frase corta arriba que dice de qué
+ * trata el video, legible desde el primer fotograma (`from` 0 = sin fundido) y al menos hasta el segundo 3.
+ * `mark` = palabra resaltada con marcador · `sub` = línea chica debajo que se escribe letra por letra
+ * · `recall` = tramos donde vuelve chico, en un recuadro, cuando la persona se refiere al tema. */
+export const HookTitle: React.FC<{ to: number; lines: string[]; mark?: string; from?: number; sub?: string; recall?: [number, number][] }> = ({
+  from = 0,
   to,
   lines,
   mark,
+  sub,
+  recall = [],
 }) => {
   const t = useT();
+  const r = recall.find(([a, b]) => t >= a - 0.1 && t <= b + 0.3);
+  if (r) {
+    const ro = prog(t, r[0], 0.25) * (1 - prog(t, r[1], 0.25));
+    return (
+      <AbsoluteFill style={{ opacity: ro }}>
+        <div style={{ position: "absolute", top: 240, left: 0, right: 0, display: "flex", justifyContent: "center" }}>
+          <div
+            style={{
+              fontFamily: TITLE, fontWeight: 900, fontSize: 40, lineHeight: 1.05, letterSpacing: -0.8, textAlign: "center",
+              color: C.text, padding: "10px 22px", border: `3px solid ${C.text}`, borderRadius: 10,
+              textShadow: "0 4px 18px rgba(0,0,0,.55)", transform: `scale(${0.9 + 0.1 * pop(t, r[0])})`,
+            }}
+          >
+            {lines.map((l, i) => <div key={i}>{l}</div>)}
+          </div>
+        </div>
+      </AbsoluteFill>
+    );
+  }
   if (t > to + 0.4) return null;
-  const o = prog(t, from, 0.35) * (1 - prog(t, to, 0.3));
+  const o = (from <= 0 ? 1 : prog(t, from, 0.35)) * (1 - prog(t, to, 0.3));
+  const subTxt = sub ? sub.slice(0, Math.floor(Math.max(0, t - from - 0.3) / 0.045)) : "";
   const m = prog(t, from + 0.5, 0.45);
   return (
     <AbsoluteFill style={{ opacity: o }}>
@@ -242,7 +267,7 @@ export const HookTitle: React.FC<{ to: number; lines: string[]; mark?: string; f
           letterSpacing: -1.5,
           color: C.text,
           textShadow: "0 6px 30px rgba(0,0,0,.6)",
-          transform: `translateY(${(1 - prog(t, from, 0.5)) * -30}px)`,
+          transform: `translateY(${from <= 0 ? 0 : (1 - prog(t, from, 0.5)) * -30}px)`,
         }}
       >
         {lines.map((line, i) => (
@@ -275,6 +300,11 @@ export const HookTitle: React.FC<{ to: number; lines: string[]; mark?: string; f
             })}
           </div>
         ))}
+        {sub && (
+          <div style={{ fontFamily: BODY, fontWeight: 600, fontSize: 36, letterSpacing: 0.5, marginTop: 10, color: C.text, opacity: 0.92 }}>
+            {subTxt}
+          </div>
+        )}
       </div>
     </AbsoluteFill>
   );
