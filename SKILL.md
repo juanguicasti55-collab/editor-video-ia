@@ -92,6 +92,8 @@ Leer `references/estilo.md` (catálogo de piezas y reglas de ritmo). Resumen:
   clips de < 10–15 s siempre comentados y con crédito ("Imágenes: [fuente]"). Ver `references/estilo.md` → b-roll
   y `references/ejemplo-video-noticias.tsx`.
 Escribir todo en `remotion/src/video.tsx` (reemplazando el ejemplo). Solo se edita ese archivo.
+- **Efectos especiales** (persona delante de textos o gráficas, teléfono flotante, checklist, zoom que atraviesa,
+  collage de papel, portada de revista, dolly zoom…): ver `references/efectos-17.md`, con qué se arma cada uno y cuáles usar primero.
 
 ### 5. Revisar con fotogramas antes de renderizar
 ```
@@ -129,6 +131,7 @@ Leer `references/reels.md` y seguir ese flujo. Resumen:
    para la pantalla dividida).
 4. Escenas en `reels/<n>/remotion/src/video.tsx` con `DualCam` (la cara NUNCA se recorta al achicar la cámara),
    `HookTitle` al inicio, tarjetas `CARD_SPLIT`, tomas `BrollTop` y `CommentCTA` al final con la palabra de la entrevista.
+   Para efectos (Checklist, Phone mockup, Cover story, Headline wall, Zoom-through cut…) ver `references/efectos-17.md`.
 5. Fotogramas → render (`render.sh`), salida en una carpeta `Reels - <video>/`.
 
 ---

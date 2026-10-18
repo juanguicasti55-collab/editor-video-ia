@@ -57,6 +57,10 @@ El ejemplo completo está en `template/src/video.tsx` (y uno avanzado con tomas 
 Biblioteca de logos: `assets/logos/` (empieza vacía; `logo.py` guarda ahí cada logo nuevo que encuentra). Alias: chatgpt/gpt → openai,
 ghl/highlevel → gohighlevel, claude-code → claude.
 
+## Efectos especiales
+Catálogo de 17 efectos (qué se ve, cómo se arma, si necesita recortar a la persona y cuáles usar primero):
+`references/efectos-17.md`.
+
 ## Subtítulos
 - Automáticos desde `words.ts`: grupos de hasta 4 palabras, cortan en puntuación y pausas.
 - `KEYWORDS`: 1–2 palabras por frase como máximo — sustantivos/números que cargan el sentido
