@@ -134,6 +134,10 @@ Leer `references/reels.md` y seguir ese flujo. Resumen:
 5. Escenas en `reels/<n>/remotion/src/video.tsx` con `DualCam` (la cara NUNCA se recorta al achicar la cámara),
    `HookTitle` al inicio, tarjetas `CARD_SPLIT`, tomas `BrollTop` y `CommentCTA` al final con la palabra de la entrevista.
    Para efectos (Checklist, Phone mockup, Cover story, Headline wall, Zoom-through cut…) ver `references/efectos-17.md`.
+   **Apoyo visual obligatorio en todo reel**: lo que se dice se MUESTRA (captura real de la noticia, foto, logo, interfaz
+   o toma de apoyo) y nunca pasan más de 3-4 s sin algo nuevo. Elegir nivel (con muchos efectos / intermedio / sencillo),
+   piezas (`Cutaway`, `ArticleCard`, `ChatMock`, `Terminal`, `FileCard`…) y de dónde sacar material libre
+   (`scripts/captura.sh`, `scripts/commons.py`): `references/apoyo-visual.md`.
 6. Fotogramas → render (`render.sh`), salida en una carpeta `Reels - <video>/`.
 
 ---

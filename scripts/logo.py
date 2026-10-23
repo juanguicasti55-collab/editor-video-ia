@@ -51,12 +51,17 @@ def from_svgl(name):
     if not isinstance(items, list):
         return None
     norm = lambda s: re.sub(r"[^a-z0-9]", "", s.lower())
-    # coincidencia estricta: título igual, o que empiece con el nombre + espacio ("Claude AI").
-    # Nada de "contiene": "make" encontraba "FrameMaker".
-    def ok(title):
-        return norm(title) == norm(name) or title.lower().startswith(name.lower() + " ")
-    for it in items:
-        if ok(it.get("title", "")):
+    # coincidencia estricta: título igual, o el nombre + un sufijo genérico ("Claude AI").
+    # Nada de "contiene" ("make" encontraba "FrameMaker") ni de cualquier prefijo
+    # ("google" encontraba "Google Classroom", 23-oct-2026).
+    GENERIC = {"ai", "app", "inc", "logo", "icon"}
+    def exact(title):
+        return norm(title) == norm(name)
+    def prefix(title):
+        rest = title.lower()[len(name) + 1:] if title.lower().startswith(name.lower() + " ") else ""
+        return rest.strip() in GENERIC
+    for it in sorted(items, key=lambda i: not exact(i.get("title", ""))):
+        if exact(it.get("title", "")) or prefix(it.get("title", "")):
             route = it.get("route")
             url = route.get("dark") or route.get("light") if isinstance(route, dict) else route
             try:
