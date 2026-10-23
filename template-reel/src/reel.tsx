@@ -57,7 +57,7 @@ export const CamV: React.FC<{ keys: CamKeyV[]; until: number }> = ({ keys, until
   const sameBox = i > 0 && flat[i].w === flat[i - 1].w && flat[i].h === flat[i - 1].h && flat[i].y === flat[i - 1].y;
   const b = sameBox ? flat[i] : interp(flat, t);
   const { fps } = useVideoConfig();
-  const drift = 1 + 0.012 * Math.sin(t * 0.4);
+  const drift = 1.012 + 0.012 * Math.sin(t * 0.4); // nunca baja de 1: con zoom 1 dejaba ver bordes negros
   return (
     <Sequence durationInFrames={Math.ceil(until * fps)}>
       <div
@@ -486,7 +486,7 @@ export const DualCam: React.FC<{ keys: CamKeyV[] }> = ({ keys }) => {
   const prev = i > 0 ? keys[i - 1] : cur;
   const p = prog(t, cur.at, 0.5);
   const s = isSplit(cur) ? (isSplit(prev) && i > 0 ? 1 : i === 0 ? 1 : p) : isSplit(prev) && i > 0 ? 1 - p : 0;
-  const drift = 1 + 0.012 * Math.sin(t * 0.4);
+  const drift = 1.012 + 0.012 * Math.sin(t * 0.4); // nunca baja de 1: con zoom 1 dejaba ver bordes negros
   const zFull = !isSplit(cur) ? cur.zoom ?? 1 : !isSplit(prev) ? prev.zoom ?? 1 : 1;
   const zWide = isSplit(cur) ? cur.zoom ?? 1 : 1;
   const b = WIDE_BOX;

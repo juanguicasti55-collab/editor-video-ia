@@ -54,3 +54,8 @@ enorme en amarillo ("26") al decirlo. Se arma con un `Quote` sin caja, texto de 
 - Un efecto por idea. En el reel original cambian cada segundo porque el reel *es* el catálogo; en un reel normal,
   1 efecto fuerte cada 4–8 s basta.
 - Todo lo que va detrás de la persona se revisa con fotogramas: manos rápidas y pelo suelto se recortan mal.
+- **Reel solo con música (sin voz):** los punch-ins del #5 se sincronizan con los golpes de la pista, no con palabras.
+  Sacar los golpes midiendo el volumen cada 10 ms (numpy) y poner el efecto fuerte (temblor + destello + boom) en el drop.
+- **Clips de iPhone que salen de lado:** el .mov trae una marca de rotación que ffmpeg copia y Remotion vuelve a girar.
+  No usar `transpose`; quitar la marca pasando el video por `-f yuv4mpegpipe - | ffmpeg -i - ...` al armar `cam.mp4`.
+- **Vertigo (#15) solo con recorte limpio:** si el matte deja manchas en un borde, el dolly zoom las deja a la vista.
