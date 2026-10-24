@@ -1,6 +1,6 @@
 ---
 name: editor-video-ia
-description: Edita videos grabados a cámara (talking head) y saca reels verticales con un estilo profesional y dinámico — cortes sin pausas, subtítulos palabra por palabra con palabras clave resaltadas, tarjetas animadas (listas ✓/✗, números que suben, flujos de pasos), zooms, cámara que pasa a recuadro o pantalla dividida, logos oficiales de las herramientas que se nombran, tomas de apoyo, efectos de sonido y música con ducking — renderizado a MP4 con Remotion. Antes de editar SIEMPRE entrevista a la persona: qué tipo de video es (video largo horizontal o reels verticales), si quiere copiar el estilo de algún creador (link o capturas) y los datos de su marca. Úsala cuando alguien pase un video (.mp4/.mov) y pida "edita este video", "hazme la edición", "ponle subtítulos y animaciones", "quítale las pausas", "que se vea profesional", "sácame reels / shorts / clips de este video", "quiero que se vea como los videos de [creador]", aunque no mencione la skill.
+description: Edita videos grabados a cámara (talking head) y saca reels verticales con un estilo profesional y dinámico — cortes sin pausas, subtítulos palabra por palabra con palabras clave resaltadas, tarjetas animadas (listas ✓/✗, números que suben, flujos de pasos), zooms, cámara que pasa a recuadro o pantalla dividida, logos oficiales de las herramientas que se nombran, tomas de apoyo, efectos de sonido y música con ducking — renderizado a MP4 con Remotion. También hace videos de MOTION GRAPHICS sin cámara (gráficos animados + voz en off, incluso con la voz clonada de la persona) a partir de un carrusel, un guion o un texto. Antes de editar SIEMPRE entrevista a la persona: qué tipo de video es (video largo horizontal o reels verticales), si quiere copiar el estilo de algún creador (link o capturas) y los datos de su marca. Úsala cuando alguien pase un video (.mp4/.mov) y pida "edita este video", "hazme la edición", "ponle subtítulos y animaciones", "quítale las pausas", "que se vea profesional", "sácame reels / shorts / clips de este video", "quiero que se vea como los videos de [creador]", "hazme un video con gráficos y voz en off", "convierte este carrusel en video", "motion graphics", aunque no mencione la skill.
 ---
 
 # Editor de video con IA (videos largos y reels)
@@ -35,6 +35,8 @@ No preguntar lo que la persona ya dijo. Preguntas:
    - **Reels / Shorts** (vertical 9:16) — ¿a partir de un video largo o de una grabación vertical corta?
      ¿Cuántos reels quiere? (sugerir 3–6 de 30–60 s)
    - **Ambos** (primero el largo, después los reels del mismo material)
+   - **Motion graphics con voz en off** (vertical, sin cámara): de un carrusel, un guion o un texto →
+     seguir `references/motion-graphics.md` (tiene su propia entrevista: de dónde sale el contenido y quién pone la voz)
 2. **¿Quieres copiar el estilo de alguien?** (opcional) Pedir **un link a un video** del creador o
    **3–5 capturas** de sus videos. Si dice que no, usar el estilo por defecto de la skill
    (tarjetas oscuras, acento lima y violeta). → ver `references/copiar-estilo.md`.
@@ -142,6 +144,18 @@ Leer `references/reels.md` y seguir ese flujo. Resumen:
 
 ---
 
+## Motion graphics con voz en off (sin cámara)
+
+Leer `references/motion-graphics.md` y seguir ese flujo. Resumen:
+1. Fuente: `scripts/ig_carrusel.py "<url>" <carpeta>` baja las láminas de un carrusel; **leer cada lámina**.
+2. Guion = el texto de la fuente dicho en voz, sin añadir nada. Voz IA, grabada por la persona o **clonada con su permiso**
+   (muestra limpia con `scripts/voz_muestra.sh`, que le quita la música; clon en Higgsfield `seed_audio` + `audio_references`).
+3. `scripts/mg_prep.py voz.wav <carpeta>` → proyecto vertical con las piezas de `template-mg/` (`mograf.tsx`),
+   fuentes locales y `words.ts`. Verificar las palabras técnicas (Whisper sin prompt).
+4. Una escena por lámina en `src/video.tsx`: `PanelLista`, `Esquema`, `Flujo`, `Red`, `Fichas`, `Tablero`, `Tachado`, `CierreCTA`…
+   Gancho visible en el fotograma 0.
+5. `stills.sh` → música (`scripts/musica.py` si no hay pista) → `render.sh`.
+
 ## Anuncios o grabaciones con muchas tomas repetidas
 Cuando la grabación trae la misma frase dicha varias veces, voz baja o ruido, no cortar con `cut.py`/`reel_prep.py`
 (usan los tiempos por palabra, que ahí fallan). Usar `scripts/tomas.py` → elegir la última toma buena de cada frase →
@@ -153,6 +167,8 @@ de la persona). Cada script explica en su cabecera cómo se usa.
 - "Más / menos rápido" → `--gap` en `cut.py` y reajustar tiempos de `video.tsx`.
 - "Subtítulos más grandes / en otro lugar / en mayúsculas" → `Subtitles` / `SubsV` en `lib.tsx` / `reel.tsx` del proyecto.
 - "Otros colores / otra tipografía" → `theme.ts` (las fuentes vienen de `@remotion/google-fonts`).
+- Render que se cae con `ERR_CERT_AUTHORITY_INVALID` / "Failed to fetch" en fonts.gstatic.com (sesiones con proxy):
+  bajar las fuentes a local con `scripts/fuentes.py` y cargarlas como en `template-mg/src/theme.ts`.
 - "Cambia la música" → solo rehacer el paso 7.
 - Si la persona re-corta el video después de editarlo, no rehacer escenas: transcribir la versión nueva y
   `python3 "$SKILL/scripts/retime.py" <words.ts viejo> <words.ts nuevo> <video.tsx viejo> <video.tsx nuevo>`.

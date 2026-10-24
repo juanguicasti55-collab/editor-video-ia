@@ -1,6 +1,6 @@
 # Editor de video con IA (skill para Claude)
 
-Skill de Claude que edita videos grabados a cámara: corta pausas y tomas repetidas, pone subtítulos palabra por palabra, tarjetas animadas, zooms y música, y saca reels verticales del mismo material. Se usa hablándole a Claude: le dices qué video editar y él te hace unas preguntas antes de empezar.
+Skill de Claude que edita videos grabados a cámara: corta pausas y tomas repetidas, pone subtítulos palabra por palabra, tarjetas animadas, zooms y música, y saca reels verticales del mismo material. También arma videos de motion graphics con voz en off a partir de un carrusel o un guion. Se usa hablándole a Claude: le dices qué video editar y él te hace unas preguntas antes de empezar.
 
 La armó **Juan González** y la usa para editar sus propios videos. Aquí la explica en video: https://youtu.be/mpx_eZ0sHls
 
@@ -8,6 +8,7 @@ La armó **Juan González** y la usa para editar sus propios videos. Aquí la ex
 - Claude (la app de escritorio o Claude Code) con skills activadas.
 - Un computador con **ffmpeg**, **Node.js 18+** y **Python 3.9+**.
 - Espacio: la primera vez descarga el modelo de transcripción (~1,5 GB).
+- Solo para motion graphics: `yt-dlp` si vas a bajar un carrusel de Instagram (`pip install yt-dlp`); para clonar una voz, Demucs se instala solo la primera vez (~1 GB).
 
 ## Instalar
 1. Copia la carpeta `editor-video-ia` dentro de la carpeta de skills de Claude (en Mac: `~/.claude/skills/`).
@@ -18,6 +19,7 @@ La armó **Juan González** y la usa para editar sus propios videos. Aquí la ex
 - `SKILL.md`: las instrucciones que sigue Claude (entrevista inicial, cortes, escenas, render).
 - `scripts/`: transcripción, cortes, recorte de la persona, render y mezcla de audio.
 - `template/` y `template-reel/`: plantillas de video largo y de reel (Remotion).
+- `template-mg/`: piezas de motion graphics para videos sin cámara (gráficos + voz en off), por ejemplo a partir de un carrusel.
 - `references/`: catálogo de piezas, reglas de ritmo, ejemplos y un kit para videos largos de YouTube.
 - `assets/logos`: logos de herramientas para mostrar cuando se nombran.
 
