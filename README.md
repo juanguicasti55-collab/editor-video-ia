@@ -17,7 +17,14 @@ La armó **Juan González** y la usa para editar sus propios videos. Aquí la ex
 
 ## Qué trae
 - `SKILL.md`: las instrucciones que sigue Claude (entrevista inicial, cortes, escenas, render).
-- `scripts/`: transcripción, cortes, recorte de la persona, render y mezcla de audio.
+- `scripts/`: transcripción, cortes, recorte de la persona, render y mezcla de audio. Además:
+  - `texto.py`: **checkpoint de texto** antes de editar: el guion que va a quedar y una segunda lectura con otro modelo
+    que marca palabras repetidas, tartamudeos y palabras comidas en un corte.
+  - `validar.py`: **validador con reglas fijas** sobre el video final («cumple X de Y reglas»): formato, sincronía,
+    −14 LUFS, negros o congelados, el texto aprobado sin palabras de más ni de menos, nada sobre la boca y zona segura de Reels.
+  - `acelerar.py`: acelera la toma ×1,05–1,15 sin cambiar el tono de la voz.
+- `references/revisor-qa.md`: el revisor de calidad, un agente aparte que mira el video antes de entregarlo.
+- `references/estilos/_plantilla/`: plantilla de estilo con historial de correcciones (lo que pides se queda para el próximo video).
 - `template/` y `template-reel/`: plantillas de video largo y de reel (Remotion).
 - `template-mg/`: piezas de motion graphics para videos sin cámara (gráficos + voz en off), por ejemplo a partir de un carrusel.
 - `references/`: catálogo de piezas, reglas de ritmo, ejemplos y un kit para videos largos de YouTube.
@@ -35,6 +42,11 @@ La armó **Juan González** y la usa para editar sus propios videos. Aquí la ex
 ## Antes de publicar un video editado
 - Si usas fragmentos de material de otra persona, deja el crédito en pantalla.
 - Revisa el resultado completo: la skill te ayuda, pero tú firmas el video.
+
+## Créditos
+El checkpoint de texto, el validador con reglas fijas, el revisor aparte, la aceleración sin cambio de tono y el historial
+de correcciones se inspiran en [video-editor-architect](https://github.com/Hainrixz/video-editor-architect) de
+Enrique Rocha (MIT). El código de esta skill es propio.
 
 ## Licencia
 MIT (archivo `LICENSE`): úsala, cámbiala y compártela. Los logos y el motor Remotion tienen sus propias licencias, arriba.

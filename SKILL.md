@@ -78,6 +78,22 @@ detecta en `crop.txt`. Si se equivocó, corregir en el paso 3 con `--crop none` 
 - Imprime la transcripción con **los tiempos nuevos**: son los únicos que valen para las escenas.
 - Corregir nombres mal transcritos (marcas, el nombre de la persona) en `remotion/src/words.ts`
   y, si se repiten, en `scripts/fixes.py`.
+- **Velocidad** (si el estilo lo pide o la persona quiere más ritmo sin cortar palabras):
+  `"$SKILL/.venv/bin/python" "$SKILL/scripts/acelerar.py" "<carpeta edicion-...>" --factor 1.08` (×1,05–1,15, la voz
+  no cambia de tono). Va ANTES del paso 4: reescribe los tiempos de `words.ts`.
+
+### 3b. Aprobar el texto (checkpoint obligatorio, antes de planear escenas)
+```
+"$SKILL/.venv/bin/python" "$SKILL/scripts/texto.py" "<carpeta edicion-...>"
+```
+Escribe `texto-propuesto.md` (el guion que va a quedar, con tiempos) y `texto-aprobado.txt`. Hace una **segunda lectura**
+con otro modelo, en tramos cortos y dos veces, y marca con ⚠ lo dudoso: palabras repetidas («quieres, quieres»), frases
+dichas dos veces, palabras que ninguna lectura oye (comidas en un corte), palabras «estiradas» que esconden algo.
+- Revisar cada ⚠. Lo que sobra se quita rehaciendo el corte (`--drop` con el segundo del ORIGINAL, que el reporte da).
+  Solo se quita o se restaura lo que se dijo: nunca se agrega ni se reordena (y el guion de la persona no se cambia).
+- Mostrarle el guion final a la persona y esperar su OK; si dio control total, decidir y anotarlo en la entrega.
+- Si se corrige algo, volver a correr `texto.py` hasta que no queden ⚠ sin explicar. `texto-aprobado.txt` es lo que
+  `validar.py` compara después con el video final.
 
 ### 4. Planificar escenas (el trabajo de criterio)
 Leer `references/estilo.md` (catálogo de piezas y reglas de ritmo). Resumen:
@@ -117,8 +133,22 @@ fotogramas (segundos) y renderizar al final (minutos).
 bash "$SKILL/scripts/render.sh" "<carpeta edicion-...>" "<salida>.mp4" ["<musica.wav>"] [volumen=0.16]
 ```
 Renderiza, normaliza la voz a -14 LUFS (estándar de YouTube/Instagram), mezcla la música con ducking
-(baja sola cuando se habla) y fades. Entregar el MP4 con un resumen: duración antes → después, qué
-escenas lleva y qué conviene revisar escuchando (no puedes oír el audio: la mezcla se controla con medidores).
+(baja sola cuando se habla) y fades. Nombrar la salida con versión: `<video>-v1.mp4`, `-v2`… (ver «Versiones»).
+
+### 8. Validar y revisar (antes de entregar)
+```
+"$SKILL/.venv/bin/python" "$SKILL/scripts/validar.py" "<carpeta edicion-...>" "<salida>-vN.mp4"
+```
+Reglas fijas → «cumple X de Y reglas (Z N/A)» en `validacion.md`, con los cuadros problemáticos marcados en
+`validacion-avisos.jpg`: formato, cuadros y sincronía, −14 LUFS / −1 dBTP, negros o congelados, **el texto aprobado sin
+palabras que falten ni se repitan** (usa la voz sin música, `voz_sfx.wav`), **nada sobre la boca** y **zona segura de
+Reels** (arriba, abajo y la columna de botones). Si el estilo permite tapar la cara: `--permitir-cara`.
+- Toda FALLA se arregla antes de entregar (máximo 2 vueltas solo; después preguntar). Los avisos se miran en la hoja
+  y se descartan o se arreglan.
+- Entregas finales y anuncios para pauta: lanzar además el **revisor QA** (un agente aparte que no editó el video,
+  `references/revisor-qa.md`).
+- Entregar el MP4 con: duración antes → después, qué escenas lleva, «cumple X de Y», lo que decidiste y lo que
+  conviene revisar escuchando (no puedes oír el audio: la mezcla se controla con medidores).
 
 ---
 
@@ -132,7 +162,7 @@ Leer `references/reels.md` y seguir ese flujo. Resumen:
    tienen desenlace. **Proponer la lista** (tabla: título, tramos, duración, gancho) y esperar el OK,
    salvo que la persona haya dicho "elige tú".
 4. Cortar cada reel: `scripts/reel_prep.py` (genera `cam.mp4` vertical y `camwide.mp4` con la cara completa
-   para la pantalla dividida).
+   para la pantalla dividida). Luego, si va, `acelerar.py` y **siempre `texto.py reels/<n>`** (checkpoint de texto, 3b).
 5. Escenas en `reels/<n>/remotion/src/video.tsx` con `DualCam` (la cara NUNCA se recorta al achicar la cámara),
    `HookTitle` al inicio, tarjetas `CARD_SPLIT`, tomas `BrollTop` y `CommentCTA` al final con la palabra de la entrevista.
    Para efectos (Checklist, Phone mockup, Cover story, Headline wall, Zoom-through cut…) ver `references/efectos-17.md`.
@@ -140,7 +170,8 @@ Leer `references/reels.md` y seguir ese flujo. Resumen:
    o toma de apoyo) y nunca pasan más de 3-4 s sin algo nuevo. Elegir nivel (con muchos efectos / intermedio / sencillo),
    piezas (`Cutaway`, `ArticleCard`, `ChatMock`, `Terminal`, `FileCard`…) y de dónde sacar material libre
    (`scripts/captura.sh`, `scripts/commons.py`): `references/apoyo-visual.md`.
-6. Fotogramas → render (`render.sh`), salida en una carpeta `Reels - <video>/`.
+6. Fotogramas → render (`render.sh`), salida en una carpeta `Reels - <video>/` → `validar.py reels/<n> <reel>-vN.mp4`
+   (y revisor QA si es entrega final).
 
 ---
 
@@ -161,10 +192,19 @@ Cuando la grabación trae la misma frase dicha varias veces, voz baja o ruido, n
 (usan los tiempos por palabra, que ahí fallan). Usar `scripts/tomas.py` → elegir la última toma buena de cada frase →
 `scripts/corte_audio.py` (corta por la voz, afina los bordes y verifica tramo por tramo que no falte ni se repita
 ninguna palabra) → `scripts/caras.py` (para que ningún texto caiga sobre la boca) → `scripts/detras.py` (texto detrás
-de la persona). Cada script explica en su cabecera cómo se usa.
+de la persona). Cada script explica en su cabecera cómo se usa. Después del corte, igual: `texto.py` (3b) y al final
+`validar.py` (8). Los clips generados con IA también tartamudean o repiten palabras: el checkpoint de texto los atrapa.
+
+## Versiones y correcciones
+- **Nunca se pisa una entrega:** cada render nuevo es `-v2`, `-v3`… y antes de cambiar escenas se guarda
+  `remotion/src/video-vN.tsx` (copia del que produjo esa versión). Así siempre se puede volver.
+- **Las correcciones de la persona se guardan.** Si lo que pide vale para los próximos videos («sin barra de avance»,
+  «textos detrás de la cabeza», «cortes más rápidos»), anotarlo con sus palabras y la fecha en el «Historial de
+  correcciones» del estilo que se usó (`references/estilos/<id>/ESTILO.md`; plantilla en `references/estilos/_plantilla/`).
+  Lo puntual de un solo video no va. El estilo gana sobre las reglas generales de esta skill cuando chocan.
 
 ## Ajustes típicos
-- "Más / menos rápido" → `--gap` en `cut.py` y reajustar tiempos de `video.tsx`.
+- "Más / menos rápido" → `--gap` en `cut.py` (o `acelerar.py --factor 1.08`) y reajustar tiempos de `video.tsx` con `retime.py`.
 - "Subtítulos más grandes / en otro lugar / en mayúsculas" → `Subtitles` / `SubsV` en `lib.tsx` / `reel.tsx` del proyecto.
 - "Otros colores / otra tipografía" → `theme.ts` (las fuentes vienen de `@remotion/google-fonts`).
 - Render que se cae con `ERR_CERT_AUTHORITY_INVALID` / "Failed to fetch" en fonts.gstatic.com (sesiones con proxy):
