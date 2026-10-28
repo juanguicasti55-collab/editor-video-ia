@@ -37,19 +37,21 @@ No preguntar lo que la persona ya dijo. Preguntas:
    - **Ambos** (primero el largo, después los reels del mismo material)
    - **Motion graphics con voz en off** (vertical, sin cámara): de un carrusel, un guion o un texto →
      seguir `references/motion-graphics.md` (tiene su propia entrevista: de dónde sale el contenido y quién pone la voz)
-2. **¿Quieres copiar el estilo de alguien?** (opcional) Pedir **un link a un video** del creador o
-   **3–5 capturas** de sus videos. Si dice que no, usar el estilo por defecto de la skill
-   (tarjetas oscuras, acento lima y violeta). → ver `references/copiar-estilo.md`.
-   **Estilo ya guardado:** si en `references/estilos/` hay una carpeta con el `ESTILO.md` de la persona (aparte de
-   `_plantilla`), ese es su estilo por defecto: si no pide otro, usarlo sin volver a pedir referencias (si hay varios,
-   preguntar cuál). El de Juan es «julio y santi» (`references/estilos/julio-y-santi/ESTILO.md`, con sus videos de referencia).
-   En videos largos horizontales, el kit de `references/youtube-horizontal/LEEME.md` trae un estilo oscuro + dorado listo para adaptar a tu marca.
+2. **¿Qué efectos quieres? (SIEMPRE se pregunta: no hay estilo ni efectos por defecto)** Mostrar el menú de
+   `references/menu-efectos.md`: 12 efectos en 3 grupos (detrás de la persona · cámara y transiciones · tarjetas y
+   apoyo). Con la herramienta de preguntas: 3 preguntas de selección múltiple, una por grupo. Si dice «elige tú», elegir
+   3–5 que calcen con el guion y decir cuáles. Aunque haya un estilo guardado en `references/estilos/`, no se aplica
+   solo: se ofrece como una opción más y se usa solo si la persona lo pide.
+3. **¿Quieres copiar el estilo de alguien?** (opcional) Pedir **un link a un video** del creador o
+   **3–5 capturas** de sus videos. → ver `references/copiar-estilo.md`. Si dice que no, el look sale de los efectos que
+   eligió y de su marca (pregunta 4); no aplicar el look de la skill (tarjetas oscuras lima y violeta) sin preguntar.
+   En videos largos horizontales, el kit de `references/youtube-horizontal/LEEME.md` es una opción (oscuro + dorado): ofrecerlo, no imponerlo.
 
-3. **Tu marca**: colores (o "los de mi logo"), tu @usuario para la marca de agua, y tu logo si quieres.
-4. **¿Ya hiciste los cortes?** Si la persona ya cortó errores y pausas, NO volver a cortar
+4. **Tu marca**: colores (o "los de mi logo"), tu @usuario para la marca de agua, y tu logo si quieres.
+5. **¿Ya hiciste los cortes?** Si la persona ya cortó errores y pausas, NO volver a cortar
    (`cut.py --gap 99`). Si no, la skill quita pausas y tomas repetidas.
-5. **Música**: archivo propio (mp3/wav libre de derechos), "sin música", o "elige tú" (ver Paso 6).
-6. **Solo reels — CTA final**: palabra para comentar (ej. "Comenta GUIA y te envío…") y qué se envía.
+6. **Música**: archivo propio (mp3/wav libre de derechos), "sin música", o "elige tú" (ver Paso 6).
+7. **Solo reels — CTA final**: palabra para comentar (ej. "Comenta GUIA y te envío…") y qué se envía.
 
 Con las respuestas:
 - Escribir los colores y la marca en `remotion/src/theme.ts` de cada proyecto (`C` y `MARCA`).
@@ -113,8 +115,9 @@ Leer `references/estilo.md` (catálogo de piezas y reglas de ritmo). Resumen:
   clips de < 10–15 s siempre comentados y con crédito ("Imágenes: [fuente]"). Ver `references/estilo.md` → b-roll
   y `references/ejemplo-video-noticias.tsx`.
 Escribir todo en `remotion/src/video.tsx` (reemplazando el ejemplo). Solo se edita ese archivo.
-- **Efectos especiales** (persona delante de textos o gráficas, teléfono flotante, checklist, zoom que atraviesa,
-  collage de papel, portada de revista, dolly zoom…): ver `references/efectos-17.md`, con qué se arma cada uno y cuáles usar primero.
+- **Efectos**: usar SOLO los que la persona eligió en el menú (pregunta 2), con las piezas de `references/fx-efectos.tsx`
+  (copiar a `remotion/src/fx.tsx`; lo que va detrás de la persona necesita `scripts/mascaras.py`). Para otros efectos
+  que pida (teléfono flotante, collage de papel, glass type…): `references/efectos-17.md`.
 
 ### 5. Revisar con fotogramas antes de renderizar
 ```
@@ -166,9 +169,10 @@ Leer `references/reels.md` y seguir ese flujo. Resumen:
    salvo que la persona haya dicho "elige tú".
 4. Cortar cada reel: `scripts/reel_prep.py` (genera `cam.mp4` vertical y `camwide.mp4` con la cara completa
    para la pantalla dividida). Luego, si va, `acelerar.py` y **siempre `texto.py reels/<n>`** (checkpoint de texto, 3b).
-5. Escenas en `reels/<n>/remotion/src/video.tsx` con `DualCam` (la cara NUNCA se recorta al achicar la cámara),
-   `HookTitle` al inicio, tarjetas `CARD_SPLIT`, tomas `BrollTop` y `CommentCTA` al final con la palabra de la entrevista.
-   Para efectos (Checklist, Phone mockup, Cover story, Headline wall, Zoom-through cut…) ver `references/efectos-17.md`.
+5. Escenas en `reels/<n>/remotion/src/video.tsx` con los **efectos que la persona eligió en el menú**
+   (`references/menu-efectos.md` → piezas en `references/fx-efectos.tsx`). Fijo en todo reel: `HookTitle` al inicio y el
+   cierre de la entrevista (`CommentCTA` con su palabra, o botón si es anuncio). `DualCam` / `CARD_SPLIT` / `BrollTop` son
+   el look propio de la skill: ofrecerlo, no aplicarlo solo (si se usa, la cara NUNCA se recorta al achicar la cámara).
    **Apoyo visual obligatorio en todo reel**: lo que se dice se MUESTRA (captura real de la noticia, foto, logo, interfaz
    o toma de apoyo) y nunca pasan más de 3-4 s sin algo nuevo. Elegir nivel (con muchos efectos / intermedio / sencillo),
    piezas (`Cutaway`, `ArticleCard`, `ChatMock`, `Terminal`, `FileCard`…) y de dónde sacar material libre

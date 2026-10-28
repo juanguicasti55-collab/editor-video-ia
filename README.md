@@ -30,6 +30,7 @@ Si la skill está en otra carpeta, agrega la ruta al final: `… | bash -s -- "/
   - `validar.py`: **validador con reglas fijas** sobre el video final («cumple X de Y reglas»): formato, sincronía,
     −14 LUFS, negros o congelados, el texto aprobado sin palabras de más ni de menos, nada sobre la boca y zona segura de Reels.
   - `acelerar.py`: acelera la toma ×1,05–1,15 sin cambiar el tono de la voz.
+- `references/menu-efectos.md` y `references/fx-efectos.tsx`: el **menú de 12 efectos** que la skill te pregunta en cada video (no aplica ninguno por defecto) y sus piezas listas: texto detrás de la cabeza, portada de revista, notas en la pared, pared de miniaturas, fondo que cambia, vertigo, zoom que atraviesa, marco de reel, checklist, testimonio en chat, órbita y palabra que se enfoca. `scripts/mascaras.py` recorta a la persona para lo que va detrás.
 - `references/revisor-qa.md`: el revisor de calidad, un agente aparte que mira el video antes de entregarlo.
 - `references/estilos/_plantilla/`: plantilla de estilo con historial de correcciones (lo que pides se queda para el próximo video).
 - `template/` y `template-reel/`: plantillas de video largo y de reel (Remotion).
