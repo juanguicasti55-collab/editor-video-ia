@@ -15,6 +15,13 @@ La armó **Juan González** y la usa para editar sus propios videos. Aquí la ex
 2. En la terminal: `bash ~/.claude/skills/editor-video-ia/scripts/setup.sh` (instala lo que falte; la primera vez tarda).
 3. Abre Claude y escribe algo como: *«Usa la skill editor-video-ia para editar el video que está en mi carpeta Videos»*.
 
+## Actualizar a la última versión
+En la Terminal (no borra tus estilos, tu música ni lo ya instalado):
+```
+curl -fsSL https://raw.githubusercontent.com/juanguicasti55-collab/editor-video-ia/main/scripts/actualizar.sh | bash
+```
+Si la skill está en otra carpeta, agrega la ruta al final: `… | bash -s -- "/ruta/editor-video-ia"`.
+
 ## Qué trae
 - `SKILL.md`: las instrucciones que sigue Claude (entrevista inicial, cortes, escenas, render).
 - `scripts/`: transcripción, cortes, recorte de la persona, render y mezcla de audio. Además:
