@@ -40,6 +40,9 @@ No preguntar lo que la persona ya dijo. Preguntas:
 2. **¿Quieres copiar el estilo de alguien?** (opcional) Pedir **un link a un video** del creador o
    **3–5 capturas** de sus videos. Si dice que no, usar el estilo por defecto de la skill
    (tarjetas oscuras, acento lima y violeta). → ver `references/copiar-estilo.md`.
+   **Estilo ya guardado:** si en `references/estilos/` hay una carpeta con el `ESTILO.md` de la persona (aparte de
+   `_plantilla`), ese es su estilo por defecto: si no pide otro, usarlo sin volver a pedir referencias (si hay varios,
+   preguntar cuál). El de Juan es «julio y santi» (`references/estilos/julio-y-santi/ESTILO.md`, con sus videos de referencia).
    En videos largos horizontales, el kit de `references/youtube-horizontal/LEEME.md` trae un estilo oscuro + dorado listo para adaptar a tu marca.
 
 3. **Tu marca**: colores (o "los de mi logo"), tu @usuario para la marca de agua, y tu logo si quieres.
