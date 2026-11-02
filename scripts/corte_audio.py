@@ -18,7 +18,7 @@ import difflib, json, re, shutil, subprocess, sys, tempfile
 from pathlib import Path
 import numpy as np
 SKILL = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(SKILL / "scripts")); from proyecto import pista_audio
+sys.path.insert(0, str(SKILL / "scripts")); from proyecto import pista_audio, hdr_a_sdr, ETIQUETAS_BT709
 R = Path(sys.argv[1]); spec = json.loads(Path(sys.argv[2]).read_text())
 pi, po, tail = spec.get("pad_in", 0.06), spec.get("pad_out", 0.10), spec.get("tail", 0.5)
 from faster_whisper import WhisperModel
@@ -62,9 +62,10 @@ if not rem.exists():
     R.mkdir(parents=True, exist_ok=True); shutil.copytree(SKILL / "template-reel", rem)
     (rem / "node_modules").symlink_to(SKILL / "engine" / "node_modules")
 pub = rem / "public"; pub.mkdir(exist_ok=True)
+sdr = [hdr_a_sdr(src) for src in spec["sources"]]
 fc = ""
 for k, (i, s, e, *_) in enumerate(segs):
-    fc += (f"[{i}:v]trim={s:.3f}:{e:.3f},setpts=PTS-STARTPTS,fps=30,scale=1080:1920,setsar=1[v{k}];"
+    fc += (f"[{i}:v]trim={s:.3f}:{e:.3f},setpts=PTS-STARTPTS,fps=30,{sdr[i] + ',' if sdr[i] else ''}scale=1080:1920,setsar=1[v{k}];"
            f"[{i}:a:{pistas[i]}]atrim={s:.3f}:{e:.3f},asetpts=PTS-STARTPTS,aresample=48000,afade=t=in:d=0.02,afade=t=out:st={e - s - 0.025:.3f}:d=0.025[a{k}];")
 den = "afftdn=nr=12:nf=-28," if spec.get("denoise") else ""
 fc += "".join(f"[v{k}][a{k}]" for k in range(len(segs))) + f"concat=n={len(segs)}:v=1:a=1[cam][ar];[ar]highpass=f=90,{den}acompressor=threshold=0.03:ratio=3:attack=8:release=140:makeup=2[ac]"
@@ -72,7 +73,7 @@ fc += "".join(f"[v{k}][a{k}]" for k in range(len(segs))) + f"concat=n={len(segs)
 cmd = ["ffmpeg", "-v", "error", "-y"]
 for s in spec["sources"]: cmd += ["-i", s]
 cmd += ["-filter_complex_script", str(R / "filter.txt"), "-map", "[cam]", "-map", "[ac]", "-c:v", "libx264", "-crf", "18", "-preset", "fast",
-        "-c:a", "aac", "-b:a", "192k", str(pub / "cam.mp4")]
+        *(ETIQUETAS_BT709 if any(sdr) else []), "-c:a", "aac", "-b:a", "192k", str(pub / "cam.mp4")]
 subprocess.run(cmd, check=True)
 t = 0; cuts = []
 for _, s, e, *_ in segs: cuts.append(round(t, 2)); t += e - s

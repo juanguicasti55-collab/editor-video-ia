@@ -8,8 +8,8 @@ por grupo (4 opciones cada una, la descripción corta de abajo como texto de la 
 Piezas: `references/fx-efectos.tsx` (copiar a `remotion/src/fx.tsx`). Lo que va detrás de la persona necesita su
 recorte: `scripts/mascaras.py <reel> --tramos "a-b,…"` escribe `public/fg/00000.webp…` (la persona con transparencia,
 cuadro por cuadro) y `src/mascaras.ts`. Los tramos deben cubrir todo lo que Cam2 muestra recortado (`on`, `vertigo` y
-`shrink` hasta el final) y cada corrida borra la anterior, así que se pasan todos. Si la persona tiene pelo, agregar
-`--con-pelo`. Regla de ritmo: un efecto fuerte cada 4–8 s, uno por idea; nunca dos efectos grandes a la vez.
+`shrink` hasta el final) y cada corrida borra la anterior, así que se pasan todos. **Si la persona tiene pelo, agregar
+`--con-pelo`**: sin esa opción el pelo desaparece del recorte y no sale ningún error. Regla de ritmo: un efecto fuerte cada 4–8 s, uno por idea; nunca dos efectos grandes a la vez.
 
 ## Grupo 1 · Detrás de la persona (necesitan máscaras)
 | # | Efecto | Qué se ve | Cuándo usarlo | Pieza |

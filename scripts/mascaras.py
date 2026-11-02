@@ -11,8 +11,8 @@ Lee remotion/public/cam.mp4 (o cut.mp4) y escribe:
                                    justo encima de la cabeza).
 --tramos: esos segundos, que deben cubrir todo lo que Cam2 muestra recortado (`on`, `vertigo` y `shrink` hasta el final):
           un cuadro sin recorte hace fallar el render. Sin --tramos hace todo el video, que es lento y pesa mucho.
---con-pelo: conserva la clase pelo, para quien tiene pelo. Por defecto va sin ella porque en una cabeza calva el modelo
-          confunde nubes o paredes con pelo y las pega a la cabeza.
+--con-pelo: OBLIGATORIO si la persona tiene pelo: sin esta opción el pelo desaparece del recorte, sin ningún error. Por
+          defecto va sin la clase pelo porque en una cabeza calva el modelo confunde nubes o paredes con pelo.
 Modelos: selfie_multiclass_256x256.tflite (se baja solo a assets/models la primera vez, 16 MB) y selfie_segmenter.tflite.
 Revisar con fotogramas: pelo suelto, manos rápidas y objetos en la mano pueden recortarse mal.
 """
