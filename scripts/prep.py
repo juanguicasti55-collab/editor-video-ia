@@ -108,7 +108,8 @@ def main():
     (work / "source.txt").write_text(video)
 
     # audio + fotogramas
-    run(["ffmpeg", "-v", "error", "-y", "-i", video, "-vn", "-ac", "1", "-ar", "16000", str(work / "audio16k.wav")])
+    sys.path.insert(0, str(SKILL / "scripts")); from proyecto import pista_audio
+    run(["ffmpeg", "-v", "error", "-y", "-i", video, "-map", f"0:a:{pista_audio(video)}", "-ac", "1", "-ar", "16000", str(work / "audio16k.wav")])
     n = 12
     fr = work / "frames"; fr.mkdir(exist_ok=True)
     run(["ffmpeg", "-v", "error", "-y", "-i", video, "-vf", f"fps={n / dur:.5f},scale=640:-2", "-frames:v", str(n), str(fr / "f_%02d.jpg")])

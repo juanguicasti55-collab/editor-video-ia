@@ -27,6 +27,7 @@ def main():
     dur = float(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", video]))
 
     import sys; sys.path.insert(0, str(Path(__file__).resolve().parent)); from fixes import fix_words
+    from proyecto import pista_audio
     W = fix_words(json.loads((work / "words.json").read_text()))
     for w in W:
         if w["e"] - w["s"] > MAX_WORD:
@@ -69,9 +70,10 @@ def main():
     vf = ("crop=%s," % crop if crop != "none" else "") + \
         "scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080,fps=30"
 
+    pa = pista_audio(video)
     parts = "".join(
         f"[0:v]trim={s:.3f}:{e:.3f},setpts=PTS-STARTPTS[v{i}];"
-        f"[0:a]atrim={s:.3f}:{e:.3f},asetpts=PTS-STARTPTS,afade=t=in:d=0.02,afade=t=out:st={max(0, e - s - 0.03):.3f}:d=0.03[a{i}];"
+        f"[0:a:{pa}]atrim={s:.3f}:{e:.3f},asetpts=PTS-STARTPTS,afade=t=in:d=0.02,afade=t=out:st={max(0, e - s - 0.03):.3f}:d=0.03[a{i}];"
         for i, (s, e) in enumerate(merged))
     parts += "".join(f"[v{i}][a{i}]" for i in range(len(merged)))
     parts += f"concat=n={len(merged)}:v=1:a=1[vc][ac];[vc]{vf}[vo]"

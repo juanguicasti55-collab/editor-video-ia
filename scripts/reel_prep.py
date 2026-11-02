@@ -24,6 +24,9 @@ from pathlib import Path
 
 SKILL = Path(__file__).resolve().parent.parent
 PAD_IN, PAD_OUT, MAX_WORD = 0.06, 0.14, 0.95
+HLG_A_SDR = ("zscale=tin=arib-std-b67:min=bt2020nc:pin=bt2020:rin=tv:t=linear:npl=203,format=gbrpf32le,zscale=p=bt709,"
+             "tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p")
+ETIQUETAS_BT709 = ["-colorspace", "bt709", "-color_primaries", "bt709", "-color_trc", "bt709", "-color_range", "tv"]
 
 
 def probe(v):
@@ -33,6 +36,16 @@ def probe(v):
     w, h = st["width"], st["height"]
     rot = next((abs(int(x["rotation"])) for x in st.get("side_data_list", []) if "rotation" in x), 0)
     return (h, w) if rot in (90, 270) else (w, h)  # grabaciones verticales con metadato de rotación
+
+
+def hdr_a_sdr(video):
+    """Filtro para pasar a SDR bt709 los videos en HDR HLG de iPhone (bt2020, 10 bits), o "" si no hace falta."""
+    d = json.loads(subprocess.check_output(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=color_transfer",
+                                            "-of", "json", video]))
+    trc = d["streams"][0].get("color_transfer", "")
+    if trc == "smpte2084":
+        print("AVISO: el video es HDR PQ; solo se convierte HLG, así que los colores pueden salir lavados.")
+    return HLG_A_SDR if trc == "arib-std-b67" else ""
 
 
 def detect_cam(video, segs, W, H, crop_frame):
@@ -70,7 +83,7 @@ def main():
 
     work = Path(a.work).expanduser().resolve()
     video = a.source or (work / "source.txt").read_text().strip()
-    import sys; sys.path.insert(0, str(SKILL / "scripts")); from fixes import fix_words
+    import sys; sys.path.insert(0, str(SKILL / "scripts")); from fixes import fix_words; from proyecto import pista_audio
     words = fix_words(json.loads(Path(a.words or work / "words.json").read_text()))
     W, H = probe(video)
     segs_in = [tuple(map(float, s.split("-"))) for s in a.segments.split(",")]
@@ -135,12 +148,14 @@ def main():
         (rem / "node_modules").symlink_to(SKILL / "engine" / "node_modules")
     pub = rem / "public"; pub.mkdir(exist_ok=True)
 
+    pa = pista_audio(video)
+    sdr = hdr_a_sdr(video)
     fc = ""
     for i, (s, e) in enumerate(merged):
         fc += (f"[0:v]trim={s:.3f}:{e:.3f},setpts=PTS-STARTPTS[v{i}];"
-               f"[0:a]atrim={s:.3f}:{e:.3f},asetpts=PTS-STARTPTS,afade=t=in:d=0.02,afade=t=out:st={max(0, e - s - 0.03):.3f}:d=0.03[a{i}];")
+               f"[0:a:{pa}]atrim={s:.3f}:{e:.3f},asetpts=PTS-STARTPTS,afade=t=in:d=0.02,afade=t=out:st={max(0, e - s - 0.03):.3f}:d=0.03[a{i}];")
     fc += "".join(f"[v{i}][a{i}]" for i in range(len(merged)))
-    fc += f"concat=n={len(merged)}:v=1:a=1[vc][ac];[vc]fps=30,split=2[c1][c2];"
+    fc += f"concat=n={len(merged)}:v=1:a=1[vc][ac];[vc]fps=30,{sdr + ',' if sdr else ''}split=2[c1][c2];"
     # cuadro ancho con la cara completa (pantalla dividida, DualCam): mismo centro que la cámara,
     # ~74 % de su alto, relación 1620x1140, dentro del marco de la grabación.
     wide = None
@@ -167,13 +182,14 @@ def main():
     else:
         fc += "[c2]nullsink"
     (out / "filter.txt").write_text(fc)
+    color = ETIQUETAS_BT709 if sdr else []
     cmd = ["ffmpeg", "-v", "error", "-y", "-i", video, "-filter_complex_script", str(out / "filter.txt"),
-           "-map", "[cam]", "-map", "[ac]", "-c:v", "libx264", "-crf", "17", "-preset", "fast", "-c:a", "aac", "-b:a", "192k",
+           "-map", "[cam]", "-map", "[ac]", "-c:v", "libx264", "-crf", "17", "-preset", "fast", *color, "-c:a", "aac", "-b:a", "192k",
            str(pub / "cam.mp4")]
     if wide:
-        cmd += ["-map", "[wide]", "-an", "-c:v", "libx264", "-crf", "18", "-preset", "fast", str(pub / "camwide.mp4")]
+        cmd += ["-map", "[wide]", "-an", "-c:v", "libx264", "-crf", "18", "-preset", "fast", *color, str(pub / "camwide.mp4")]
     if a.screen:
-        cmd += ["-map", "[scr]", "-an", "-c:v", "libx264", "-crf", "17", "-preset", "fast", str(pub / "screen.mp4")]
+        cmd += ["-map", "[scr]", "-an", "-c:v", "libx264", "-crf", "17", "-preset", "fast", *color, str(pub / "screen.mp4")]
     subprocess.run(cmd, check=True)
     dur = float(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(pub / "cam.mp4")]))
     (rem / "src" / "words.ts").write_text(

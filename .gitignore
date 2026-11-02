@@ -3,3 +3,4 @@ __pycache__/
 .venv/
 .venv-matte/
 node_modules/
+assets/models/selfie_multiclass_256x256.tflite

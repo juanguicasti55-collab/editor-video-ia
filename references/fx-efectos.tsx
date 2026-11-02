@@ -6,7 +6,7 @@
 //   import { loadFont as loadCourier } from "@remotion/google-fonts/CourierPrime";
 //   export const { fontFamily: SERIF } = loadPlayfair("normal", { weights: ["800", "900"], subsets: ["latin"] });
 //   export const { fontFamily: TYPE } = loadCourier("normal", { weights: ["700"], subsets: ["latin"] });
-// Lo que va DETRÁS de la persona usa las máscaras de scripts/mascaras.py (public/m/00000.png… y src/mascaras.ts).
+// Lo que va DETRÁS de la persona usa el recorte de scripts/mascaras.py (public/fg/00000.webp… y src/mascaras.ts).
 //
 // Cam2 = cámara → `behind` → persona recortada. Además: zoom-through (zt), vertigo y frame break (shrink).
 // Capa de atrás: CoverStory, PaperWall, ThumbWall, WhiteOut, Orbit layer="back".
@@ -70,7 +70,8 @@ const inR = (t: number, r: [number, number][]) => r.some(([a, b]) => t >= a && t
 
 export type Shrink = { from: number; s: number };
 /**
- * Cámara: video → `behind` → persona recortada (máscara) → resto.
+ * Cámara: video → `behind` → persona recortada (WEBP con transparencia por cuadro) → resto.
+ * No usar aquí un segundo OffthreadVideo con máscara CSS: en render la persona desaparece o parpadea.
  * zt = cortes con zoom-through (la cámara atraviesa la toma); vertigo = [desde, hasta, cuánto] (solo el fondo crece);
  * shrink = el plano se encoge a un marco y la persona se sale del borde (frame break).
  */
@@ -96,7 +97,6 @@ export const Cam2: React.FC<{ keys: CamKeyV[]; until: number; on: [number, numbe
   const camSt: React.CSSProperties = { ...base, transform: `scale(${(k.zoom ?? 1) * drift * vz})` };
   const fgSt: React.CSSProperties = { ...base, transform: `scale(${(k.zoom ?? 1) * drift})` };
   const mf = Math.min(LAST_MASK, f);
-  const mask = staticFile(`m/${String(mf).padStart(5, "0")}.png`);
   const cp = shrinking ? prog(t, shrink!.from, 0.5) : 0;
   if (t >= until) return null;
   return (
@@ -109,8 +109,7 @@ export const Cam2: React.FC<{ keys: CamKeyV[]; until: number; on: [number, numbe
           {inR(t, on) && behind}
           {showFg && (
             <>
-              <Img src={mask} style={{ display: "none" }} />
-              <OffthreadVideo muted src={staticFile("cam.mp4")} style={{ ...fgSt, WebkitMaskImage: `url(${mask})`, maskImage: `url(${mask})`, WebkitMaskSize: "100% 100%", maskSize: "100% 100%" } as React.CSSProperties} />
+              <Img src={staticFile(`fg/${String(mf).padStart(5, "0")}.webp`)} style={fgSt} />
             </>
           )}
         </AbsoluteFill>

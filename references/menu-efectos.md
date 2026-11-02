@@ -5,9 +5,11 @@ menú y ella elige cuáles quiere en su video. Con la herramienta de preguntas: 
 por grupo (4 opciones cada una, la descripción corta de abajo como texto de la opción). Siempre se puede escribir
 «elige tú»: entonces se eligen 3–5 que calcen con el guion y se dice cuáles fueron.
 
-Piezas: `references/fx-efectos.tsx` (copiar a `remotion/src/fx.tsx`). Lo que va detrás de la persona necesita sus
-máscaras: `scripts/mascaras.py <reel> --tramos "a-b,…"` (solo los tramos con efecto). Regla de ritmo: un efecto fuerte
-cada 4–8 s, uno por idea; nunca dos efectos grandes a la vez.
+Piezas: `references/fx-efectos.tsx` (copiar a `remotion/src/fx.tsx`). Lo que va detrás de la persona necesita su
+recorte: `scripts/mascaras.py <reel> --tramos "a-b,…"` escribe `public/fg/00000.webp…` (la persona con transparencia,
+cuadro por cuadro) y `src/mascaras.ts`. Los tramos deben cubrir todo lo que Cam2 muestra recortado (`on`, `vertigo` y
+`shrink` hasta el final) y cada corrida borra la anterior, así que se pasan todos. Si la persona tiene pelo, agregar
+`--con-pelo`. Regla de ritmo: un efecto fuerte cada 4–8 s, uno por idea; nunca dos efectos grandes a la vez.
 
 ## Grupo 1 · Detrás de la persona (necesitan máscaras)
 | # | Efecto | Qué se ve | Cuándo usarlo | Pieza |
@@ -37,6 +39,10 @@ Además, siempre disponibles sin preguntar (son la base, no un estilo): subtítu
 texto grande debajo del mentón (`Kin` / tarjetas de la plantilla). El gancho textual de los reels es regla fija.
 
 ## Lecciones (de los videos donde se probaron)
+- Persona recortada: va como imagen WEBP por cuadro con `<Img>`. Un segundo `OffthreadVideo` con máscara CSS hizo que
+  la persona desapareciera o parpadeara en render (43 de 171 cuadros en un tramo).
+- Cabeza calva con cielo o pared clara detrás: el modelo confunde el fondo con pelo; por eso `mascaras.py` va sin la
+  clase pelo por defecto.
 - Texto detrás de la cabeza: con la cabeza alta en el cuadro no hay espacio; usar letras de ~190 px y dos líneas
   como máximo, la segunda tapada solo a medias. Revisar que se lea con fotogramas.
 - Fondo que cambia: el borde del recorte se nota en piernas y manos; usarlo en planos de la cintura para arriba.

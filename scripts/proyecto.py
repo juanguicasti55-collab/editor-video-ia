@@ -54,6 +54,16 @@ def norm(w):
     return _NUM.get(w, w)
 
 
+def pista_audio(video):
+    """Número de la pista de audio que se puede decodificar (para [0:a:N] o -map 0:a:N). Los iPhone graban primero audio
+    espacial, sin decodificador en ffmpeg, y después AAC: con [0:a] a secas se toma la primera y el corte falla."""
+    d = json.loads(subprocess.check_output(["ffprobe", "-v", "error", "-select_streams", "a", "-show_entries", "stream=codec_name", "-of", "json", str(video)]))
+    cods = [s.get("codec_name", "unknown") for s in d.get("streams", [])]
+    if "aac" in cods:
+        return cods.index("aac")
+    return next((i for i, c in enumerate(cods) if c != "unknown"), 0)
+
+
 def duracion(f):
     return float(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(f)]))
 
