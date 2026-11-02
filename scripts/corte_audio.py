@@ -18,6 +18,7 @@ import difflib, json, re, shutil, subprocess, sys, tempfile
 from pathlib import Path
 import numpy as np
 SKILL = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(SKILL / "scripts")); from proyecto import pista_audio
 R = Path(sys.argv[1]); spec = json.loads(Path(sys.argv[2]).read_text())
 pi, po, tail = spec.get("pad_in", 0.06), spec.get("pad_out", 0.10), spec.get("tail", 0.5)
 from faster_whisper import WhisperModel
@@ -26,9 +27,10 @@ from faster_whisper.audio import decode_audio
 # ---------- 1. afinar bordes ----------
 HOP = 160  # 10 ms
 aud, env, thr = {}, {}, {}
+pistas = [pista_audio(src) for src in spec["sources"]]
 for i, src in enumerate(spec["sources"]):
     tmp = Path(tempfile.gettempdir()) / f"corte_src{i}_{abs(hash(src)) % 10**8}.wav"
-    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", src, "-vn", "-ac", "1", "-ar", "16000", str(tmp)], check=True)
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", src, "-map", f"0:a:{pistas[i]}", "-ac", "1", "-ar", "16000", str(tmp)], check=True)
     a = decode_audio(str(tmp), sampling_rate=16000); tmp.unlink()
     n = len(a) // HOP
     e = 20 * np.log10(np.sqrt((a[:n * HOP].reshape(n, HOP) ** 2).mean(1) + 1e-12))
@@ -63,7 +65,7 @@ pub = rem / "public"; pub.mkdir(exist_ok=True)
 fc = ""
 for k, (i, s, e, *_) in enumerate(segs):
     fc += (f"[{i}:v]trim={s:.3f}:{e:.3f},setpts=PTS-STARTPTS,fps=30,scale=1080:1920,setsar=1[v{k}];"
-           f"[{i}:a]atrim={s:.3f}:{e:.3f},asetpts=PTS-STARTPTS,aresample=48000,afade=t=in:d=0.02,afade=t=out:st={e - s - 0.025:.3f}:d=0.025[a{k}];")
+           f"[{i}:a:{pistas[i]}]atrim={s:.3f}:{e:.3f},asetpts=PTS-STARTPTS,aresample=48000,afade=t=in:d=0.02,afade=t=out:st={e - s - 0.025:.3f}:d=0.025[a{k}];")
 den = "afftdn=nr=12:nf=-28," if spec.get("denoise") else ""
 fc += "".join(f"[v{k}][a{k}]" for k in range(len(segs))) + f"concat=n={len(segs)}:v=1:a=1[cam][ar];[ar]highpass=f=90,{den}acompressor=threshold=0.03:ratio=3:attack=8:release=140:makeup=2[ac]"
 (R / "filter.txt").write_text(fc)

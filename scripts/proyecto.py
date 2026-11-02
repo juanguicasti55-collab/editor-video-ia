@@ -6,6 +6,9 @@ import json, re, subprocess, unicodedata
 from pathlib import Path
 
 CAMARAS = ("cam.mp4", "cut.mp4")
+HLG_A_SDR = ("zscale=tin=arib-std-b67:min=bt2020nc:pin=bt2020:rin=tv:t=linear:npl=203,format=gbrpf32le,zscale=p=bt709,"
+             "tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p")
+ETIQUETAS_BT709 = ["-colorspace", "bt709", "-color_primaries", "bt709", "-color_trc", "bt709", "-color_range", "tv"]
 
 
 def remotion_dir(ruta):
@@ -62,6 +65,16 @@ def pista_audio(video):
     if "aac" in cods:
         return cods.index("aac")
     return next((i for i, c in enumerate(cods) if c != "unknown"), 0)
+
+
+def hdr_a_sdr(video):
+    """Filtro para pasar a SDR bt709 los videos en HDR HLG de iPhone (bt2020, 10 bits), o "" si no hace falta."""
+    d = json.loads(subprocess.check_output(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=color_transfer",
+                                            "-of", "json", str(video)]))
+    trc = d["streams"][0].get("color_transfer", "")
+    if trc == "smpte2084":
+        print("AVISO: el video es HDR PQ; solo se convierte HLG, así que los colores pueden salir lavados.")
+    return HLG_A_SDR if trc == "arib-std-b67" else ""
 
 
 def duracion(f):

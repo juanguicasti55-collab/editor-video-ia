@@ -27,7 +27,7 @@ def main():
     dur = float(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", video]))
 
     import sys; sys.path.insert(0, str(Path(__file__).resolve().parent)); from fixes import fix_words
-    from proyecto import pista_audio
+    from proyecto import pista_audio, hdr_a_sdr, ETIQUETAS_BT709
     W = fix_words(json.loads((work / "words.json").read_text()))
     for w in W:
         if w["e"] - w["s"] > MAX_WORD:
@@ -71,18 +71,19 @@ def main():
         "scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080,fps=30"
 
     pa = pista_audio(video)
+    sdr = hdr_a_sdr(video)
     parts = "".join(
         f"[0:v]trim={s:.3f}:{e:.3f},setpts=PTS-STARTPTS[v{i}];"
         f"[0:a:{pa}]atrim={s:.3f}:{e:.3f},asetpts=PTS-STARTPTS,afade=t=in:d=0.02,afade=t=out:st={max(0, e - s - 0.03):.3f}:d=0.03[a{i}];"
         for i, (s, e) in enumerate(merged))
     parts += "".join(f"[v{i}][a{i}]" for i in range(len(merged)))
-    parts += f"concat=n={len(merged)}:v=1:a=1[vc][ac];[vc]{vf}[vo]"
+    parts += f"concat=n={len(merged)}:v=1:a=1[vc][ac];[vc]{sdr + ',' if sdr else ''}{vf}[vo]"
     (work / "filter.txt").write_text(parts)
 
     out = work / "remotion" / "public" / "cut.mp4"
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", video, "-filter_complex_script", str(work / "filter.txt"),
                     "-map", "[vo]", "-map", "[ac]", "-c:v", "libx264", "-crf", "17", "-preset", "fast",
-                    "-c:a", "aac", "-b:a", "192k", str(out)], check=True)
+                    *(ETIQUETAS_BT709 if sdr else []), "-c:a", "aac", "-b:a", "192k", str(out)], check=True)
     real = float(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(out)]))
 
     (work / "cut.json").write_text(json.dumps({"segments": merged, "duration": real, "words": nw}, ensure_ascii=False, indent=1))

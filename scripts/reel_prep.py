@@ -24,9 +24,6 @@ from pathlib import Path
 
 SKILL = Path(__file__).resolve().parent.parent
 PAD_IN, PAD_OUT, MAX_WORD = 0.06, 0.14, 0.95
-HLG_A_SDR = ("zscale=tin=arib-std-b67:min=bt2020nc:pin=bt2020:rin=tv:t=linear:npl=203,format=gbrpf32le,zscale=p=bt709,"
-             "tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p")
-ETIQUETAS_BT709 = ["-colorspace", "bt709", "-color_primaries", "bt709", "-color_trc", "bt709", "-color_range", "tv"]
 
 
 def probe(v):
@@ -36,16 +33,6 @@ def probe(v):
     w, h = st["width"], st["height"]
     rot = next((abs(int(x["rotation"])) for x in st.get("side_data_list", []) if "rotation" in x), 0)
     return (h, w) if rot in (90, 270) else (w, h)  # grabaciones verticales con metadato de rotación
-
-
-def hdr_a_sdr(video):
-    """Filtro para pasar a SDR bt709 los videos en HDR HLG de iPhone (bt2020, 10 bits), o "" si no hace falta."""
-    d = json.loads(subprocess.check_output(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=color_transfer",
-                                            "-of", "json", video]))
-    trc = d["streams"][0].get("color_transfer", "")
-    if trc == "smpte2084":
-        print("AVISO: el video es HDR PQ; solo se convierte HLG, así que los colores pueden salir lavados.")
-    return HLG_A_SDR if trc == "arib-std-b67" else ""
 
 
 def detect_cam(video, segs, W, H, crop_frame):
@@ -83,7 +70,7 @@ def main():
 
     work = Path(a.work).expanduser().resolve()
     video = a.source or (work / "source.txt").read_text().strip()
-    import sys; sys.path.insert(0, str(SKILL / "scripts")); from fixes import fix_words; from proyecto import pista_audio
+    import sys; sys.path.insert(0, str(SKILL / "scripts")); from fixes import fix_words; from proyecto import pista_audio, hdr_a_sdr, ETIQUETAS_BT709
     words = fix_words(json.loads(Path(a.words or work / "words.json").read_text()))
     W, H = probe(video)
     segs_in = [tuple(map(float, s.split("-"))) for s in a.segments.split(",")]
