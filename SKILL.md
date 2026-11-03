@@ -139,7 +139,8 @@ fotogramas (segundos) y renderizar al final (minutos).
 bash "$SKILL/scripts/render.sh" "<carpeta edicion-...>" "<salida>.mp4" ["<musica.wav>"] [volumen=0.16]
 ```
 Renderiza, normaliza la voz a -14 LUFS (estándar de YouTube/Instagram), mezcla la música con ducking
-(baja sola cuando se habla) y fades. Nombrar la salida con versión: `<video>-v1.mp4`, `-v2`… (ver «Versiones»).
+(baja sola cuando se habla) y fades. Después mide el MP4 final y, si quedó fuera de −14 ±0,3 LUFS o por encima
+de −1,5 dBTP (pasa cuando se une una fuente mucho más fuerte, como un clip de YouTube), corrige con una 2ª pasada. Nombrar la salida con versión: `<video>-v1.mp4`, `-v2`… (ver «Versiones»).
 
 ### 8. Validar y revisar (antes de entregar)
 ```

@@ -70,7 +70,7 @@ def main():
 
     work = Path(a.work).expanduser().resolve()
     video = a.source or (work / "source.txt").read_text().strip()
-    import sys; sys.path.insert(0, str(SKILL / "scripts")); from fixes import fix_words; from proyecto import pista_audio, hdr_a_sdr, ETIQUETAS_BT709
+    import sys; sys.path.insert(0, str(SKILL / "scripts")); from fixes import fix_words; from proyecto import pista_audio, hdr_a_sdr, sin_rotacion, ETIQUETAS_BT709
     words = fix_words(json.loads(Path(a.words or work / "words.json").read_text()))
     W, H = probe(video)
     segs_in = [tuple(map(float, s.split("-"))) for s in a.segments.split(",")]
@@ -178,6 +178,8 @@ def main():
     if a.screen:
         cmd += ["-map", "[scr]", "-an", "-c:v", "libx264", "-crf", "17", "-preset", "fast", *color, str(pub / "screen.mp4")]
     subprocess.run(cmd, check=True)
+    for n in ("cam.mp4", "camwide.mp4", "screen.mp4"):
+        sin_rotacion(pub / n)  # fuente vertical con metadato −90: los píxeles ya salen derechos
     dur = float(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(pub / "cam.mp4")]))
     (rem / "src" / "words.ts").write_text(
         f"export const DURATION = {dur:.3f};\nexport const HAS_SCREEN = {'true' if a.screen else 'false'};\n"

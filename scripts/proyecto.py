@@ -81,6 +81,35 @@ def duracion(f):
     return float(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(f)]))
 
 
+def rotacion(video):
+    """Grados del metadato de rotación (display matrix) del video, o 0. Los DJI y celulares en vertical graban 1920x1080 con −90."""
+    d = json.loads(subprocess.check_output(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries",
+                                            "stream_side_data=rotation", "-of", "json", str(video)]))
+    st = (d.get("streams") or [{}])[0]
+    return next((int(float(x["rotation"])) for x in st.get("side_data_list", []) if "rotation" in x), 0)
+
+
+def medidas(video):
+    """(ancho, alto) como se VE el video: con rotación de ±90 se intercambian (ffmpeg ya lo gira al decodificar)."""
+    d = json.loads(subprocess.check_output(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height",
+                                            "-of", "json", str(video)]))["streams"][0]
+    return (d["height"], d["width"]) if abs(rotacion(video)) in (90, 270) else (d["width"], d["height"])
+
+
+def sin_rotacion(mp4):
+    """Quita el metadato de rotación de una salida ya girada. ffmpeg gira los píxeles al decodificar, pero con varias fuentes
+    verticales el encoder a veces vuelve a escribir la matriz −90 en la salida y Remotion la muestra de lado. Sin re-codificar."""
+    mp4 = Path(mp4)
+    if not mp4.exists() or rotacion(mp4) == 0:
+        return
+    tmp = mp4.with_name(mp4.stem + "_sinrot" + mp4.suffix)
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-display_rotation:v:0", "0", "-i", str(mp4), "-map", "0", "-c", "copy", str(tmp)], check=True)
+    tmp.replace(mp4)
+    if rotacion(mp4) != 0:
+        raise SystemExit(f"No se pudo quitar la rotación de {mp4}")
+    print(f"Rotación quitada de {mp4.name} (los píxeles ya estaban derechos).")
+
+
 def transcribir(audio, modelo="small", lang="es", ventanas=None, **kw):
     """Palabras [{w,s,e,p}] con faster-whisper. `p` = probabilidad de la palabra.
 

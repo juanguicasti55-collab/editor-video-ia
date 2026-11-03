@@ -13,7 +13,7 @@ import argparse, subprocess, sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from proyecto import remotion_dir, leer_palabras, escribir_palabras, duracion
+from proyecto import remotion_dir, leer_palabras, escribir_palabras, duracion, sin_rotacion
 
 
 def main():
@@ -40,6 +40,7 @@ def main():
         cmd += ["-af", f"atempo={F}"] if tiene_audio else ["-an"]
         cmd += ["-c:v", "libx264", "-crf", "17", "-preset", "fast", "-c:a", "aac", "-b:a", "192k", str(f)]
         subprocess.run(cmd, check=True)
+        sin_rotacion(f)
         hechos.append(n)
     if not hechos:
         raise SystemExit(f"No hay tomas para acelerar en {pub}")

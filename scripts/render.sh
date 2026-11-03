@@ -1,5 +1,5 @@
 #!/bin/bash
-# Render final: Remotion → (música con ducking opcional) → loudnorm -14 LUFS.
+# Render final: Remotion → (música con ducking opcional) → loudnorm -14 LUFS → 2ª pasada que mide y corrige a −14 LUFS / −1,5 dBTP.
 # Uso: render.sh <carpeta edicion-...> "<ruta salida.mp4>" [musica.wav] [volumen_musica=0.16]
 set -e
 WORK="$(cd "$1" && pwd)"; OUT="$2"; MUSIC="${3:-}"; MVOL="${4:-0.16}"
@@ -18,6 +18,29 @@ if [ -n "$MUSIC" ]; then
 else
   ffmpeg -v error -y -i "$WORK/voz_sfx.wav" -af "$LIM" -ar 48000 "$WORK/mezcla.wav"
 fi
-ffmpeg -v error -y -i out/render.mp4 -i "$WORK/mezcla.wav" -map 0:v -map 1:a -c:v copy -c:a aac -b:a 192k -shortest "$OUT"
+mux() { ffmpeg -v error -y -i out/render.mp4 -i "$1" -map 0:v -map 1:a -c:v copy -c:a aac -b:a 192k -shortest "$OUT"; }
+mide() { ffmpeg -nostats -i "$OUT" -vn -af ebur128=peak=true -f null - 2>&1 | awk '/^ +I:/{i=$2} /^ +Peak:/{p=$2} END{print i, p}'; }
+mux "$WORK/mezcla.wav"
+
+# 2ª pasada. El loudnorm de arriba es de una sola pasada: cuando una fuente suena mucho más fuerte que la otra
+# (un clip de YouTube unido a la voz) deja el total en −16,5 o −17,4 LUFS. Aquí se mide el MP4 ya en AAC y se corrige
+# con ganancia fija + limitador de pico real (sobremuestreado a 192 kHz) hasta quedar en −14 ±0,3 LUFS y ≤ −1,5 dBTP.
+read -r I TP < <(mide)
+G=0; L=0.79   # techo de −2 dBFS: el AAC sube los picos unas décimas
+for k in 1 2 3 4; do
+  OK=$(python3 -c "print(int(abs($I+14)<=0.3 and $TP<=-1.5))" 2>/dev/null || echo 1)
+  [ "$OK" = 1 ] && break
+  read -r G L < <(python3 -c "
+G, L, I, TP = $G, $L, $I, $TP
+G += -14 - I
+if TP > -1.5: L *= 10 ** ((-1.5 - TP - 0.2) / 20)
+print(round(G, 2), round(L, 4))")
+  echo "Sonoridad ${I} LUFS / ${TP} dBTP → ganancia ${G} dB, techo $(python3 -c "import math;print(round(20*math.log10($L),1))") dBFS"
+  ffmpeg -v error -y -i "$WORK/mezcla.wav" -af "volume=${G}dB,aresample=192000,alimiter=limit=$L:attack=1:release=50:level=false,aresample=48000" \
+    -ar 48000 "$WORK/mezcla_final.wav"
+  mux "$WORK/mezcla_final.wav"
+  read -r I TP < <(mide)
+done
 echo "Listo: $OUT ($(printf %.1f $D)s)"
-ffmpeg -nostats -i "$OUT" -af ebur128=peak=true -f null - 2>&1 | grep -E "^\s+(I|Peak):" | tail -2 || true
+echo "    I: $I LUFS    Peak: $TP dBTP"
+python3 -c "import sys; sys.exit(0 if abs($I+14)<=0.5 and $TP<=-1.5 else 1)" 2>/dev/null || echo "AVISO: la sonoridad quedó fuera de −14 LUFS / −1,5 dBTP; revisar la mezcla."

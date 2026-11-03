@@ -27,7 +27,7 @@ def main():
     dur = float(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", video]))
 
     import sys; sys.path.insert(0, str(Path(__file__).resolve().parent)); from fixes import fix_words
-    from proyecto import pista_audio, hdr_a_sdr, ETIQUETAS_BT709
+    from proyecto import pista_audio, hdr_a_sdr, sin_rotacion, ETIQUETAS_BT709
     W = fix_words(json.loads((work / "words.json").read_text()))
     for w in W:
         if w["e"] - w["s"] > MAX_WORD:
@@ -84,6 +84,7 @@ def main():
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", video, "-filter_complex_script", str(work / "filter.txt"),
                     "-map", "[vo]", "-map", "[ac]", "-c:v", "libx264", "-crf", "17", "-preset", "fast",
                     *(ETIQUETAS_BT709 if sdr else []), "-c:a", "aac", "-b:a", "192k", str(out)], check=True)
+    sin_rotacion(out)
     real = float(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(out)]))
 
     (work / "cut.json").write_text(json.dumps({"segments": merged, "duration": real, "words": nw}, ensure_ascii=False, indent=1))

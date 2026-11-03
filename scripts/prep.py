@@ -24,10 +24,14 @@ def run(cmd, **kw):
 def probe(video):
     out = subprocess.check_output([
         "ffprobe", "-v", "error", "-select_streams", "v:0",
-        "-show_entries", "stream=width,height:format=duration", "-of", "json", video])
+        "-show_entries", "stream=width,height:stream_side_data=rotation:format=duration", "-of", "json", video])
     d = json.loads(out)
     s = d["streams"][0]
-    return s["width"], s["height"], float(d["format"]["duration"])
+    W, H = s["width"], s["height"]
+    rot = next((abs(int(float(x["rotation"]))) for x in s.get("side_data_list", []) if "rotation" in x), 0)
+    if rot in (90, 270):  # grabación vertical con metadato de rotación (DJI, celular): ffmpeg la gira al decodificar
+        W, H = H, W
+    return W, H, float(d["format"]["duration"])
 
 
 def slugify(s):
