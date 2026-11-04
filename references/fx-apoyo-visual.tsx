@@ -1,4 +1,5 @@
-// Efectos del catálogo efectos-17 para el lote DJI del 23-oct (marca personal de Juan, dorado #e1b85a).
+// Efectos del catálogo efectos-17 y piezas de apoyo visual (references/apoyo-visual.md). Copiar a remotion/src/apoyo.tsx.
+// Necesita references/mg.tsx copiado como src/mg.tsx (usa su Icon y SHADOW). Probado en reels de 1080x1920.
 // #9 zoom que atraviesa (ZoomThrough), #7 checklist de vidrio (Checklist), #8 titulares en la pared (Headline),
 // #16 portada de revista detrás de la persona (CamBehind + BehindText de mg.tsx), cierre Sígueme (FollowSave).
 import React from "react";

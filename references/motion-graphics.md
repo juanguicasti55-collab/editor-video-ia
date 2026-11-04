@@ -74,7 +74,7 @@ dentro de una pantalla (motionloved), paleta cálida con íconos en círculos (l
   `whoosh` en cada cambio de escena, `boom` suave en el remate, `ding` en el CTA.
 - **Nunca más de ~3 s sin algo nuevo**: si una lámina tiene mucho texto, partirla en dos estados (título → diagrama).
 - **Dos frases en serif de 88 px una al lado de la otra se salen de 1080 px**: apilarlas.
-- **Un gráfico sin datos se rotula como esquema.** Si la lámina trae cifras reales, `Stat`/`Counter` de `lib.tsx`.
+- **Un gráfico sin datos se rotula como esquema.** Si la lámina trae cifras reales, `BigNumber` o `Ratio` de `references/mg.tsx`.
 - La palabra del CTA y el guion salen de la fuente; si la fuente no trae CTA, preguntar.
 
 ## Fuentes locales (importante en la nube)

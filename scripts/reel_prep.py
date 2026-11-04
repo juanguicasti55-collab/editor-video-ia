@@ -12,8 +12,8 @@ Uso:
             detecta la cara y se recorta un 9:16 alrededor (sirve para grabaciones a cámara completa).
 --screen    recorte de la ventana de pantalla (grabaciones de pantalla). Sin --screen: reel solo cámara.
 --gap       pausas internas que se eliminan (jump cuts dentro de cada tramo).
---wide      recorte horizontal de la cara para la pantalla dividida (public/camwide.mp4). "auto" (default)
-            lo calcula desde la cámara; "none" no lo genera. Revisarlo siempre con un fotograma.
+--wide      recorte horizontal de la cara (public/camwide.mp4), solo si un efecto lo necesita. "none" (default)
+            no lo genera; "auto" lo calcula desde la cámara. Revisarlo siempre con un fotograma.
 
 Crea <carpeta>/reels/<nombre>/ con remotion/ (plantilla vertical), public/cam.mp4 (1080x1920),
 public/screen.mp4 (1920 de ancho, si hay --screen) y src/words.ts con los tiempos ya del reel.
@@ -65,7 +65,7 @@ def main():
     ap.add_argument("--source"); ap.add_argument("--words")
     ap.add_argument("--cam"); ap.add_argument("--screen")
     ap.add_argument("--gap", type=float, default=0.35)
-    ap.add_argument("--wide", default="auto", help="recorte horizontal de la cara W:H:X:Y para la pantalla dividida, 'auto' o 'none'")
+    ap.add_argument("--wide", default="none", help="recorte horizontal de la cara W:H:X:Y, 'auto' o 'none' (default)")
     a = ap.parse_args()
 
     work = Path(a.work).expanduser().resolve()
@@ -143,7 +143,7 @@ def main():
                f"[0:a:{pa}]atrim={s:.3f}:{e:.3f},asetpts=PTS-STARTPTS,afade=t=in:d=0.02,afade=t=out:st={max(0, e - s - 0.03):.3f}:d=0.03[a{i}];")
     fc += "".join(f"[v{i}][a{i}]" for i in range(len(merged)))
     fc += f"concat=n={len(merged)}:v=1:a=1[vc][ac];[vc]fps=30,{sdr + ',' if sdr else ''}split=2[c1][c2];"
-    # cuadro ancho con la cara completa (pantalla dividida, DualCam): mismo centro que la cámara,
+    # cuadro ancho con la cara completa (solo con --wide): mismo centro que la cámara,
     # ~74 % de su alto, relación 1620x1140, dentro del marco de la grabación.
     wide = None
     if not a.screen and a.wide != "none":

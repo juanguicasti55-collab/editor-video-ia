@@ -15,7 +15,7 @@ exactamente de qué trata el video. Funciona como el título del video.
   por defecto). Se lee aunque el primer segundo de la toma esté desenfocado o la mano tape la cámara.
 - **Mínimo hasta el segundo 3** (`to >= 3`). Puede quedarse más si la toma sigue siendo la misma.
 - **Arriba, en zona segura:** entre y=230 y y≈450, centrado, con sombra para que se lea sobre cualquier fondo.
-  Que no tape los ojos (si la cámara es muy cerrada, ver `reels.md` → empezar en `CAM_BOTTOM`).
+  Que no tape los ojos (si la cámara es muy cerrada, bajar el encuadre con `fy` o achicar el texto).
 - **Opcional `sub`:** una línea chica debajo que se escribe letra por letra (en la referencia: "versión Edits").
 - **Opcional `recall`:** cuando la persona vuelve a nombrar el tema más adelante ("es como un título"), el gancho
   reaparece chico dentro de un recuadro, arriba.

@@ -27,10 +27,10 @@ de Instagram (ManyChat u otra) para esa palabra.
    variable (no separa palabras) — escribir un .sh con una función.
    Revisar el texto que imprime: palabras cortadas en los bordes, muletillas ("y vamos a ponerle aquí") →
    ajustar tramos con `words.json` (tiempos por palabra).
-5. **Escenas** en `reels/<n>/remotion/src/video.tsx` (ver ejemplos en `references/reels/`):
-   - `ejemplo-solo-camara.tsx` — solo cámara + tarjetas (intro).
-   - `ejemplo-pantalla.tsx` — demo en pantalla con zooms (`ScreenV`) + insignias.
-   - `ejemplo-tarjetas.tsx` — charla sin demo: tarjetas, PromptCard, Stats.
+5. **Escenas** en `reels/<n>/remotion/src/video.tsx`. La plantilla arranca sin estilo (cámara completa, gancho,
+   subtítulos y cierre); encima van solo los efectos que la persona eligió en `menu-efectos.md`, copiando sus piezas
+   (`fx-efectos.tsx` → `src/fx.tsx`, `mg.tsx` → `src/mg.tsx`, `fx-documental.tsx` → `src/doc.tsx`, `fx-apoyo-visual.tsx`
+   → `src/apoyo.tsx`). Lo que va detrás de la persona: antes `scripts/mascaras.py` (con `--con-pelo` si tiene pelo).
 6. **Fotogramas** con `stills.sh` y armar tira: `ffmpeg -pattern_type glob -i 'stills/*.jpg' -filter_complex "scale=300:-2,tile=6x1"`.
 7. **Render** con `render.sh` (misma música; el reel dura habla + `CTA_SECONDS`). Salida en
    `<carpeta del video>/Reels - <video>/Reel N - <título>.mp4`.
@@ -41,33 +41,22 @@ de Instagram (ManyChat u otra) para esa palabra.
   (`HookTitle`, ver `gancho-textual.md`). Ningún reel sale sin él.
 
 - **Zonas seguras**: Instagram tapa arriba ~220 px y abajo ~330 px. Texto entre y=220 y y=1590.
-- **Estructura**: arriba pantalla o tarjeta (`SCR_TOP` / `ZONA_TARJETA`), en el medio subtítulos (automáticos
-  según el encuadre, `subsY`), abajo la cámara (`CAM_BOTTOM`). Cámara completa (`CAM_FULL`) solo para
-  frases de énfasis sin nada arriba.
+- **Estructura**: cámara completa (`CAM_FULL`) con los efectos encima. Si es grabación de pantalla, la pantalla va arriba
+  (`SCR_TOP` con `ScreenV`) y la cámara abajo (`CAM_BOTTOM`), con los subtítulos entre las dos (`subsY`).
 - **Cámara del recuadro de Screen Studio**: viene muy cerrada (la cara ocupa casi todo). Con `CAM_FULL` el
   gancho le tapa los ojos → en esos reels **empezar en `CAM_BOTTOM` con `HookTitle` arriba**. `fy` 36 para
   que no se corte ni la frente ni la boca. En la toma cruda a cámara completa sí funciona empezar en `CAM_FULL`.
-- **Tarjetas**: `ZONA_TARJETA` ya trae zoom 1.08. Tienen que terminar antes de y≈930 → máx. 3 filas con
-  título, o 4 filas sin título. Stats de texto largo ("1 semana") con `fontSize` 56.
 - **Pantalla**: `ScreenV` con `cx/cy/zoom` por tramo. Zoom 1.5–2.4 sobre la zona que la persona está mirando
   (formulario, prompt, dato que confirma el resultado). Para elegir cx/cy: hoja de `screen.mp4` cada 4 s
   con timecode (`drawtext=text='%{pts\:hms}'`) y, si hace falta, un fotograma con grilla.
-- **Insignias** (`ToolBadgeV`) arriba para herramientas (logo) y para rotular el momento ("Reunión agendada",
-  "¡Funcionó!"). Si hay `HookTitle`, que no se superpongan en el tiempo.
-- **CTA** `CommentCTA` al final, 3,4 s, con `whoosh` + `ding`.
+- **Herramientas nombradas**: su logo oficial (`scripts/logo.py`) con `AppIcon` o `ChatMock` de `fx-apoyo-visual.tsx`.
+  Si hay `HookTitle`, que no se superpongan en el tiempo.
+- **CTA** `CommentCTA` al final, 3,4 s, con `whoosh` + `ding`. Si es anuncio para pauta: cierre con botón y sin palabra
+  (`TapButton` / `EndCard` de `mg.tsx`, o `CierreDoc` en el look documental).
 
 ## Reels con tomas de apoyo (b-roll)
-- `BrollTop list={[{from,to,src,start?,tag?}]}` (en `reel.tsx`) pone un clip horizontal en la zona de arriba
-  (y 230–970) con la cámara en `CAM_BOTTOM`. Va en `Main` antes de `CamV`. Copiar los clips a `public/broll/`.
+- `Cutaway` (corte a pantalla completa mientras la voz sigue) o `Broll` / `Float` de `mg.tsx` (clip en tarjeta).
+  Copiar los clips a `public/broll/`. Ver `apoyo-visual.md`.
 - Si la persona ya hizo los cortes del largo, cortar los reels de SU versión (`--gap 0.6` para no recortar de más).
 - Grabación a cámara completa (no Screen Studio): `CAM_FULL` con `HookTitle` arriba funciona (el texto queda sobre la frente, no tapa los ojos).
 - Correcciones de subtítulos del video: correr el mismo fix de palabras sobre cada `words.ts` del reel.
-
-## Cara completa en pantalla dividida
-Al achicar la cámara vertical a un recuadro apaisado (`CAM_BOTTOM`) se corta la frente y el mentón y se ve mal.
-En grabaciones a cámara completa usar `DualCam` + `subsYDual` + `CARD_SPLIT` (en `reel.tsx`):
-- `reel_prep.py` genera solo `public/camwide.mp4` (recorte horizontal del original alrededor de la cara,
-  1620x1140). Revisarlo con un fotograma: que entren cabeza y mentón. Si no, pasar `--wide W:H:X:Y`.
-- En `CAM`, cualquier caja con alto < 1500 (p. ej. `CAM_BOTTOM`) pasa a modo "split": la cámara completa se
-  desvanece y el cuadro ancho sube desde abajo (y 862–1580). Contenido arriba: b-roll (y 230–838) o tarjetas `CARD_SPLIT`.
-- Subtítulos: 1480 con cámara completa, 1540 en split (debajo del mentón).

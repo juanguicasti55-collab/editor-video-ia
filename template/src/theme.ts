@@ -1,25 +1,33 @@
 import { loadFont as loadArchivo } from "@remotion/google-fonts/Archivo";
 import { loadFont as loadInstrument } from "@remotion/google-fonts/InstrumentSans";
+import { loadFont as loadPlayfair } from "@remotion/google-fonts/PlayfairDisplay";
+import { loadFont as loadCourier } from "@remotion/google-fonts/CourierPrime";
+import { loadFont as loadCaveat } from "@remotion/google-fonts/Caveat";
 
-export const { fontFamily: TITLE } = loadArchivo("normal", { weights: ["800", "900"], subsets: ["latin"] });
-export const { fontFamily: BODY } = loadInstrument("normal", { weights: ["600"], subsets: ["latin"] });
+export const { fontFamily: TITLE } = loadArchivo("normal", { weights: ["700", "800", "900"], subsets: ["latin"] });
+export const { fontFamily: BODY } = loadInstrument("normal", { weights: ["500", "600", "700"], subsets: ["latin"] });
+// Las piden los efectos: SERIF = portadas y capítulos · TYPE = notas de papel · HAND = subtítulos en manuscrita
+export const { fontFamily: SERIF } = loadPlayfair("normal", { weights: ["800", "900"], subsets: ["latin"] });
+export const { fontFamily: TYPE } = loadCourier("normal", { weights: ["700"], subsets: ["latin"] });
+export const { fontFamily: HAND } = loadCaveat("normal", { weights: ["700"], subsets: ["latin"] });
 
+// ---------- colores y marca: SIEMPRE se reemplazan con los de la persona (entrevista, pregunta 4) ----------
+// La skill no trae una paleta propia: estos valores neutros solo sirven para que el proyecto compile.
+// lime = acento principal · violet = acento secundario (los nombres quedan por compatibilidad con los efectos).
 export const C = {
-  bg: "#0B0A10",
-  card: "rgba(21,19,28,0.92)",
-  cardSolid: "#15131C",
-  line: "rgba(255,255,255,0.09)",
-  text: "#F4F2F8",
-  muted: "#9C97AB",
-  lime: "#D7F25A",
-  violet: "#A77BFF",
-  red: "#FF6B6B",
+  bg: "#111111",
+  card: "rgba(17,17,17,0.92)",
+  cardSolid: "#111111",
+  line: "rgba(255,255,255,0.12)",
+  text: "#FFFFFF",
+  muted: "#A0A0A0",
+  lime: "#FFFFFF",
+  violet: "#FFFFFF",
+  red: "#FF5A5A",
 };
 
-// ---------- marca (lo completa la skill en la entrevista inicial) ----------
-// lime = color de acento principal · violet = acento secundario (los nombres quedan por compatibilidad).
 export const MARCA = {
-  handle: "@TU_USUARIO", // aparece abajo a la derecha en los videos horizontales
-  ctaPalabra: "VIDEO", // reels: "Comenta VIDEO…"
+  handle: "@TU_USUARIO", // marca de agua (Brand) si la persona la quiere
+  ctaPalabra: "VIDEO", // reels orgánicos: "Comenta VIDEO…"
   ctaTexto: "y te envío el video completo",
 };

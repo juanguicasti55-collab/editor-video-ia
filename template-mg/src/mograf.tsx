@@ -250,7 +250,7 @@ export const PanelLista: React.FC<{ title: string; items: ItemLista[]; top?: num
 
 /**
  * Gráfico ESQUEMÁTICO de dos curvas que se cruzan (algo baja mientras otra cosa sube). Sin números: lleva
- * el rótulo "Esquema · sin escala". Si hay datos reales, usar Stat/Counter/Meter de lib.tsx, no esto.
+ * el rótulo "Esquema · sin escala". Si hay datos reales, usar BigNumber/Ratio de references/mg.tsx, no esto.
  */
 export const Esquema: React.FC<{ at: number; crossAt: number; labelA: string; labelB: string; eje?: string; top?: number }> = ({ at, crossAt, labelA, labelB, eje = "tiempo →", top = 560 }) => {
   const t = useT();

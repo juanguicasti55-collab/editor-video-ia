@@ -1,13 +1,16 @@
 ---
 name: editor-video-ia
-description: Edita videos grabados a cámara (talking head) y saca reels verticales con estilo profesional y dinámico, con cortes sin pausas, subtítulos palabra por palabra con palabras clave resaltadas, tarjetas animadas, zooms, pantalla dividida, logos oficiales, tomas de apoyo, efectos de sonido y música con ducking, renderizado a MP4 con Remotion. También hace videos de motion graphics sin cámara (gráficos animados y voz en off, incluso con la voz clonada de la persona) a partir de un carrusel, un guion o un texto. Antes de editar SIEMPRE entrevista a la persona sobre el tipo de video, el estilo de referencia y los datos de su marca. Úsala cuando alguien pase un video (.mp4/.mov) y pida "edita este video", "ponle subtítulos y animaciones", "quítale las pausas", "sácame reels o shorts", "quiero que se vea como los videos de [creador]", "convierte este carrusel en video" o "motion graphics", aunque no mencione la skill.
+description: Edita videos grabados a cámara (talking head) y saca reels verticales, con cortes sin pausas, subtítulos palabra por palabra con palabras clave resaltadas, los efectos que la persona elige de un menú (texto detrás de la cabeza, portada de revista, notas en la pared, zoom que atraviesa, checklist, testimonio en chat, look documental…), tomas de apoyo, sonidos y música con ducking, render a MP4 con Remotion. No trae una edición predeterminada. También hace motion graphics sin cámara (gráficos y voz en off, incluso con la voz clonada de la persona) a partir de un carrusel, un guion o un texto. Antes de editar SIEMPRE entrevista a la persona sobre el tipo de video, los efectos, el estilo de referencia y su marca. Úsala cuando alguien pase un video (.mp4/.mov) y pida "edita este video", "ponle subtítulos y animaciones", "quítale las pausas", "sácame reels o shorts", "quiero que se vea como los videos de [creador]", "convierte este carrusel en video" o "motion graphics", aunque no mencione la skill.
 ---
 
 # Editor de video con IA (videos largos y reels)
 
-Convierte una grabación a cámara en un video editado con estilo de creador profesional. La parte
-mecánica (transcribir, cortar, recortar, renderizar) está en `scripts/`; lo que requiere criterio es
-**la entrevista inicial** y **decidir las escenas** leyendo la transcripción.
+Convierte una grabación a cámara en un video editado. La parte mecánica (transcribir, cortar, recortar, renderizar)
+está en `scripts/`; lo que requiere criterio es **la entrevista inicial** y **decidir las escenas** leyendo la transcripción.
+
+**Sin edición predeterminada.** La skill no trae un look propio (ni tarjetas, ni paleta, ni pantalla dividida): las
+plantillas arrancan con la cámara, los subtítulos, el gancho y el cierre, y todo lo demás sale de los efectos que la
+persona elige en el menú (`references/menu-efectos.md`) y de los colores de su marca.
 
 Rutas: `SKILL` = carpeta de esta skill (donde está este archivo). Python de la skill: `$SKILL/.venv/bin/python`.
 Habla siempre en español neutro, con "tú", y explica en simple: la persona probablemente no es editora ni programadora.
@@ -44,7 +47,7 @@ No preguntar lo que la persona ya dijo. Preguntas:
    solo: se ofrece como una opción más y se usa solo si la persona lo pide.
 3. **¿Quieres copiar el estilo de alguien?** (opcional) Pedir **un link a un video** del creador o
    **3–5 capturas** de sus videos. → ver `references/copiar-estilo.md`. Si dice que no, el look sale de los efectos que
-   eligió y de su marca (pregunta 4); no aplicar el look de la skill (tarjetas oscuras lima y violeta) sin preguntar.
+   eligió y de su marca (pregunta 4).
    En videos largos horizontales, el kit de `references/youtube-horizontal/LEEME.md` es una opción (oscuro + dorado): ofrecerlo, no imponerlo.
 
 4. **Tu marca**: colores (o "los de mi logo"), tu @usuario para la marca de agua, y tu logo si quieres.
@@ -101,23 +104,25 @@ dichas dos veces, palabras que ninguna lectura oye (comidas en un corte), palabr
   `validar.py` compara después con el video final.
 
 ### 4. Planificar escenas (el trabajo de criterio)
-Leer `references/estilo.md` (catálogo de piezas y reglas de ritmo). Resumen:
-- Bloques de ideas de 4–10 s. Cada bloque = un encuadre + (opcional) una tarjeta.
-- Listas → `Row` · números → `Stat` + `Counter` · procesos → `Node` + `Arrow` · antes/después → `ProgressBar`
-  · frase-remate → `Quote` con zoom · herramienta nombrada → `ToolBadge` con su **logo oficial**
-  (`scripts/logo.py`; si da NOT_FOUND, usar el destello de IA y avisar — nunca dibujar un logo de marca).
-- Alternar encuadres (cámara completa, recuadro, pantalla dividida, zoom). Nada más de ~8 s sin cambio visual.
+Solo con los efectos que la persona eligió (pregunta 2). Reglas de ritmo:
+- Bloques de ideas de 4–10 s. Un efecto fuerte cada 4–8 s, uno por idea; nunca dos efectos grandes a la vez.
+- Saltos de zoom en los cortes (`punch(1.08–1.2)` en `KEYS`). Nada más de ~8 s sin cambio visual.
   Los primeros 2 s siempre en cámara completa (el gancho es la cara).
+- Herramienta nombrada → su **logo oficial** (`scripts/logo.py`; si da NOT_FOUND, avisar — nunca dibujar un logo de marca).
+- Subtítulos: 1–2 palabras clave por frase (`KEYWORDS`), las que cargan el sentido. Ocultarlos donde un efecto ya
+  muestra el texto (`HIDE_SUBS`). Sonidos: whoosh = cambio · pop = aparece algo · ding = número o logro · click = tachado.
 - Sincronizar cada elemento con el segundo exacto en que se dice la palabra (±0,1 s).
 - Textos en pantalla cortos: títulos ≤ 5 palabras, filas ≤ 6.
 - **Tomas de apoyo (b-roll)**: si la persona comenta algo externo (un lanzamiento, una herramienta, un evento),
   sugerir fragmentos cortos del material oficial o capturas de la web. **Pedir permiso antes de descargar**,
-  clips de < 10–15 s siempre comentados y con crédito ("Imágenes: [fuente]"). Ver `references/estilo.md` → b-roll
-  y `references/ejemplo-video-noticias.tsx`.
+  clips de < 10–15 s siempre comentados y con crédito ("Imágenes: [fuente]"). Ver `references/apoyo-visual.md`
+  (`Cutaway`, `ArticleCard`).
 Escribir todo en `remotion/src/video.tsx` (reemplazando el ejemplo). Solo se edita ese archivo.
-- **Efectos**: usar SOLO los que la persona eligió en el menú (pregunta 2), con las piezas de `references/fx-efectos.tsx`
-  (copiar a `remotion/src/fx.tsx`; lo que va detrás de la persona necesita `scripts/mascaras.py`). Para otros efectos
-  que pida (teléfono flotante, collage de papel, glass type…): `references/efectos-17.md`.
+- **Efectos**: usar SOLO los que la persona eligió en el menú (pregunta 2), con sus piezas: `references/fx-efectos.tsx`
+  (→ `remotion/src/fx.tsx`), `references/mg.tsx` (→ `src/mg.tsx`), `references/fx-documental.tsx` (→ `src/doc.tsx`) y
+  `references/fx-apoyo-visual.tsx` (→ `src/apoyo.tsx`, necesita `mg.tsx`). Lo que va detrás de la persona necesita
+  `scripts/mascaras.py`. Las piezas del menú son verticales: en un video horizontal se adaptan o se usa el kit de
+  `references/youtube-horizontal/`. Para otros efectos que pida: `references/efectos-17.md`.
 
 ### 5. Revisar con fotogramas antes de renderizar
 ```
@@ -168,12 +173,10 @@ Leer `references/reels.md` y seguir ese flujo. Resumen:
 3. **Elegir fragmentos** que funcionen solos: gancho en los primeros 2 s, se entienden sin el resto,
    tienen desenlace. **Proponer la lista** (tabla: título, tramos, duración, gancho) y esperar el OK,
    salvo que la persona haya dicho "elige tú".
-4. Cortar cada reel: `scripts/reel_prep.py` (genera `cam.mp4` vertical y `camwide.mp4` con la cara completa
-   para la pantalla dividida). Luego, si va, `acelerar.py` y **siempre `texto.py reels/<n>`** (checkpoint de texto, 3b).
+4. Cortar cada reel: `scripts/reel_prep.py` (genera `cam.mp4` vertical). Luego, si va, `acelerar.py` y **siempre `texto.py reels/<n>`** (checkpoint de texto, 3b).
 5. Escenas en `reels/<n>/remotion/src/video.tsx` con los **efectos que la persona eligió en el menú**
    (`references/menu-efectos.md` → piezas en `references/fx-efectos.tsx`). Fijo en todo reel: `HookTitle` al inicio y el
-   cierre de la entrevista (`CommentCTA` con su palabra, o botón si es anuncio). `DualCam` / `CARD_SPLIT` / `BrollTop` son
-   el look propio de la skill: ofrecerlo, no aplicarlo solo (si se usa, la cara NUNCA se recorta al achicar la cámara).
+   cierre de la entrevista (`CommentCTA` con su palabra, o botón si es anuncio: `TapButton` / `EndCard` de `mg.tsx`).
    **Apoyo visual obligatorio en todo reel**: lo que se dice se MUESTRA (captura real de la noticia, foto, logo, interfaz
    o toma de apoyo) y nunca pasan más de 3-4 s sin algo nuevo. Elegir nivel (con muchos efectos / intermedio / sencillo),
    piezas (`Cutaway`, `ArticleCard`, `ChatMock`, `Terminal`, `FileCard`…) y de dónde sacar material libre

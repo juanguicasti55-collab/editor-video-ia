@@ -1,7 +1,7 @@
 // Piezas del menú de efectos (references/menu-efectos.md). Probadas en un reel vertical 1080×1920 (anuncio BBE v2).
-// Copiar a remotion/src/fx.tsx del reel. Funciona solo (trae sus iconos); BehindText y los subtítulos están en mg.tsx si lo tienes.
+// Copiar a remotion/src/fx.tsx del reel. Funciona solo (trae sus iconos); BehindText, Kin y los subtítulos están en references/mg.tsx.
 //
-// Necesita en theme.ts, además de C / TITLE / BODY:
+// Usa SERIF y TYPE de theme.ts (la plantilla ya los trae; si el theme es otro, agregarlos así):
 //   import { loadFont as loadPlayfair } from "@remotion/google-fonts/PlayfairDisplay";
 //   import { loadFont as loadCourier } from "@remotion/google-fonts/CourierPrime";
 //   export const { fontFamily: SERIF } = loadPlayfair("normal", { weights: ["800", "900"], subsets: ["latin"] });

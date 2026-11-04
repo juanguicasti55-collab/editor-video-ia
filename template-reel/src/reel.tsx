@@ -1,5 +1,5 @@
-// Piezas VERTICALES (1080x1920) para reels. Se combinan con las de lib.tsx (Card, Row, Stat, Meter,
-// AgentTasks, PromptCard, Logo…) pasandoles `style` con posiciones verticales (ver ZONA_TARJETA).
+// Base VERTICAL (1080x1920) para reels: cámara (CamV), pantalla grabada (ScreenV), subtítulos (SubsV), gancho
+// textual (HookTitle, regla fija) y cierre Comenta PALABRA (CommentCTA). Los efectos van aparte (menu-efectos.md).
 // Zonas seguras de Instagram: arriba ~220 px y abajo ~330 px los tapa la interfaz; a la derecha ~130 px
 // están los botones. Textos entre y=220 y y=1590.
 import React from "react";
@@ -14,7 +14,7 @@ const ease = Easing.bezier(0.22, 1, 0.36, 1);
 
 // ---------- encuadres de la cámara ----------
 export const CAM_FULL: VBox = { x: 0, y: 0, w: 1080, h: 1920, r: 0 };
-/** Cámara abajo (arriba va la pantalla o una tarjeta) */
+/** Cámara abajo (arriba va la pantalla grabada, con ScreenV) */
 export const CAM_BOTTOM: VBox = { x: 60, y: 1060, w: 960, h: 600, r: 40 };
 /** Cámara en círculo chico abajo a la izquierda (la pantalla ocupa casi todo) */
 export const CAM_CIRCLE: VBox = { x: 60, y: 1300, w: 300, h: 300, r: 150 };
@@ -24,10 +24,6 @@ export const SCR_TOP: VBox = { x: 0, y: 230, w: 1080, h: 740, r: 0 };
 export const SCR_TALL: VBox = { x: 0, y: 230, w: 1080, h: 1040, r: 0 };
 export const SCR_HIDDEN: VBox = { x: 0, y: 230, w: 1080, h: 0, r: 0 };
 
-/** Zona para tarjetas cuando la cámara está en CAM_BOTTOM */
-// zoom 1.08: en vertical las tarjetas necesitan letra más grande (left/top/width van divididos por el zoom).
-// La tarjeta tiene que terminar antes de y≈930 (debajo van los subtítulos y la cámara): máx. 3 filas cortas.
-export const ZONA_TARJETA: React.CSSProperties = { left: 46, top: 231, width: 907, padding: "34px 40px", zoom: 1.08 };
 
 type Key<T> = { at: number } & T;
 function interp<T extends Record<string, number>>(keys: Key<T>[], t: number, dur = 0.55): T {
@@ -359,161 +355,4 @@ export const CommentCTA: React.FC<{ from: number; keyword: string; sub: string }
       </div>
     </AbsoluteFill>
   );
-};
-
-// ---------- fondo IA vertical ----------
-const NN = Array.from({ length: 30 }, (_, i) => {
-  const r = (n: number) => {
-    const x = Math.sin(i * 12.9898 + n * 78.233) * 43758.5453;
-    return x - Math.floor(x);
-  };
-  return { x: r(1) * 1080, y: r(2) * 1920, s: 3 + r(3) * 4, ph: r(4) * 6.28 };
-});
-const NE: [number, number][] = [];
-NN.forEach((a, i) => NN.forEach((b, j) => { if (j > i && Math.hypot(a.x - b.x, a.y - b.y) < 330) NE.push([i, j]); }));
-
-export const NeuralBgV: React.FC = () => {
-  const t = useT();
-  return (
-    <AbsoluteFill style={{ opacity: 0.55 }}>
-      <svg width="1080" height="1920">
-        {NE.map(([i, j], k) => {
-          const a = NN[i], b = NN[j];
-          const q = ((t * 0.35 + k * 0.137) % 1 + 1) % 1;
-          return (
-            <g key={k}>
-              <line x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke={C.violet} strokeOpacity={0.26} strokeWidth={1.2} />
-              {k % 3 === 0 && <circle cx={a.x + (b.x - a.x) * q} cy={a.y + (b.y - a.y) * q} r={2.6} fill={C.lime} opacity={0.7} />}
-            </g>
-          );
-        })}
-        {NN.map((n, i) => (
-          <circle key={i} cx={n.x} cy={n.y} r={n.s * (0.8 + 0.25 * Math.sin(t * 1.6 + n.ph))} fill={C.violet} opacity={0.55} />
-        ))}
-      </svg>
-    </AbsoluteFill>
-  );
-};
-
-/** Insignia de herramienta para reels: centrada arriba (debajo de la zona de interfaz). */
-export const ToolBadgeV: React.FC<{ from: number; to: number; logo?: string; name: string; wordmark?: boolean; top?: number }> = ({
-  from,
-  to,
-  logo,
-  name,
-  wordmark,
-  top = 250,
-}) => {
-  const t = useT();
-  if (t < from - 0.1 || t > to + 0.4) return null;
-  const p = pop(t, from, 0.5);
-  const out = prog(t, to, 0.3);
-  return (
-    <div style={{ position: "absolute", top, left: 0, right: 0, display: "flex", justifyContent: "center", opacity: Math.min(1, p * 1.5) * (1 - out) }}>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 22,
-          padding: "20px 34px",
-          borderRadius: 28,
-          background: C.card,
-          border: `1.5px solid ${C.lime}55`,
-          boxShadow: `0 20px 60px rgba(0,0,0,.45), 0 0 40px ${C.lime}22`,
-          transform: `scale(${0.8 + 0.2 * p})`,
-          fontFamily: TITLE,
-          fontWeight: 800,
-          fontSize: 46,
-          color: C.text,
-        }}
-      >
-        {logo ? <Img src={staticFile(`logos/${logo}`)} style={{ height: wordmark ? 54 : 64 }} /> : <Sparkle size={60} />}
-        {!wordmark && name}
-      </div>
-    </div>
-  );
-};
-
-// ---------- tomas de apoyo (b-roll) en vertical ----------
-/** Clip horizontal en la zona de arriba (y 230–970) con la cámara en CAM_BOTTOM. src en public/broll/. */
-export type BrollV = { from: number; to: number; src: string; start?: number; tag?: string; credit?: string };
-export const BrollTop: React.FC<{ list: BrollV[] }> = ({ list }) => {
-  const t = useT();
-  const { fps } = useVideoConfig();
-  return (
-    <>
-      {list.filter((b) => t >= b.from - 0.1 && t <= b.to + 0.35).map((b, i) => {
-        const pin = prog(t, b.from, 0.35);
-        const pout = prog(t, b.to - 0.05, 0.25);
-        const zoom = 1.06 - 0.06 * pin + 0.04 * ((t - b.from) / Math.max(1, b.to - b.from));
-        const tp = pop(t, b.from + 0.25, 0.45);
-        return (
-          <div key={b.from + i} style={{ position: "absolute", left: 0, top: 230, width: 1080, height: 608, overflow: "hidden", opacity: pin * (1 - pout) }}>
-            <Sequence from={Math.round(b.from * fps)} durationInFrames={Math.round((b.to - b.from + 0.4) * fps)} layout="none">
-              <OffthreadVideo muted src={staticFile(`broll/${b.src}`)} startFrom={Math.round((b.start ?? 0) * fps)}
-                style={{ position: "absolute", width: "100%", height: "100%", objectFit: "cover", transform: `scale(${zoom})` }} />
-            </Sequence>
-            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(11,10,16,.45) 0%, rgba(11,10,16,0) 25%, rgba(11,10,16,0) 75%, rgba(11,10,16,.7) 100%)" }} />
-            {b.tag && (
-              <div style={{ position: "absolute", left: 40, top: 30, display: "flex", alignItems: "center", gap: 14, padding: "12px 24px 12px 18px", borderRadius: 16,
-                background: "rgba(11,10,16,.8)", border: `1.5px solid ${C.line}`, fontFamily: TITLE, fontWeight: 800, fontSize: 30, letterSpacing: 1.5, color: C.text,
-                opacity: Math.min(1, tp * 1.5), transform: `translateX(${(1 - tp) * -40}px)` }}>
-                <div style={{ width: 14, height: 14, borderRadius: 99, background: C.red, boxShadow: `0 0 14px ${C.red}` }} />
-                {b.tag.toUpperCase()}
-              </div>
-            )}
-            <div style={{ position: "absolute", right: 30, bottom: 22, fontFamily: BODY, fontWeight: 600, fontSize: 22, color: "rgba(255,255,255,.7)" }}>{b.credit ?? "Imágenes: OpenAI"}</div>
-          </div>
-        );
-      })}
-    </>
-  );
-};
-
-// ---------- cámara doble: completa (cam.mp4) ↔ pantalla dividida con cara entera (camwide.mp4) ----------
-// Al achicar la cámara no se debe cortar la cara. En modo "split" la cámara
-// pasa a un cuadro ancho abajo (y 862–1580) usando un recorte horizontal del original 4K (camwide.mp4,
-// 1620x1140, hecho con los mismos tramos que cam.mp4), y el contenido va arriba (y 230–840).
-export const WIDE_BOX = { x: 30, y: 862, w: 1020, h: 718, r: 36 };
-/** Zona de tarjetas en pantalla dividida: termina antes de y≈845. */
-export const CARD_SPLIT: React.CSSProperties = { left: 44, top: 246, width: 944, padding: "30px 38px", zoom: 0.98 };
-const isSplit = (k: CamKeyV) => k.box.h < 1500;
-export const DualCam: React.FC<{ keys: CamKeyV[] }> = ({ keys }) => {
-  const t = useT();
-  let i = 0;
-  while (i + 1 < keys.length && keys[i + 1].at <= t) i++;
-  const cur = keys[i];
-  const prev = i > 0 ? keys[i - 1] : cur;
-  const p = prog(t, cur.at, 0.5);
-  const s = isSplit(cur) ? (isSplit(prev) && i > 0 ? 1 : i === 0 ? 1 : p) : isSplit(prev) && i > 0 ? 1 - p : 0;
-  const drift = 1.012 + 0.012 * Math.sin(t * 0.4); // nunca baja de 1: con zoom 1 dejaba ver bordes negros
-  const zFull = !isSplit(cur) ? cur.zoom ?? 1 : !isSplit(prev) ? prev.zoom ?? 1 : 1;
-  const zWide = isSplit(cur) ? cur.zoom ?? 1 : 1;
-  const b = WIDE_BOX;
-  return (
-    <>
-      {/* la voz va siempre aparte: el video completo se desmonta en modo split */}
-      <Audio src={staticFile("cam.mp4")} />
-      {s < 0.999 && (
-        <AbsoluteFill style={{ opacity: 1 - s, transform: `scale(${1 - 0.07 * s})` }}>
-          <OffthreadVideo muted src={staticFile("cam.mp4")} style={{ width: "100%", height: "100%", objectFit: "cover", transform: `scale(${zFull * drift})`, transformOrigin: "50% 38%" }} />
-        </AbsoluteFill>
-      )}
-      <div
-        style={{
-          position: "absolute", left: b.x, top: b.y, width: b.w, height: b.h, borderRadius: b.r, overflow: "hidden",
-          opacity: s, transform: `translateY(${(1 - s) * 140}px) scale(${0.92 + 0.08 * s})`,
-          boxShadow: `0 30px 80px rgba(0,0,0,.55), 0 0 0 2px rgba(255,255,255,.08), 0 0 60px ${C.violet}33`,
-        }}
-      >
-        <OffthreadVideo muted src={staticFile("camwide.mp4")} style={{ width: "100%", height: "100%", objectFit: "cover", transform: `scale(${zWide * drift})`, transformOrigin: "50% 40%" }} />
-      </div>
-    </>
-  );
-};
-/** Subtítulos: cámara completa → 1480; pantalla dividida → bajo el mentón (1540). */
-export const subsYDual = (keys: CamKeyV[]) => (t: number) => {
-  let i = 0;
-  while (i + 1 < keys.length && keys[i + 1].at <= t) i++;
-  return isSplit(keys[i]) ? 1540 : 1480;
 };

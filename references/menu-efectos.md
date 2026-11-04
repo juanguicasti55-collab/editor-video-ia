@@ -1,11 +1,13 @@
 # Menú de efectos (se pregunta SIEMPRE, antes de planear escenas)
 
-La skill no aplica ningún estilo ni paquete de efectos por defecto. En la entrevista se le muestra a la persona este
-menú y ella elige cuáles quiere en su video. Con la herramienta de preguntas: tres preguntas de selección múltiple, una
-por grupo (4 opciones cada una, la descripción corta de abajo como texto de la opción). Siempre se puede escribir
+La skill no trae una edición predeterminada: ni tarjetas, ni paleta, ni pantalla dividida propias. Todo lo que se ve
+sale de este menú (y de su marca). En la entrevista se le muestra a la persona y ella elige cuáles quiere en su video.
+Con la herramienta de preguntas: tres preguntas de selección múltiple, una por grupo (4 opciones cada una, la
+descripción corta de abajo como texto de la opción); el grupo 4 se ofrece aparte cuando el video es un testimonio o una historia. Siempre se puede escribir
 «elige tú»: entonces se eligen 3–5 que calcen con el guion y se dice cuáles fueron.
 
-Piezas: `references/fx-efectos.tsx` (copiar a `remotion/src/fx.tsx`). Lo que va detrás de la persona necesita su
+Piezas: `references/fx-efectos.tsx` (copiar a `remotion/src/fx.tsx`), `references/mg.tsx` (→ `src/mg.tsx`: `BehindText`,
+`Kin`, `Subs`, `TapButton`, `EndCard`, `BigNumber`, `ListCard`…) y `references/fx-documental.tsx` (→ `src/doc.tsx`). Lo que va detrás de la persona necesita su
 recorte: `scripts/mascaras.py <reel> --tramos "a-b,…"` escribe `public/fg/00000.webp…` (la persona con transparencia,
 cuadro por cuadro) y `src/mascaras.ts`. Los tramos deben cubrir todo lo que Cam2 muestra recortado (`on`, `vertigo` y
 `shrink` hasta el final) y cada corrida borra la anterior, así que se pasan todos. **Si la persona tiene pelo, agregar
@@ -35,8 +37,23 @@ cuadro por cuadro) y `src/mascaras.ts`. Los tramos deben cubrir todo lo que Cam2
 | 11 | **Órbita** | Etiquetas que giran alrededor de la persona, por delante y por detrás | A quién va dirigido, varias categorías | `Orbit` (back + front, máscaras) |
 | 12 | **Palabra que se enfoca + zoom** | La palabra entra desenfocada y se enfoca; la cámara salta hacia adelante | Remates cortos | `FocusWord` + `punches` de cámara |
 
+## Grupo 4 · Look completo (testimonios e historias)
+| # | Efecto | Qué se ve | Cuándo usarlo | Pieza |
+|---|---|---|---|---|
+| 13 | **Documental cálido** | Color cálido con grano y viñeta, franjas de cine, capítulos en serif («I · Antes», «II · Lo que buscaba»), ficha de nombre, cita grande en itálica, recuadro de revista, frase tachada en tinta y portada «La historia de…» detrás de la persona | Testimonios, la historia de un alumno o cliente (real), contar un antes y un después | `Pelicula`, `Franjas`, `Capitulo`, `Rotulo`, `CitaGrande`, `Recuadro`, `TachaSerif`, `Destello`, `CierreDoc` (fx-documental.tsx) + `CoverStory` |
+
+Subtítulos: además de los de la plantilla (`SubsV`), se puede ofrecer **manuscrita con la palabra clave en gruesa**
+(`SubsDoc` de fx-documental.tsx, con `color` y `clave` de la marca; letra `HAND` de theme.ts).
+
 Además, siempre disponibles sin preguntar (son la base, no un estilo): subtítulos, cortes con salto de encuadre y el
-texto grande debajo del mentón (`Kin` / tarjetas de la plantilla). El gancho textual de los reels es regla fija.
+texto grande debajo del mentón (`Kin` de mg.tsx, ubicado con `scripts/caras.py`). El gancho textual de los reels es regla fija.
+
+## Más efectos, si la persona pide algo que no está en el menú
+- `references/efectos-17.md`: los 17 efectos del catálogo (teléfono flotante, collage de papel, glass type, pull-back…).
+- `references/apoyo-visual.md` + `references/fx-apoyo-visual.tsx`: mostrar lo que se dice (`Cutaway`, `ArticleCard`,
+  `ChatMock`, `Terminal`, `FileCard`, `Headline`, `Checklist`, `FollowSave`…).
+- `references/mg.tsx`: kit de motion graphics sobre cámara (cifras, listas, flujos, preguntas, relojes, botón de cierre).
+- Videos largos horizontales: el kit de `references/youtube-horizontal/` (se ofrece, no se aplica solo).
 
 ## Lecciones (de los videos donde se probaron)
 - Persona recortada: va como imagen WEBP por cuadro con `<Img>`. Un segundo `OffthreadVideo` con máscara CSS hizo que

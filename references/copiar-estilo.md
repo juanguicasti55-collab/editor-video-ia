@@ -30,11 +30,11 @@ música y clips de otra persona no se usan.
 | **Subtítulos**: posición (abajo / centro), tamaño, mayúsculas, color de la palabra clave, fondo (caja, borde, sombra), cuántas palabras por bloque | `Subtitles` (lib.tsx) / `SubsV` (reel.tsx): `bottom`, `fontSize`, `textTransform`, color `C.lime`, `background`. Palabras por bloque: `buildChunks` |
 | **Paleta**: color de fondo de los gráficos, 1–2 colores de acento | `theme.ts` → `C.bg`, `C.card`, `C.lime` (acento 1), `C.violet` (acento 2) |
 | **Tipografía**: condensada/gruesa, redondeada, serif | `theme.ts` → cambiar las fuentes de `@remotion/google-fonts` (ej. Anton, Bebas Neue, Montserrat, Poppins, Inter) |
-| **Gráficos**: tarjetas, listas, números grandes, emojis, flechas, capturas de pantalla | Elegir las piezas equivalentes de `references/estilo.md`; usar más las que la referencia usa más |
-| **Encuadres**: ¿cámara chica en una esquina? ¿pantalla dividida? ¿siempre cámara completa con zooms? | `KEYS` en `video.tsx` (PIP / SPLIT / punch) o `CAM` en reels (`DualCam`) |
+| **Gráficos**: tarjetas, listas, números grandes, emojis, flechas, capturas de pantalla | Elegir las piezas equivalentes del menú (`menu-efectos.md`), de `mg.tsx` (`Kin`, `ListCard`, `BigNumber`, `Flow`…) o de `apoyo-visual.md`; usar más las que la referencia usa más |
+| **Encuadres**: ¿cámara chica en una esquina? ¿pantalla dividida? ¿siempre cámara completa con zooms? | `KEYS` en `video.tsx` (`punch`) o `CAM` en reels (`CamV` / `Cam2` de fx-efectos); cámara abajo solo con pantalla grabada (`CAM_BOTTOM` + `ScreenV`) |
 | **Zooms**: suaves y lentos o cortes secos de acercamiento | `punch(1.1–1.2)` en las frases de énfasis |
 | **Sonido**: whooshes en cada transición, pops, música presente o casi inaudible | lista `SFX` y volumen de música en `render.sh` (0.10 baja · 0.16 normal · 0.22 presente) |
-| **Gancho inicial**: título grande arriba, pregunta, número | `HookTitle` (reels) / `Quote` o `LowerThird` (largo) |
+| **Gancho inicial**: título grande arriba, pregunta, número | `HookTitle` (reels) / `FocusWord` o `Kin` (largo) |
 
 ## 3. Confirmar antes de editar
 Mostrar a la persona un resumen corto del estilo detectado, por ejemplo:
