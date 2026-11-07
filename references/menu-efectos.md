@@ -1,57 +1,123 @@
-# Menú de efectos (se pregunta SIEMPRE, antes de planear escenas)
+# Menú de efectos y estilos (con código)
 
-La skill no trae una edición predeterminada: ni tarjetas, ni paleta, ni pantalla dividida propias. Todo lo que se ve
-sale de este menú (y de su marca). En la entrevista se le muestra a la persona y ella elige cuáles quiere en su video.
-Con la herramienta de preguntas: tres preguntas de selección múltiple, una por grupo (4 opciones cada una, la
-descripción corta de abajo como texto de la opción); el grupo 4 se ofrece aparte cuando el video es un testimonio o una historia. Siempre se puede escribir
-«elige tú»: entonces se eligen 3–5 que calcen con el guion y se dice cuáles fueron.
+La skill no trae una edición predeterminada: todo lo que se ve sale de este menú y de la marca de la persona.
+Cada pieza tiene un **código** para pedirla corto: «edita mi video con H6 C9 D1 D3 T4 K2».
 
-Piezas: `references/fx-efectos.tsx` (copiar a `remotion/src/fx.tsx`), `references/mg.tsx` (→ `src/mg.tsx`: `BehindText`,
-`Kin`, `Subs`, `TapButton`, `EndCard`, `BigNumber`, `ListCard`…) y `references/fx-documental.tsx` (→ `src/doc.tsx`). Lo que va detrás de la persona necesita su
-recorte: `scripts/mascaras.py <reel> --tramos "a-b,…"` escribe `public/fg/00000.webp…` (la persona con transparencia,
-cuadro por cuadro) y `src/mascaras.ts`. Los tramos deben cubrir todo lo que Cam2 muestra recortado (`on`, `vertigo` y
-`shrink` hasta el final) y cada corrida borra la anterior, así que se pasan todos. **Si la persona tiene pelo, agregar
-`--con-pelo`**: sin esa opción el pelo desaparece del recorte y no sale ningún error. Regla de ritmo: un efecto fuerte cada 4–8 s, uno por idea; nunca dos efectos grandes a la vez.
+**Cómo se ofrece (pregunta 2 de la entrevista):**
+- Con la herramienta de preguntas: una pregunta de selección múltiple por grupo (máximo 4 opciones cada una; elegir las 4
+  que más calzan con el guion y dejar «Otro» para el resto). Siempre se puede decir «elige tú».
+- **Si la persona no elige (o dice «elige tú»), se eligen 5–6 y se dicen cuáles. Nunca se entrega un video sin efectos
+  del menú** (corrección de Juan, 6-nov-2026: la v2 del anuncio Black salió solo con tarjetas y la devolvió).
+- **Antes de construir, una ficha de estilo** de máximo 6 líneas: los códigos con su nombre y una línea de por qué calzan
+  con este video. Si la persona dio una sensación («que se sienta tranquilo y caro»), se proponen 4–6 códigos y se espera su sí.
+- **Presupuesto: 5–6 estilos por video. Mismo trabajo, mismo tratamiento**: si una cifra va detrás de la cabeza una vez,
+  todas las cifras van detrás de la cabeza. Dejar respiros solo con la cara.
 
-## Grupo 1 · Detrás de la persona (necesitan máscaras)
-| # | Efecto | Qué se ve | Cuándo usarlo | Pieza |
-|---|---|---|---|---|
-| 1 | **Texto detrás de la cabeza** | 1–2 palabras gigantes; la cabeza tapa parte de la segunda | La palabra clave de una frase | `BehindText` (mg.tsx) o `CoverStory` sin marco |
-| 2 | **Portada de revista** | Título serif gigante detrás de la cabeza + marco fino | Remates, frases para recordar | `CoverStory` |
-| 3 | **Notas pegadas en la pared** | Papelitos que aparecen uno por uno en la pared, al lado de la cabeza | Listas que dice («6 metodologías, cursos, PDFs») | `PaperWall` |
-| 4 | **Pared de miniaturas** | La pared se llena de cuadritos de video, uno tras otro | «Una cosa detrás de otra», mucha cantidad | `ThumbWall` |
+Piezas (se copian al proyecto): `fx-efectos.tsx` → `src/fx.tsx` · `fx-estilos.tsx` → `src/estilos.tsx` · `mg.tsx` →
+`src/mg.tsx` · `fx-documental.tsx` → `src/doc.tsx` · `fx-apoyo-visual.tsx` → `src/apoyo.tsx`.
+Lo que va **detrás** de la persona necesita su recorte: `scripts/mascaras.py <reel> --tramos "a-b,…" --con-pelo` escribe
+`public/fg/00000.webp…` y `src/mascaras.ts` (con `TOPS`, la coronilla por cuadro). Los tramos deben cubrir todo lo que
+Cam2 muestra recortado (`on`, `vertigo` y `shrink` hasta el final) y cada corrida borra la anterior: pasar todos.
+**Si la persona tiene pelo, `--con-pelo`**: sin esa opción el pelo desaparece del recorte y no sale ningún error.
 
-## Grupo 2 · Cámara y transiciones
-| # | Efecto | Qué se ve | Cuándo usarlo | Pieza |
-|---|---|---|---|---|
-| 5 | **Fondo que cambia** | El fondo se pone blanco (o de color) y la persona queda delante | «Me quedé en blanco», cambios de tema | `WhiteOut` (máscaras) |
-| 6 | **Vertigo** | El fondo se aleja mientras la persona queda del mismo tamaño | La frase clave, tensión | `Cam2 vertigo` (máscaras) |
-| 7 | **Zoom que atraviesa** | La cámara se mete en el plano y sale en el siguiente | Entrar a una frase importante o a otra sección | `Cam2 zt` |
-| 8 | **Marco de reel (frame break)** | El video se encoge a un marco de reel con título arriba y botón abajo | El llamado a la acción final | `Cam2 shrink` |
+## Regla fija: nada sobre la cara
+Ningún subtítulo, tarjeta ni gráfico entre los ojos y el mentón (corrección de Juan, 6-nov-2026). Hay tres lugares:
+1. **Detrás de ella** (grupo D, con recorte): la palabra clave gigante, la cabeza tapa una parte y la cara queda libre.
+   Juan: «hay textos que pueden ir detrás de ella, no debajo». Para las palabras que cargan la idea.
+2. **Debajo del mentón**: tarjetas que hay que leer completas. `scripts/caras.py` da el mentón por toma; con zoom
+   1,13 baja ~30 px. En planos de cintura para arriba suele quedar en y≈900–950.
+3. **Encima de la cabeza**: solo si hay aire entre la coronilla (`TOPS`) y y≈220.
 
-## Grupo 3 · Tarjetas y apoyo
-| # | Efecto | Qué se ve | Cuándo usarlo | Pieza |
-|---|---|---|---|---|
-| 9 | **Checklist de vidrio** | Tarjeta translúcida «n de 3» que se marca al decir cada paso | Pasos, momentos, método | `GlassChecklist` |
-| 10 | **Testimonio en chat** | Mensaje que se escribe solo mientras la persona lo lee | Citas de alumnos/clientes (solo reales; sin nombre ni foto inventados) | `ChatTestimonio` |
-| 11 | **Órbita** | Etiquetas que giran alrededor de la persona, por delante y por detrás | A quién va dirigido, varias categorías | `Orbit` (back + front, máscaras) |
-| 12 | **Palabra que se enfoca + zoom** | La palabra entra desenfocada y se enfoca; la cámara salta hacia adelante | Remates cortos | `FocusWord` + `punches` de cámara |
+## H · Ganchos (visibles desde el cuadro 0, 1–3 s)
+| Código | Estilo | Qué se ve | Pieza |
+|---|---|---|---|
+| H1 | Título del gancho | Frase corta arriba que dice de qué trata (regla fija de los reels) | `HookTitle` (reel.tsx) |
+| H2 | Gancho detrás de la cabeza | Línea chica + título gigante detrás, la persona recortada delante | `BehindText` (mg.tsx) |
+| H3 | Mayúsculas cálidas | Mayúsculas crema con borde café grueso y una línea a mano color caramelo. Cercano | `GanchoEstilo estilo="h3"` |
+| H4 | Recorte | Serif cursiva fina sobre una palabra gruesa en minúscula. Suave, editorial | `GanchoEstilo estilo="h4"` |
+| H5 | Etiqueta a mano | Mayúsculas a mano chiquitas («el truco para») sobre título grueso en minúscula; con `fondo` va en una banda de color | `GanchoEstilo estilo="h5"` |
+| H6 | Dos pesos | Mayúsculas gruesas sobre mayúsculas finas angostas, centrado; sube y se va a los ~3 s | `GanchoEstilo estilo="h6"` |
 
-## Grupo 4 · Look completo (testimonios e historias)
-| # | Efecto | Qué se ve | Cuándo usarlo | Pieza |
-|---|---|---|---|---|
-| 13 | **Documental cálido** | Color cálido con grano y viñeta, franjas de cine, capítulos en serif («I · Antes», «II · Lo que buscaba»), ficha de nombre, cita grande en itálica, recuadro de revista, frase tachada en tinta y portada «La historia de…» detrás de la persona | Testimonios, la historia de un alumno o cliente (real), contar un antes y un después | `Pelicula`, `Franjas`, `Capitulo`, `Rotulo`, `CitaGrande`, `Recuadro`, `TachaSerif`, `Destello`, `CierreDoc` (fx-documental.tsx) + `CoverStory` |
+## C · Subtítulos (nunca sobre la cara)
+| Código | Estilo | Qué se ve | Pieza |
+|---|---|---|---|
+| C1 | Manuscrita + clave gruesa | Frase en letra a mano, la palabra clave en la gruesa de la marca | `SubsDoc` (fx-documental) / `SubsEli` |
+| C2 | Una palabra | Una palabra gigante en mayúsculas a la vez, la clave en color. Rápido | `SubsEstilo estilo="c2"` |
+| C3 | Sin subtítulos | Solo títulos y gráficos. Para piezas tranquilas o premium | — |
+| C4 | Chicas + CLAVE grande | Palabras chicas en minúscula y la clave enorme en el color de acento | `SubsEstilo estilo="c4"` |
+| C5 | Pastilla blanca | Frase que aparece palabra por palabra; la clave dentro de una pastilla blanca | `SubsEstilo estilo="c5"` |
+| C6 | Línea + remate | Línea blanca chica y debajo el remate grande de color que entra desenfocado; sale desenfocándose | `SubsEstilo estilo="c6"` |
+| C7 | Revista | Mayúsculas chiquitas muy espaciadas y la clave en serif cursiva grande que sube desde una máscara. Caro | `SubsEstilo estilo="c7"` |
+| C8 | Bajo el mentón | Una sola línea en mayúsculas pequeñas justo debajo del mentón. Casi invisible | `SubsEstilo estilo="c8"` |
+| C9 | Escalera | Cada palabra cae un escalón en diagonal (3–5 líneas) en el espacio libre; la clave en serif cursiva subrayada | `SubsEstilo estilo="c9"` (`x`, `y` = columna libre) |
 
-Subtítulos: además de los de la plantilla (`SubsV`), se puede ofrecer **manuscrita con la palabra clave en gruesa**
-(`SubsDoc` de fx-documental.tsx, con `color` y `clave` de la marca; letra `HAND` de theme.ts).
+## D · Detrás de la persona (necesitan recorte)
+| Código | Efecto | Qué se ve | Pieza |
+|---|---|---|---|
+| D1 | Texto detrás de la cabeza | 1–2 palabras gigantes; la cabeza tapa parte. La palabra clave de una frase | `BehindText` (mg.tsx) |
+| D2 | Portada de revista | Título serif gigante detrás de la cabeza + marco fino. Remates | `CoverStory` |
+| D3 | Notas en la pared | Papelitos que aparecen uno por uno al lado de la cabeza. Listas que dice | `PaperWall` |
+| D4 | Pared de miniaturas | La pared se llena de cuadritos de video. «Una cosa detrás de otra» | `ThumbWall` |
+| D5 | Cifra que cuenta | Número enorme que sube detrás de la cabeza al decir la cifra. Solo cifras reales | `CifraDetras` |
+| D6 | Gráfica que crece | Línea con brillo que se dibuja en la pared y se dispara al final. Datos reales o forma sin números | `GraficaDetras` |
+| D7 | Apagón | La sala se oscurece y la persona queda iluminada, con la palabra detrás (anuncio Black) | `Look estilo="g3"` en `behind` + `BehindText` |
 
-Además, siempre disponibles sin preguntar (son la base, no un estilo): subtítulos, cortes con salto de encuadre y el
-texto grande debajo del mentón (`Kin` de mg.tsx, ubicado con `scripts/caras.py`). El gancho textual de los reels es regla fija.
+## T · Cámara y transiciones
+| Código | Efecto | Qué se ve | Pieza |
+|---|---|---|---|
+| T1 | Fondo que cambia | El fondo se pone blanco y la persona queda delante. Cambios de tema | `WhiteOut` (recorte) |
+| T2 | Vertigo | El fondo se aleja y la persona queda del mismo tamaño. La frase de tensión | `Cam2 vertigo` (recorte) |
+| T3 | Zoom que atraviesa | La cámara se mete en el plano y sale en el siguiente. Máximo 2–3 por video | `Cam2 zt` |
+| T4 | Marco de reel | El video se encoge a un marco de reel con íconos y la persona se sale del borde. Llamado final | `Cam2 shrink` (recorte) |
+| T5 | Zoom digital | Salto seco a la cara en la palabra clave (sin desenfoque) con viñeta, y vuelta | `conZoomDigital` + `Vineta` |
+| T6 | Barrido circular | Un círculo del color de la marca crece, cubre y se abre al siguiente plano. Cambio de sección | `CirculoWipe` |
+| T7 | Saltos de encuadre | Zoom alterno 1 / 1,13 en cada corte dentro de una toma (base, siempre) | keys de `CamV`/`Cam2` |
+| T8 | Congelar imagen | El cuadro se queda quieto como foto con borde blanco y una etiqueta («Esa era yo»); la voz sigue | `Congelar` |
+| T9 | Barrido de color | La imagen va en blanco y negro y una línea de luz la deja a color: el antes y el después | `BarridoColor` |
 
-## Más efectos, si la persona pide algo que no está en el menú
-- `references/efectos-17.md`: los 17 efectos del catálogo (teléfono flotante, collage de papel, glass type, pull-back…).
-- `references/apoyo-visual.md` + `references/fx-apoyo-visual.tsx`: mostrar lo que se dice (`Cutaway`, `ArticleCard`,
-  `ChatMock`, `Terminal`, `FileCard`, `Headline`, `Checklist`, `FollowSave`…).
+## A · Tarjetas y apoyos
+| Código | Efecto | Qué se ve | Pieza |
+|---|---|---|---|
+| A1 | Checklist de vidrio | Tarjeta translúcida «n de 3» que se marca al decir cada paso | `GlassChecklist` |
+| A2 | Testimonio en chat | Mensaje que se escribe solo mientras se lee (solo testimonios reales) | `ChatTestimonio` |
+| A3 | Órbita | Etiquetas que giran alrededor de la persona, por delante y por detrás. A quién va dirigido | `Orbit` (back + front, recorte) |
+| A4 | Palabra que se enfoca | La palabra entra desenfocada y se enfoca; con salto de cámara. Remates cortos | `FocusWord` |
+| A5 | Notificación | Aviso tipo iPhone que baja con lo que se acaba de decir («Informe enviado») | `Notificacion` |
+| A6 | Anillo que cuenta | Anillo de vidrio en el centro que cuenta hasta el número dicho y se va | `AnilloCuenta` |
+| A7 | Calendario | Widget blanco que pasa los años para un salto en el tiempo («hace 10 años») | `Calendario` |
+| A8 | Línea fija | Una línea a mano fija arriba todo el video (el llamado desde el segundo 1) | `BannerFijo` |
+| A9 | Serie numerada | Título fijo + contador 01/10 + etiqueta grande de cada ítem. Listas largas | `Serie` |
+| A10 | Nota con flecha | Nota a mano («antes») con una flecha dibujada que apunta a algo | `NotaFlecha` |
+| A11 | Ranking | Tabla por niveles (S, A, B, C) que se llena al nombrar cada cosa. Ocupa ~520 px: con la cara abajo | `Ranking` |
+
+## K · Cierres
+| Código | Cierre | Cuándo | Pieza |
+|---|---|---|---|
+| K1 | Comenta PALABRA clásico | Orgánico | `CommentCTA` (reel.tsx) |
+| K2 | Tarjeta «Comenta» | Orgánico: tarjeta blanca con aro de color, escribe «Comenta» y la palabra en degradado | `ComentaCTA` |
+| K3 | Comentario en vivo | Orgánico: hoja de comentarios delante del pecho, la palabra se escribe, se publica y le cae un corazón | `ComentarioEnVivo` |
+| K4 | Botón | **Anuncios**: «toca el botón de abajo», sin palabra clave | `TapButton` / `EndCard` (mg.tsx) |
+
+## G · Look de color
+| Código | Look | Qué se ve | Pieza |
+|---|---|---|---|
+| G1 | Cálido de cine | Tono cálido suave y viñeta | `Look estilo="g1"` |
+| G2 | Sepia suave | Sepia cálido, texto crema; va con la órbita y una línea en serif cursiva | `Look estilo="g2"` |
+| G3 | Editorial oscuro | Sala oscurecida, tono petróleo, viñeta; en `behind` la persona queda iluminada | `Look estilo="g3"` |
+| G4 | Documental cálido | Grano, franjas de cine, capítulos en serif, ficha de nombre, cita grande. Testimonios e historias reales | `Pelicula`, `Franjas`, `Capitulo`, `Rotulo`, `CitaGrande`, `Recuadro`, `TachaSerif`, `Destello`, `CierreDoc` (fx-documental) + `CoverStory` |
+
+## V · Versiones y sonido
+| Código | Qué hace | Cómo |
+|---|---|---|
+| V1 | Versiones para pauta: 3–5 MP4 del mismo anuncio que solo cambian los primeros 3 s | `references/variantes.md` + `scripts/variantes.sh` |
+| V2 | Voz limpia: quita ruido de fondo, retumbe y eses que silban (suave o fuerte) | `scripts/limpiar_voz.sh <reel> [suave\|fuerte]` antes del render |
+
+Siempre disponibles sin preguntar (son la base): subtítulos, saltos de encuadre (T7), el texto grande debajo del mentón
+(`Kin` de mg.tsx, ubicado con `caras.py`) y el gancho textual de los reels (H1 o el que se elija).
+
+## Más, si la persona pide algo que no está aquí
+- `references/efectos-17.md`: los 17 efectos del catálogo de referencia (teléfono flotante, collage de papel, vidrio…).
+- `references/apoyo-visual.md` + `fx-apoyo-visual.tsx`: mostrar lo que se dice (`Cutaway`, `ArticleCard`, `ChatMock`, `Terminal`…).
 - `references/mg.tsx`: kit de motion graphics sobre cámara (cifras, listas, flujos, preguntas, relojes, botón de cierre).
 - Videos largos horizontales: el kit de `references/youtube-horizontal/` (se ofrece, no se aplica solo).
 
@@ -59,9 +125,14 @@ texto grande debajo del mentón (`Kin` de mg.tsx, ubicado con `scripts/caras.py`
 - Persona recortada: va como imagen WEBP por cuadro con `<Img>`. Un segundo `OffthreadVideo` con máscara CSS hizo que
   la persona desapareciera o parpadeara en render (43 de 171 cuadros en un tramo).
 - Cabeza calva con cielo o pared clara detrás: el modelo confunde el fondo con pelo; por eso `mascaras.py` va sin la
-  clase pelo por defecto.
-- Texto detrás de la cabeza: con la cabeza alta en el cuadro no hay espacio; usar letras de ~190 px y dos líneas
-  como máximo, la segunda tapada solo a medias. Revisar que se lea con fotogramas.
-- Fondo que cambia: el borde del recorte se nota en piernas y manos; usarlo en planos de la cintura para arriba.
-- Zoom que atraviesa: máximo 2–3 por video, en cambios de idea reales; si no, marea.
-- Todo lo de arriba de y≈210 lo tapa la barra de Instagram: `validar.py` (R7) lo avisa.
+  clase pelo por defecto. Con pelo, `--con-pelo` siempre.
+- Texto detrás de la cabeza (D1, D5): se ubica con `TOPS` (coronilla). Lo que funcionó en el anuncio Black (cabeza en
+  y≈350): letras de 170–290 px con `top` ≈ coronilla − 150, para que la cabeza tape la base y la palabra se lea. Una
+  palabra de más de 8 letras se achica (≤ 180 px) para no tocar los bordes. Revisar siempre con fotogramas.
+- Fondo que cambia (T1) y apagón (D7): el borde del recorte se nota en piernas y manos; mejor en planos de la cintura
+  para arriba. Con el apagón al 85 % la banca y el fondo se adivinan y la persona no flota.
+- Zoom que atraviesa (T3): máximo 2–3 por video, en cambios de idea reales; si no, marea.
+- Órbita (A3): con etiquetas de ~18 letras, `rx` ≤ 260 o se salen por los lados; `cy` a la altura del pecho (≈1000),
+  nunca a la de la cara.
+- Todo lo de arriba de y≈210 lo tapa la barra de Instagram: `validar.py` (R7) lo avisa. Para TikTok la zona es más
+  grande: nada importante en los 450 px de abajo ni en los 100 px de la derecha desde los dos tercios para abajo.
