@@ -40,10 +40,11 @@ No preguntar lo que la persona ya dijo. Preguntas:
    - **Ambos** (primero el largo, después los reels del mismo material)
    - **Motion graphics con voz en off** (vertical, sin cámara): de un carrusel, un guion o un texto →
      seguir `references/motion-graphics.md` (tiene su propia entrevista: de dónde sale el contenido y quién pone la voz)
-2. **¿Qué efectos quieres? (SIEMPRE se pregunta: no hay estilo ni efectos por defecto)** Mostrar el menú de
-   `references/menu-efectos.md`: 12 efectos en 3 grupos (detrás de la persona · cámara y transiciones · tarjetas y
-   apoyo). Con la herramienta de preguntas: 3 preguntas de selección múltiple, una por grupo. Si dice «elige tú», elegir
-   3–5 que calcen con el guion y decir cuáles. Aunque haya un estilo guardado en `references/estilos/`, no se aplica
+2. **¿Qué efectos y estilos quieres? (SIEMPRE se pregunta: no hay estilo por defecto)** Mostrar el menú con código de
+   `references/menu-efectos.md`: ganchos (H), subtítulos (C), detrás de la persona (D), cámara (T), tarjetas (A),
+   cierres (K) y look (G). La persona puede pedir por código («H6 C9 D1 T4 K2»). Con la herramienta de preguntas: una
+   pregunta de selección múltiple por grupo. **Si no elige o dice «elige tú», elegir 5–6 y decir cuáles: nunca entregar
+   un video sin efectos del menú.** Antes de construir, mostrar la ficha de estilo (códigos + por qué, máximo 6 líneas). Aunque haya un estilo guardado en `references/estilos/`, no se aplica
    solo: se ofrece como una opción más y se usa solo si la persona lo pide.
 3. **¿Quieres copiar el estilo de alguien?** (opcional) Pedir **un link a un video** del creador o
    **3–5 capturas** de sus videos. → ver `references/copiar-estilo.md`. Si dice que no, el look sale de los efectos que
@@ -118,8 +119,11 @@ Solo con los efectos que la persona eligió (pregunta 2). Reglas de ritmo:
   clips de < 10–15 s siempre comentados y con crédito ("Imágenes: [fuente]"). Ver `references/apoyo-visual.md`
   (`Cutaway`, `ArticleCard`).
 Escribir todo en `remotion/src/video.tsx` (reemplazando el ejemplo). Solo se edita ese archivo.
-- **Efectos**: usar SOLO los que la persona eligió en el menú (pregunta 2), con sus piezas: `references/fx-efectos.tsx`
-  (→ `remotion/src/fx.tsx`), `references/mg.tsx` (→ `src/mg.tsx`), `references/fx-documental.tsx` (→ `src/doc.tsx`) y
+- **Nada sobre la cara** (ojos a mentón): palabras clave detrás de la persona (grupo D, con recorte), tarjetas debajo
+  del mentón (`caras.py`). Ver «Regla fija» en `references/menu-efectos.md`.
+- **Efectos**: usar los códigos elegidos (pregunta 2), 5–6 por video, mismo trabajo = mismo tratamiento. Piezas:
+  `references/fx-efectos.tsx` (→ `remotion/src/fx.tsx`), `references/fx-estilos.tsx` (→ `src/estilos.tsx`: subtítulos
+  C2–C9, ganchos H3–H6, cierres K2–K3, apoyos A5–A11, D5–D6, T5–T9, looks G1–G3), `references/mg.tsx` (→ `src/mg.tsx`), `references/fx-documental.tsx` (→ `src/doc.tsx`) y
   `references/fx-apoyo-visual.tsx` (→ `src/apoyo.tsx`, necesita `mg.tsx`). Lo que va detrás de la persona necesita
   `scripts/mascaras.py`. Las piezas del menú son verticales: en un video horizontal se adaptan o se usa el kit de
   `references/youtube-horizontal/`. Para otros efectos que pida: `references/efectos-17.md`.
@@ -146,6 +150,12 @@ bash "$SKILL/scripts/render.sh" "<carpeta edicion-...>" "<salida>.mp4" ["<musica
 Renderiza, normaliza la voz a -14 LUFS (estándar de YouTube/Instagram), mezcla la música con ducking
 (baja sola cuando se habla) y fades. Después mide el MP4 final y, si quedó fuera de −14 ±0,3 LUFS o por encima
 de −1,5 dBTP (pasa cuando se une una fuente mucho más fuerte, como un clip de YouTube), corrige con una 2ª pasada. Nombrar la salida con versión: `<video>-v1.mp4`, `-v2`… (ver «Versiones»).
+
+### 7b. Versiones para pauta y voz limpia (si se piden)
+- **Voz con ruido** (celular, aire acondicionado, eco): `bash "$SKILL/scripts/limpiar_voz.sh" "<carpeta>" suave` (o `fuerte`)
+  antes del render; deja la toma original como `*_sucio.mp4`. Pedirle a la persona que escuche antes y después.
+- **Anuncio para pauta:** ofrecer 3–5 versiones que solo cambian el gancho (V1): `references/variantes.md` y
+  `scripts/variantes.sh`. Cada versión se valida como un video más.
 
 ### 8. Validar y revisar (antes de entregar)
 ```

@@ -1,10 +1,12 @@
 #!/bin/bash
 # Render final: Remotion → (música con ducking opcional) → loudnorm -14 LUFS → 2ª pasada que mide y corrige a −14 LUFS / −1,5 dBTP.
 # Uso: render.sh <carpeta edicion-...> "<ruta salida.mp4>" [musica.wav] [volumen_musica=0.16]
+# Versiones para pauta: VARIANTE=B render.sh … le pasa {variante:"B"} a Main (ver references/variantes.md y variantes.sh).
 set -e
 WORK="$(cd "$1" && pwd)"; OUT="$2"; MUSIC="${3:-}"; MVOL="${4:-0.16}"
 cd "$WORK/remotion"
-npx remotion render src/index.ts Main out/render.mp4 --crf=18 --log=error 2>&1 | grep -v "network requests" || true
+PROPS=(); [ -n "${VARIANTE:-}" ] && PROPS=(--props "{\"variante\":\"$VARIANTE\"}")
+npx remotion render src/index.ts Main out/render.mp4 "${PROPS[@]}" --crf=18 --log=error 2>&1 | grep -v "network requests" || true
 D=$(ffprobe -v error -show_entries format=duration -of csv=p=0 out/render.mp4)
 ffmpeg -v error -y -i out/render.mp4 -vn -af "loudnorm=I=-14:TP=-1.5:LRA=11" -ar 48000 "$WORK/voz_sfx.wav"
 # Último paso antes del AAC, que sube los picos: −2,4 dBFS dejan el resultado por debajo de −1 dBTP.
