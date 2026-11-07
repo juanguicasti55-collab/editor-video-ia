@@ -127,6 +127,11 @@ Ningún subtítulo, tarjeta ni gráfico entre los ojos y el mentón (corrección
 Siempre disponibles sin preguntar (son la base): subtítulos, saltos de encuadre (T7), el texto grande debajo del mentón
 (`Kin` de mg.tsx, ubicado con `caras.py`) y el gancho textual de los reels (H1 o el que se elija).
 
+## Verlos en movimiento
+`references/catalogo.tsx` arma un video de ~3 min con TODOS los efectos de este menú sobre la grabación de la persona,
+cada uno con su código y nombre arriba (instrucciones en su cabecera). Sirve para la pregunta 2 cuando la persona quiere
+ver antes de elegir. Tarda: recorte de todo el video (~17 min por minuto de grabación) + ~10 min de render.
+
 ## Más, si la persona pide algo que no está aquí
 - `references/efectos-17.md`: los 17 efectos del catálogo de referencia (teléfono flotante, collage de papel, vidrio…).
 - `references/apoyo-visual.md` + `fx-apoyo-visual.tsx`: mostrar lo que se dice (`Cutaway`, `ArticleCard`, `ChatMock`, `Terminal`…).
