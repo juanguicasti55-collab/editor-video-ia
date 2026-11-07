@@ -125,7 +125,8 @@ Escribir todo en `remotion/src/video.tsx` (reemplazando el ejemplo). Solo se edi
   `references/fx-efectos.tsx` (→ `remotion/src/fx.tsx`), `references/fx-estilos.tsx` (→ `src/estilos.tsx`: subtítulos
   C2–C9, ganchos H3–H6, cierres K2–K3, apoyos A5–A11, D5–D6, T5–T9, looks G1–G3), `references/mg.tsx` (→ `src/mg.tsx`), `references/fx-documental.tsx` (→ `src/doc.tsx`) y
   `references/fx-apoyo-visual.tsx` (→ `src/apoyo.tsx`, necesita `mg.tsx`). Piezas editoriales (karaoke, gancho en estudio, barra de pedido, palabra ventana, periódico, billete,
-  impacto…): `references/fx-editorial.tsx` (→ `src/editorial.tsx`). Lo que va detrás de la persona necesita
+  impacto…): `references/fx-editorial.tsx` (→ `src/editorial.tsx`). Más (frase que se arma, número dorado, vidrio, contador que rueda, antes y después,
+  pictogramas, artículo resaltado…): `references/fx-graficos.tsx` (→ `src/graficos.tsx`). Lo que va detrás de la persona necesita
   `scripts/mascaras.py`. Las piezas del menú son verticales: en un video horizontal se adaptan o se usa el kit de
   `references/youtube-horizontal/`. Para otros efectos que pida: `references/efectos-17.md`.
 

@@ -14,7 +14,7 @@ Cada pieza tiene un **código** para pedirla corto: «edita mi video con H6 C9 D
   todas las cifras van detrás de la cabeza. Dejar respiros solo con la cara.
 
 Piezas (se copian al proyecto): `fx-efectos.tsx` → `src/fx.tsx` · `fx-estilos.tsx` → `src/estilos.tsx` · `mg.tsx` →
-`src/mg.tsx` · `fx-documental.tsx` → `src/doc.tsx` · `fx-apoyo-visual.tsx` → `src/apoyo.tsx` · `fx-editorial.tsx` → `src/editorial.tsx` (C10, H7, A12–A15, D8–D10, G5–G7).
+`src/mg.tsx` · `fx-documental.tsx` → `src/doc.tsx` · `fx-apoyo-visual.tsx` → `src/apoyo.tsx` · `fx-editorial.tsx` → `src/editorial.tsx` (C10, H7, A12–A15, D8–D10, G5–G7). · `fx-graficos.tsx` → `src/graficos.tsx` (H8–H9, C11–C12, D11–D13, T10, A16–A23, K5–K6, I1–I4).
 Lo que va **detrás** de la persona necesita su recorte: `scripts/mascaras.py <reel> --tramos "a-b,…" --con-pelo` escribe
 `public/fg/00000.webp…` y `src/mascaras.ts` (con `TOPS`, la coronilla por cuadro). Los tramos deben cubrir todo lo que
 Cam2 muestra recortado (`on`, `vertigo` y `shrink` hasta el final) y cada corrida borra la anterior: pasar todos.
@@ -38,6 +38,8 @@ Ningún subtítulo, tarjeta ni gráfico entre los ojos y el mentón (corrección
 | H5 | Etiqueta a mano | Mayúsculas a mano chiquitas («el truco para») sobre título grueso en minúscula; con `fondo` va en una banda de color | `GanchoEstilo estilo="h5"` |
 | H6 | Dos pesos | Mayúsculas gruesas sobre mayúsculas finas angostas, centrado; sube y se va a los ~3 s | `GanchoEstilo estilo="h6"` |
 | H7 | Gancho en estudio | El fondo se vuelve un color plano de la marca y detrás de la cabeza pasan 2–3 frases, cada una en otra letra (serif · gruesa · cursiva de acento). Recorte | `GanchoEstudio` (editorial) en `behind` |
+| H8 | Frase que se arma | El gancho aparece línea por línea arriba y se queda armado; lo clave en serif cursiva amarilla | `FraseQueSeArma` (graficos) |
+| H9 | Respuesta a comentario | Burbuja blanca de un comentario REAL arriba + titular condensado y una línea en cursiva que lo responde | `RespuestaComentario` (graficos) |
 
 ## C · Subtítulos (nunca sobre la cara)
 | Código | Estilo | Qué se ve | Pieza |
@@ -52,6 +54,8 @@ Ningún subtítulo, tarjeta ni gráfico entre los ojos y el mentón (corrección
 | C8 | Bajo el mentón | Una sola línea en mayúsculas pequeñas justo debajo del mentón. Casi invisible | `SubsEstilo estilo="c8"` |
 | C9 | Escalera | Cada palabra cae un escalón en diagonal (3–5 líneas) en el espacio libre; la clave en serif cursiva subrayada | `SubsEstilo estilo="c9"` (`x`, `y` = columna libre) |
 | C10 | Karaoke en pastilla | Frase corta en serif chica sobre una pastilla del color de la marca; lo ya dicho en crema, lo que falta apagado. Discreto y caro | `SubsKaraoke` (editorial) |
+| C11 | Palabra a palabra con cursiva | Una palabra a la vez, blanca y gruesa; las claves cambian a serif cursiva amarilla. Lo más simple que funciona | `SubsPalabra` (graficos) |
+| C12 | Corchetes | Frase corta en mayúsculas; la clave en amarillo dentro de cuatro esquinas que se cierran | `SubsCorchetes` (graficos) |
 
 ## D · Detrás de la persona (necesitan recorte)
 | Código | Efecto | Qué se ve | Pieza |
@@ -66,6 +70,9 @@ Ningún subtítulo, tarjeta ni gráfico entre los ojos y el mentón (corrección
 | D8 | Palabra ventana | Pantalla de un color con UNA palabra gigante; el video se ve solo dentro de las letras. 0,8–1,5 s en un remate. Sin recorte | `PalabraVentana` (editorial) |
 | D9 | Cuerpo de texto | El fondo se apaga y la silueta de la persona se llena de palabras del guion. 0,8–1,5 s | `CuerpoTexto` (editorial) |
 | D10 | Clones | Copias de la persona aparecen a los lados, detrás de ella: «todas hacen lo mismo», «otra vez» | `Clones` (editorial) en `behind` |
+| D11 | Número de sección | Número dorado gigante en serif cursiva a un costado, la cabeza le tapa una parte: «1», «2», «3» al empezar cada punto | `NumeroSeccion` (graficos) en `behind` |
+| D12 | Vidrio acanalado | El fondo se vuelve un panel oscuro de vidrio estriado con una palabra condensada gigante | `VidrioAcanalado` (graficos) en `behind` |
+| D13 | Cinta de luz | Una cinta de color brillante se dibuja en curva detrás de la persona | `CintaDeLuz` (graficos) en `behind` |
 
 ## T · Cámara y transiciones
 | Código | Efecto | Qué se ve | Pieza |
@@ -79,6 +86,7 @@ Ningún subtítulo, tarjeta ni gráfico entre los ojos y el mentón (corrección
 | T7 | Saltos de encuadre | Zoom alterno 1 / 1,13 en cada corte dentro de una toma (base, siempre) | keys de `CamV`/`Cam2` |
 | T8 | Congelar imagen | El cuadro se queda quieto como foto con borde blanco y una etiqueta («Esa era yo»); la voz sigue | `Congelar` |
 | T9 | Barrido de color | La imagen va en blanco y negro y una línea de luz la deja a color: el antes y el después | `BarridoColor` |
+| T10 | Cámara a saltos | El video baja a 12 cuadros por segundo (como stop motion) en un tramo corto | `CamaraSaltos` (graficos), justo después de Cam2 |
 
 ## A · Tarjetas y apoyos
 | Código | Efecto | Qué se ve | Pieza |
@@ -98,6 +106,14 @@ Ningún subtítulo, tarjeta ni gráfico entre los ojos y el mentón (corrección
 | A13 | Reloj de material | Reloj de fichas que baja de la duración cruda a la final (1:07 → 0:52). Solo duraciones reales | `RelojMaterial` (editorial) |
 | A14 | Lista lateral | Panel angosto a un costado con todos los puntos; el que se dice se marca y arriba va «03 / 12». Videos de lista | `ListaLateral` (editorial) |
 | A15 | Cursor en vivo | Cursor con etiqueta («Claude») que se mueve y dibuja un recuadro de selección con medidas | `CursorVivo` (editorial) |
+| A16 | Contador que rueda | Tarjeta con dígitos que giran como tragamonedas hasta la cifra. Solo cifras reales | `ContadorRueda` (graficos) |
+| A17 | Antes y después | Pantalla oscura con dos teléfonos inclinados (antes apagado, después a color) y una flecha | `AntesDespues` (graficos) |
+| A18 | Camino de nodos | Puntos que brillan unidos por líneas que se dibujan, cada uno con su etiqueta en cursiva | `CaminoNodos` (graficos) |
+| A19 | Tarjetas de vistas | Tarjetas apiladas a un costado con un número grande (vistas, ventas). Solo cifras reales | `TarjetasVistas` (graficos) |
+| A20 | Ficha de marca | Tarjeta con «Aa» en la letra de la marca y sus colores | `FichaMarca` (graficos) |
+| A21 | Cita de estudio | Hoja de artículo científico y la frase clave marcada con resaltador. Solo estudios reales | `CitaEstudio` (graficos) |
+| A22 | Tira de video | Tira de cuadros del propio video y un marco que elige «la parte buena» | `TiraVideo` (graficos) |
+| A23 | Título fijo en serif | El tema en serif blanca con borde negro, fijo arriba todo el video | `TituloFijo` (graficos) |
 
 ## K · Cierres
 | Código | Cierre | Cuándo | Pieza |
@@ -106,6 +122,8 @@ Ningún subtítulo, tarjeta ni gráfico entre los ojos y el mentón (corrección
 | K2 | Tarjeta «Comenta» | Orgánico: tarjeta blanca con aro de color, escribe «Comenta» y la palabra en degradado | `ComentaCTA` |
 | K3 | Comentario en vivo | Orgánico: hoja de comentarios delante del pecho, la palabra se escribe, se publica y le cae un corazón; con `respuesta`, la cuenta contesta («Te lo envío por mensaje») | `ComentarioEnVivo` |
 | K4 | Botón | **Anuncios**: «toca el botón de abajo», sin palabra clave | `TapButton` / `EndCard` (mg.tsx) |
+| K5 | Botón que brilla | **Anuncios**: pantalla oscura, ondas y un botón con brillo que se presiona | `BotonBrillo` (graficos) |
+| K6 | Comenta con destellos | Orgánico: «COMENTA» chico, la palabra grande en amarillo, una línea y destellos | `ComentaDestellos` (graficos) |
 
 ## G · Look de color
 | Código | Look | Qué se ve | Pieza |
@@ -118,6 +136,14 @@ Ningún subtítulo, tarjeta ni gráfico entre los ojos y el mentón (corrección
 | G6 | Billete | La persona grabada en el óvalo de un billete inventado, con el título y una cifra. Hablar de dinero o precio. 1–1,5 s | `Billete` (editorial) |
 | G7 | Impacto | Cuadro congelado en blanco y negro puro tipo cómic, líneas de velocidad y una palabra gruesa. 0,6–1 s en el golpe | `Impacto` (editorial; mejor con `recorte`) |
 
+## I · Insertos a pantalla completa (reemplazan la cámara 1–3 s; la voz sigue)
+| Código | Inserto | Qué se ve | Pieza |
+|---|---|---|---|
+| I1 | Pictograma | Fondo cálido con un dibujo de líneas que se traza solo (monitor, silla, play, olla, gráfico, persona, documento, reloj) y la palabra en cursiva. Cuando no hay toma de apoyo | `Pictograma` (graficos) |
+| I2 | Cifra con gráfica | Número enorme que sube y una línea que se dispara. Solo datos reales | `CifraGrafica` (graficos) |
+| I3 | Artículo resaltado | Página de periódico con el titular y el párrafo reales; un resaltador marca la frase | `ArticuloResaltado` (graficos) |
+| I4 | Palabra a pantalla completa | Fondo cálido oscuro: conteo 1-2-3, palabra repetida apilada, máquina de escribir o palabra con brillo | `PalabraPantalla` (graficos) |
+
 ## V · Versiones y sonido
 | Código | Qué hace | Cómo |
 |---|---|---|
@@ -128,9 +154,10 @@ Siempre disponibles sin preguntar (son la base): subtítulos, saltos de encuadre
 (`Kin` de mg.tsx, ubicado con `caras.py`) y el gancho textual de los reels (H1 o el que se elija).
 
 ## Verlos en movimiento
-`references/catalogo.tsx` arma un video de ~3 min con TODOS los efectos de este menú sobre la grabación de la persona,
+`references/catalogo.tsx` arma un video de ~3 min con TODOS los efectos de este menú (más 25 piezas de motion graphics sobre cámara, que se piden por nombre) sobre la grabación de la persona,
 cada uno con su código y nombre arriba (instrucciones en su cabecera). Sirve para la pregunta 2 cuando la persona quiere
-ver antes de elegir. Tarda: recorte de todo el video (~17 min por minuto de grabación) + ~10 min de render.
+ver antes de elegir. Tarda: recorte de todo el video (~17 min por minuto de grabación) + ~15 min de render.
+`references/catalogo-mg.tsx` hace lo mismo con las 14 piezas de motion graphics SIN cámara (template-mg).
 
 ## Más, si la persona pide algo que no está aquí
 - `references/efectos-17.md`: los 17 efectos del catálogo de referencia (teléfono flotante, collage de papel, vidrio…).
@@ -139,6 +166,9 @@ ver antes de elegir. Tarda: recorte de todo el video (~17 min por minuto de grab
 - Videos largos horizontales: el kit de `references/youtube-horizontal/` (se ofrece, no se aplica solo).
 
 ## Lecciones (de los videos donde se probaron)
+- (7-nov-2026, 13 reels de 4 cuentas) El reel con más vistas de la muestra (952 mil) no tiene casi efectos: título fijo en serif
+  y una palabra a la vez (A23 + C11). Los efectos suben la retención, pero el gancho y el tema mandan: en piezas de historia
+  personal o testimonio, menos efectos. Los de muchos efectos (pantallas, nodos, vidrio) funcionan en anuncios de producto.
 - Las piezas de pantalla completa (G5, G6, G7, D8, D9) tapan la cara: máximo 1,5 s cada una, como golpe y no como escena, y
   no más de 2–3 por video. La voz sigue debajo. Ocultar los subtítulos en esos tramos.
 - Persona recortada: va como imagen WEBP por cuadro con `<Img>`. Un segundo `OffthreadVideo` con máscara CSS hizo que
