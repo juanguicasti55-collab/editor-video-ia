@@ -36,7 +36,7 @@ def main():
             f.rename(lento)
         tiene_audio = bool(subprocess.run(["ffprobe", "-v", "error", "-select_streams", "a", "-show_entries", "stream=index",
                                            "-of", "csv=p=0", str(lento)], capture_output=True, text=True).stdout.strip())
-        cmd = ["ffmpeg", "-v", "error", "-y", "-i", str(lento), "-vf", f"setpts=PTS/{F},fps=30"]
+        cmd = ["ffmpeg", "-v", "error", "-y", "-i", str(lento), "-vf", f"setpts=PTS/{F},framerate=fps=30"]
         cmd += ["-af", f"atempo={F}"] if tiene_audio else ["-an"]
         cmd += ["-c:v", "libx264", "-crf", "17", "-preset", "fast", "-c:a", "aac", "-b:a", "192k", str(f)]
         subprocess.run(cmd, check=True)
