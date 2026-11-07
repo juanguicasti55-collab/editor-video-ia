@@ -21,6 +21,13 @@ música y clips de otra persona no se usan.
   ffmpeg -i ref.mp4 -vf "select='gt(scene,0.3)',showinfo" -f null - 2>&1 | grep -c pts_time
   ```
   Cortes por minuto = cortes ÷ minutos analizados.
+- **Link a una cuenta de Instagram** (analizar varios reels): listar los últimos con el actor de Apify
+  `apify/instagram-reel-scraper` (`username`, `resultsLimit` 10–12; trae `videoUrl`, vistas, duración y texto) y bajar 3–4:
+  el de más vistas, el más reciente y uno de anuncio si lo hay (los repetidos casi siempre son pruebas de pauta). Hojas a
+  1 fotograma por segundo (`fps=1,…,tile=8x4`): en estos estilos cambia algo cada 1–2 s y cada 3 s se pierde la mitad.
+- Si la cuenta muestra una **lista de efectos con nombre** (anuncios de «20 efectos»), leerla en la hoja: es el mapa más
+  rápido de qué falta en el menú. Lo que ya existe se mapea a su código y lo nuevo se arma como pieza propia (nunca su código
+  ni su marca). Así salieron C10, H7, A12–A15, D8–D10 y G5–G7 (7-nov-2026).
 
 ## 2. Qué mirar y cómo traducirlo a la skill
 

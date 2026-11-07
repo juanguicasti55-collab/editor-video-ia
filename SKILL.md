@@ -124,9 +124,20 @@ Escribir todo en `remotion/src/video.tsx` (reemplazando el ejemplo). Solo se edi
 - **Efectos**: usar los códigos elegidos (pregunta 2), 5–6 por video, mismo trabajo = mismo tratamiento. Piezas:
   `references/fx-efectos.tsx` (→ `remotion/src/fx.tsx`), `references/fx-estilos.tsx` (→ `src/estilos.tsx`: subtítulos
   C2–C9, ganchos H3–H6, cierres K2–K3, apoyos A5–A11, D5–D6, T5–T9, looks G1–G3), `references/mg.tsx` (→ `src/mg.tsx`), `references/fx-documental.tsx` (→ `src/doc.tsx`) y
-  `references/fx-apoyo-visual.tsx` (→ `src/apoyo.tsx`, necesita `mg.tsx`). Lo que va detrás de la persona necesita
+  `references/fx-apoyo-visual.tsx` (→ `src/apoyo.tsx`, necesita `mg.tsx`). Piezas editoriales (karaoke, gancho en estudio, barra de pedido, palabra ventana, periódico, billete,
+  impacto…): `references/fx-editorial.tsx` (→ `src/editorial.tsx`). Lo que va detrás de la persona necesita
   `scripts/mascaras.py`. Las piezas del menú son verticales: en un video horizontal se adaptan o se usa el kit de
   `references/youtube-horizontal/`. Para otros efectos que pida: `references/efectos-17.md`.
+
+### 4b. Storyboard para aprobar (antes de renderizar)
+Al planear las escenas, escribir también `storyboard.json` (una escena por idea: `at`, `efectos` con su código, `sonido`,
+`nota`) y correr:
+```
+"$SKILL/.venv/bin/python" "$SKILL/scripts/storyboard.py" "<carpeta edicion-... o reel>"
+```
+Sale `remotion/out/storyboard.html`: una tarjeta por escena con el fotograma, lo que se dice, los efectos y el sonido.
+Abrirlo y mandárselo a la persona: corrige por número de escena («en la 4 otro efecto») y se rehace en segundos, no en
+minutos de render. **Se renderiza solo con su OK** (o con control total, decidiendo y anotándolo en la entrega).
 
 ### 5. Revisar con fotogramas antes de renderizar
 ```
@@ -191,7 +202,7 @@ Leer `references/reels.md` y seguir ese flujo. Resumen:
    o toma de apoyo) y nunca pasan más de 3-4 s sin algo nuevo. Elegir nivel (con muchos efectos / intermedio / sencillo),
    piezas (`Cutaway`, `ArticleCard`, `ChatMock`, `Terminal`, `FileCard`…) y de dónde sacar material libre
    (`scripts/captura.sh`, `scripts/commons.py`): `references/apoyo-visual.md`.
-6. Fotogramas → render (`render.sh`), salida en una carpeta `Reels - <video>/` → `validar.py reels/<n> <reel>-vN.mp4`
+6. Storyboard (`storyboard.py`, paso 4b) y su OK → fotogramas → render (`render.sh`), salida en una carpeta `Reels - <video>/` → `validar.py reels/<n> <reel>-vN.mp4`
    (y revisor QA si es entrega final).
 
 ---

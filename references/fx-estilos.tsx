@@ -245,8 +245,12 @@ export const ComentaCTA: React.FC<{ from: number; palabra: string; to?: number; 
   );
 };
 
-/** K3 · Hoja de comentarios oscura delante del pecho: la palabra se escribe en la caja, se publica y le cae un corazón. Sin logo de ninguna red. */
-export const ComentarioEnVivo: React.FC<{ from: number; palabra: string; usuario?: string; to?: number; top?: number }> = ({ from, palabra, usuario = "tú", to = 1e9, top = 980 }) => {
+/**
+ * K3 · Hoja de comentarios oscura delante del pecho: la palabra se escribe en la caja, se publica y le cae un corazón. Sin logo de ninguna red.
+ * `respuesta` (opcional): 0,6 s después del corazón aparece la respuesta de la cuenta («Te lo envío por mensaje»): muestra que
+ * al comentar sí llega algo. Solo si esa respuesta automática existe de verdad.
+ */
+export const ComentarioEnVivo: React.FC<{ from: number; palabra: string; usuario?: string; to?: number; top?: number; respuesta?: { quien: string; texto: string } }> = ({ from, palabra, usuario = "tú", to = 1e9, top = 980, respuesta }) => {
   const t = useT();
   if (t < from || t > to + 0.3) return null;
   const p = pop(t, from, 0.45);
@@ -269,6 +273,16 @@ export const ComentarioEnVivo: React.FC<{ from: number; palabra: string; usuario
           <svg width={54} height={54} viewBox="0 0 24 24" style={{ transform: `scale(${corazon ? 0.8 + 0.4 * pop(t, publicado + 0.6, 0.4) : 1})` }}>
             <path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z" fill={corazon ? "#ff3b5c" : "none"} stroke={corazon ? "#ff3b5c" : "#fff"} strokeWidth={2} />
           </svg>
+        </div>
+      )}
+      {pub && respuesta && t >= publicado + 1.2 && (
+        <div style={{ display: "flex", alignItems: "center", gap: 14, margin: "-6px 0 20px 82px", opacity: Math.min(1, pop(t, publicado + 1.2, 0.4) * 2),
+          transform: `translateY(${(1 - pop(t, publicado + 1.2, 0.4)) * 24}px)` }}>
+          <div style={{ width: 46, height: 46, borderRadius: 23, background: C.lime, flexShrink: 0 }} />
+          <div>
+            <div style={{ fontFamily: BODY, fontWeight: 700, fontSize: 24, color: "rgba(255,255,255,.6)" }}>{respuesta.quien} · ahora</div>
+            <div style={{ fontFamily: BODY, fontWeight: 600, fontSize: 36, color: "#fff" }}>{respuesta.texto}</div>
+          </div>
         </div>
       )}
       <div style={{ display: "flex", alignItems: "center", gap: 16, borderRadius: 40, border: "2px solid rgba(255,255,255,.25)", padding: "14px 24px" }}>

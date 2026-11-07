@@ -14,7 +14,7 @@ Cada pieza tiene un **código** para pedirla corto: «edita mi video con H6 C9 D
   todas las cifras van detrás de la cabeza. Dejar respiros solo con la cara.
 
 Piezas (se copian al proyecto): `fx-efectos.tsx` → `src/fx.tsx` · `fx-estilos.tsx` → `src/estilos.tsx` · `mg.tsx` →
-`src/mg.tsx` · `fx-documental.tsx` → `src/doc.tsx` · `fx-apoyo-visual.tsx` → `src/apoyo.tsx`.
+`src/mg.tsx` · `fx-documental.tsx` → `src/doc.tsx` · `fx-apoyo-visual.tsx` → `src/apoyo.tsx` · `fx-editorial.tsx` → `src/editorial.tsx` (C10, H7, A12–A15, D8–D10, G5–G7).
 Lo que va **detrás** de la persona necesita su recorte: `scripts/mascaras.py <reel> --tramos "a-b,…" --con-pelo` escribe
 `public/fg/00000.webp…` y `src/mascaras.ts` (con `TOPS`, la coronilla por cuadro). Los tramos deben cubrir todo lo que
 Cam2 muestra recortado (`on`, `vertigo` y `shrink` hasta el final) y cada corrida borra la anterior: pasar todos.
@@ -37,6 +37,7 @@ Ningún subtítulo, tarjeta ni gráfico entre los ojos y el mentón (corrección
 | H4 | Recorte | Serif cursiva fina sobre una palabra gruesa en minúscula. Suave, editorial | `GanchoEstilo estilo="h4"` |
 | H5 | Etiqueta a mano | Mayúsculas a mano chiquitas («el truco para») sobre título grueso en minúscula; con `fondo` va en una banda de color | `GanchoEstilo estilo="h5"` |
 | H6 | Dos pesos | Mayúsculas gruesas sobre mayúsculas finas angostas, centrado; sube y se va a los ~3 s | `GanchoEstilo estilo="h6"` |
+| H7 | Gancho en estudio | El fondo se vuelve un color plano de la marca y detrás de la cabeza pasan 2–3 frases, cada una en otra letra (serif · gruesa · cursiva de acento). Recorte | `GanchoEstudio` (editorial) en `behind` |
 
 ## C · Subtítulos (nunca sobre la cara)
 | Código | Estilo | Qué se ve | Pieza |
@@ -50,6 +51,7 @@ Ningún subtítulo, tarjeta ni gráfico entre los ojos y el mentón (corrección
 | C7 | Revista | Mayúsculas chiquitas muy espaciadas y la clave en serif cursiva grande que sube desde una máscara. Caro | `SubsEstilo estilo="c7"` |
 | C8 | Bajo el mentón | Una sola línea en mayúsculas pequeñas justo debajo del mentón. Casi invisible | `SubsEstilo estilo="c8"` |
 | C9 | Escalera | Cada palabra cae un escalón en diagonal (3–5 líneas) en el espacio libre; la clave en serif cursiva subrayada | `SubsEstilo estilo="c9"` (`x`, `y` = columna libre) |
+| C10 | Karaoke en pastilla | Frase corta en serif chica sobre una pastilla del color de la marca; lo ya dicho en crema, lo que falta apagado. Discreto y caro | `SubsKaraoke` (editorial) |
 
 ## D · Detrás de la persona (necesitan recorte)
 | Código | Efecto | Qué se ve | Pieza |
@@ -61,6 +63,9 @@ Ningún subtítulo, tarjeta ni gráfico entre los ojos y el mentón (corrección
 | D5 | Cifra que cuenta | Número enorme que sube detrás de la cabeza al decir la cifra. Solo cifras reales | `CifraDetras` |
 | D6 | Gráfica que crece | Línea con brillo que se dibuja en la pared y se dispara al final. Datos reales o forma sin números | `GraficaDetras` |
 | D7 | Apagón | La sala se oscurece y la persona queda iluminada, con la palabra detrás (anuncio Black) | `Look estilo="g3"` en `behind` + `BehindText` |
+| D8 | Palabra ventana | Pantalla de un color con UNA palabra gigante; el video se ve solo dentro de las letras. 0,8–1,5 s en un remate. Sin recorte | `PalabraVentana` (editorial) |
+| D9 | Cuerpo de texto | El fondo se apaga y la silueta de la persona se llena de palabras del guion. 0,8–1,5 s | `CuerpoTexto` (editorial) |
+| D10 | Clones | Copias de la persona aparecen a los lados, detrás de ella: «todas hacen lo mismo», «otra vez» | `Clones` (editorial) en `behind` |
 
 ## T · Cámara y transiciones
 | Código | Efecto | Qué se ve | Pieza |
@@ -89,13 +94,17 @@ Ningún subtítulo, tarjeta ni gráfico entre los ojos y el mentón (corrección
 | A9 | Serie numerada | Título fijo + contador 01/10 + etiqueta grande de cada ítem. Listas largas | `Serie` |
 | A10 | Nota con flecha | Nota a mano («antes») con una flecha dibujada que apunta a algo | `NotaFlecha` |
 | A11 | Ranking | Tabla por niveles (S, A, B, C) que se llena al nombrar cada cosa. Ocupa ~520 px: con la cara abajo | `Ranking` |
+| A12 | Barra de pedido | Barra tipo chat de IA que escribe el pedido («hazlo más elegante») y se vuelve «listo ✓». Pedido → resultado | `BarraPedido` (editorial) |
+| A13 | Reloj de material | Reloj de fichas que baja de la duración cruda a la final (1:07 → 0:52). Solo duraciones reales | `RelojMaterial` (editorial) |
+| A14 | Lista lateral | Panel angosto a un costado con todos los puntos; el que se dice se marca y arriba va «03 / 12». Videos de lista | `ListaLateral` (editorial) |
+| A15 | Cursor en vivo | Cursor con etiqueta («Claude») que se mueve y dibuja un recuadro de selección con medidas | `CursorVivo` (editorial) |
 
 ## K · Cierres
 | Código | Cierre | Cuándo | Pieza |
 |---|---|---|---|
 | K1 | Comenta PALABRA clásico | Orgánico | `CommentCTA` (reel.tsx) |
 | K2 | Tarjeta «Comenta» | Orgánico: tarjeta blanca con aro de color, escribe «Comenta» y la palabra en degradado | `ComentaCTA` |
-| K3 | Comentario en vivo | Orgánico: hoja de comentarios delante del pecho, la palabra se escribe, se publica y le cae un corazón | `ComentarioEnVivo` |
+| K3 | Comentario en vivo | Orgánico: hoja de comentarios delante del pecho, la palabra se escribe, se publica y le cae un corazón; con `respuesta`, la cuenta contesta («Te lo envío por mensaje») | `ComentarioEnVivo` |
 | K4 | Botón | **Anuncios**: «toca el botón de abajo», sin palabra clave | `TapButton` / `EndCard` (mg.tsx) |
 
 ## G · Look de color
@@ -105,6 +114,9 @@ Ningún subtítulo, tarjeta ni gráfico entre los ojos y el mentón (corrección
 | G2 | Sepia suave | Sepia cálido, texto crema; va con la órbita y una línea en serif cursiva | `Look estilo="g2"` |
 | G3 | Editorial oscuro | Sala oscurecida, tono petróleo, viñeta; en `behind` la persona queda iluminada | `Look estilo="g3"` |
 | G4 | Documental cálido | Grano, franjas de cine, capítulos en serif, ficha de nombre, cita grande. Testimonios e historias reales | `Pelicula`, `Franjas`, `Capitulo`, `Rotulo`, `CitaGrande`, `Recuadro`, `TachaSerif`, `Destello`, `CierreDoc` (fx-documental) + `CoverStory` |
+| G5 | Portada de periódico | Entra girando una primera página con titular gigante y la foto de la persona en semitono; columnas en líneas grises (nunca texto inventado). 1,2–2 s | `Periodico` (editorial) |
+| G6 | Billete | La persona grabada en el óvalo de un billete inventado, con el título y una cifra. Hablar de dinero o precio. 1–1,5 s | `Billete` (editorial) |
+| G7 | Impacto | Cuadro congelado en blanco y negro puro tipo cómic, líneas de velocidad y una palabra gruesa. 0,6–1 s en el golpe | `Impacto` (editorial; mejor con `recorte`) |
 
 ## V · Versiones y sonido
 | Código | Qué hace | Cómo |
@@ -122,6 +134,8 @@ Siempre disponibles sin preguntar (son la base): subtítulos, saltos de encuadre
 - Videos largos horizontales: el kit de `references/youtube-horizontal/` (se ofrece, no se aplica solo).
 
 ## Lecciones (de los videos donde se probaron)
+- Las piezas de pantalla completa (G5, G6, G7, D8, D9) tapan la cara: máximo 1,5 s cada una, como golpe y no como escena, y
+  no más de 2–3 por video. La voz sigue debajo. Ocultar los subtítulos en esos tramos.
 - Persona recortada: va como imagen WEBP por cuadro con `<Img>`. Un segundo `OffthreadVideo` con máscara CSS hizo que
   la persona desapareciera o parpadeara en render (43 de 171 cuadros en un tramo).
 - Cabeza calva con cielo o pared clara detrás: el modelo confunde el fondo con pelo; por eso `mascaras.py` va sin la
