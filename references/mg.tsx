@@ -352,7 +352,7 @@ export const EndCard: React.FC<{ from: number; tag: string; title: string[]; but
   if (t < from - 0.05) return null;
   const o = prog(t, from, 0.3);
   return (
-    <AbsoluteFill style={{ background: `radial-gradient(120% 70% at 50% 38%, #12383A 0%, #0A1416 62%, #070B0C 100%)`, opacity: o }}>
+    <AbsoluteFill style={{ background: `radial-gradient(120% 70% at 50% 38%, ${C.cardSolid} 0%, ${C.bg} 70%)`, opacity: o }}>
       <div style={{ position: "absolute", top: 520, left: 70, right: 70, display: "flex", flexDirection: "column", alignItems: "center", gap: 34 }}>
         <div style={{ padding: "12px 30px", borderRadius: 40, border: `3px solid ${C.violet}`, color: C.violet, fontFamily: BODY, fontWeight: 600, fontSize: 44, letterSpacing: 1,
           transform: `translateY(${(1 - prog(t, from + 0.1, 0.4)) * 24}px)`, opacity: prog(t, from + 0.1, 0.3) }}>{tag}</div>

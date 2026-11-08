@@ -51,15 +51,19 @@ No preguntar lo que la persona ya dijo. Preguntas:
    eligió y de su marca (pregunta 4).
    En videos largos horizontales, el kit de `references/youtube-horizontal/LEEME.md` es una opción (oscuro + dorado): ofrecerlo, no imponerlo.
 
-4. **Tu marca**: colores (o "los de mi logo"), tu @usuario para la marca de agua, y tu logo si quieres.
+4. **Tu marca: colores y letras (SIEMPRE se pregunta, en cada video)**: colores (fondo, acento, segundo color, o "los de
+   mi logo"), las letras (título y texto; si no las sabe, proponer 2–3 combinaciones y esperar su sí), tu @usuario para la
+   marca de agua y tu logo si quieres. **Nunca se reusan los colores ni las letras de otro video, de otra marca ni del
+   catálogo**, aunque sea la misma persona: se pregunta igual (regla de Juan, 8-nov-2026).
 5. **¿Ya hiciste los cortes?** Si la persona ya cortó errores y pausas, NO volver a cortar
    (`cut.py --gap 99`). Si no, la skill quita pausas y tomas repetidas.
 6. **Música**: archivo propio (mp3/wav libre de derechos), "sin música", o "elige tú" (ver Paso 6).
 7. **Solo reels — CTA final**: palabra para comentar (ej. "Comenta GUIA y te envío…") y qué se envía.
 
 Con las respuestas:
-- Escribir los colores y la marca en `remotion/src/theme.ts` de cada proyecto (`C` y `MARCA`).
-  `lime` = acento principal, `violet` = acento secundario, `bg` = fondo.
+- Escribir los colores, las letras y la marca en `remotion/src/theme.ts` de cada proyecto (`C`, las fuentes y `MARCA`).
+  `lime` = acento principal, `violet` = acento secundario, `bg` = fondo. Letras: `TITLE`, `BODY`, `SERIF`, `HAND`, `FINA`,
+  `ANGOSTA`, `SERIF_GRUESA` (todas las piezas las toman de ahí). Los valores de la plantilla son neutros y solo sirven para compilar.
 - Si hay estilo de referencia, aplicarlo según `references/copiar-estilo.md` **antes** de planificar escenas,
   y mostrarle a la persona un resumen de lo que vas a copiar ("cortes cada ~2 s, subtítulos amarillos en
   mayúsculas al centro, zooms en cada remate…") para que confirme.

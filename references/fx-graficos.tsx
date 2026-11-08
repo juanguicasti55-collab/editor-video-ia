@@ -1,6 +1,7 @@
 // Piezas del menú sacadas del análisis de reels de 4 cuentas (7-nov-2026): H8–H9 · C11–C12 · D11–D13 · T10 · A16–A23 ·
 // K5–K6 · I1–I4. Se tomó la idea de cada efecto, nunca su código, sus textos ni su marca. Probadas en un reel 1080×1920.
-// Copiar a remotion/src/graficos.tsx del reel. Necesita de theme.ts: C, TITLE, BODY. Carga Instrument Serif y Oswald.
+// Copiar a remotion/src/graficos.tsx del reel. Necesita de theme.ts: C, TITLE, BODY, FINA, ANGOSTA, SERIF_GRUESA.
+// Letras y colores: salen del theme.ts de cada video (C.lime = acento, C.violet = segundo color), que se llena con la marca.
 //
 // Dónde va cada una:
 // · en el `behind` de Cam2 (con recorte): NumeroSeccion (D11), VidrioAcanalado (D12), CintaDeLuz (D13)
@@ -11,19 +12,14 @@
 // comentario: solo uno que alguien escribió de verdad.
 import React from "react";
 import { AbsoluteFill, Freeze, OffthreadVideo, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
-import { loadFont as loadInstrumentSerif } from "@remotion/google-fonts/InstrumentSerif";
-import { loadFont as loadOswald } from "@remotion/google-fonts/Oswald";
-import { loadFont as loadPlayfair } from "@remotion/google-fonts/PlayfairDisplay";
-import { C, TITLE, BODY } from "./theme";
+import { C, TITLE, BODY, FINA, ANGOSTA, SERIF_GRUESA } from "./theme";
 import { WORDS } from "./words";
 import { useT, prog, pop } from "./lib";
 
-const { fontFamily: SERIF_G } = loadInstrumentSerif("normal", { weights: ["400"], subsets: ["latin"] });
-loadInstrumentSerif("italic", { weights: ["400"], subsets: ["latin"] });
-const { fontFamily: ANGOSTA_G } = loadOswald("normal", { weights: ["500", "700"], subsets: ["latin"] });
-const { fontFamily: SERIF_GRUESA } = loadPlayfair("italic", { weights: ["800"], subsets: ["latin"] });
+const SERIF_G = FINA;
+const ANGOSTA_G = ANGOSTA;
 
-const AMARILLO = "#F5D76E";
+const AMARILLO = C.lime; // acento de la marca (el nombre quedó del primer ejemplo)
 const CREMA = "#F4EEDF";
 const SOMBRA = "0 3px 14px rgba(0,0,0,.55)";
 const limpia = (w: string) => w.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[.,;:¿?¡!«»"“”…]/g, "");
@@ -139,7 +135,7 @@ export const RespuestaComentario: React.FC<{ from?: number; to: number; usuario:
         </div>
       </div>
       <div style={{ textAlign: "center", marginTop: 22, opacity: p2, transform: `translateY(${(1 - p2) * 20}px)` }}>
-        {etiqueta && <span style={{ fontFamily: BODY, fontWeight: 800, fontSize: 24, background: "#E8573A", color: "#fff", padding: "4px 12px", borderRadius: 8, marginRight: 10 }}>{etiqueta}</span>}
+        {etiqueta && <span style={{ fontFamily: BODY, fontWeight: 800, fontSize: 24, background: C.violet, color: "#fff", padding: "4px 12px", borderRadius: 8, marginRight: 10 }}>{etiqueta}</span>}
         <div style={{ fontFamily: ANGOSTA_G, fontWeight: 700, fontSize: 130, lineHeight: 0.95, color: CREMA, textTransform: "uppercase", textShadow: SOMBRA }}>{titular}</div>
         {cursiva && <div style={{ fontFamily: SERIF_G, fontStyle: "italic", fontSize: 64, color: CREMA, marginTop: -6, textShadow: SOMBRA }}>{cursiva}</div>}
       </div>
@@ -155,7 +151,7 @@ export const NumeroSeccion: React.FC<{ from: number; to: number; n: string; top?
   const p = prog(t, from, 0.5);
   return (
     <div style={{ position: "absolute", top, left: x, fontFamily: SERIF_GRUESA, fontStyle: "italic", fontWeight: 800, fontSize: size, lineHeight: 1, opacity: p * sale(t, to),
-      transform: `translateY(${(1 - p) * 60}px)`, background: "linear-gradient(160deg,#FFF1B8 0%,#E2B23E 35%,#9C6A12 70%,#F3D77A 100%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent",
+      transform: `translateY(${(1 - p) * 60}px)`, background: `linear-gradient(160deg,#ffffff 0%,${C.lime} 35%,${C.lime} 70%,#ffffff 100%)`, WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent",
       filter: "drop-shadow(0 10px 30px rgba(0,0,0,.35))" }}>{n}</div>
   );
 };
@@ -178,7 +174,7 @@ export const VidrioAcanalado: React.FC<{ from: number; to: number; palabra: stri
 };
 
 /** D13 · Cinta de luz: una cinta de color brillante se dibuja en curva detrás de la persona. Para «todo se conecta», momentos de energía. */
-export const CintaDeLuz: React.FC<{ from: number; to: number; color?: string; color2?: string }> = ({ from, to, color = "#8B5CF6", color2 = "#EC4899" }) => {
+export const CintaDeLuz: React.FC<{ from: number; to: number; color?: string; color2?: string }> = ({ from, to, color = C.lime, color2 = C.violet }) => {
   const t = useT();
   if (!en(t, from, to, 0.2)) return null;
   const d = prog(t, from, 0.9);
@@ -210,7 +206,7 @@ export const CamaraSaltos: React.FC<{ from: number; to: number; fps?: number }> 
 // =====================================================================  APOYOS
 /** A16 · Contador que rueda: tarjeta con cada dígito en su casilla, girando como tragamonedas hasta la cifra real. */
 export const ContadorRueda: React.FC<{ from: number; to: number; valor: number; prefijo?: string; titulo?: string; top?: number; color?: string; dur?: number }> = ({
-  from, to, valor, prefijo = "$", titulo = "Total", top = 1050, color = "#C8232C", dur = 2.2,
+  from, to, valor, prefijo = "$", titulo = "Total", top = 1050, color = C.violet, dur = 2.2,
 }) => {
   const t = useT();
   if (!en(t, from, to)) return null;
@@ -253,7 +249,7 @@ export const ContadorRueda: React.FC<{ from: number; to: number; valor: number; 
  * video editado. 1,5–3 s, para mostrar el cambio.
  */
 export const AntesDespues: React.FC<{ from: number; to: number; srcAntes?: string; srcDespues?: string; antes?: string; despues?: string; fondo?: string }> = ({
-  from, to, srcAntes = "cam.mp4", srcDespues = "cam.mp4", antes = "Antes", despues = "Después", fondo = "radial-gradient(80% 60% at 50% 55%, #3a2416 0%, #0d0907 75%)",
+  from, to, srcAntes = "cam.mp4", srcDespues = "cam.mp4", antes = "Antes", despues = "Después", fondo = `radial-gradient(80% 60% at 50% 55%, ${C.cardSolid} 0%, ${C.bg} 75%)`,
 }) => {
   const t = useT();
   if (!en(t, from, to, 0.2)) return null;
@@ -279,7 +275,7 @@ export const AntesDespues: React.FC<{ from: number; to: number; srcAntes?: strin
 };
 
 /** A18 · Camino de nodos: puntos que brillan unidos por líneas que se dibujan, cada uno con su etiqueta (decisión, proceso). Oscurece un poco la cámara. */
-export const CaminoNodos: React.FC<{ from: number; to: number; nodos: { at: number; t: string; x: number; y: number }[]; color?: string }> = ({ from, to, nodos, color = "#38BDF8" }) => {
+export const CaminoNodos: React.FC<{ from: number; to: number; nodos: { at: number; t: string; x: number; y: number }[]; color?: string }> = ({ from, to, nodos, color = C.lime }) => {
   const t = useT();
   if (!en(t, from, to)) return null;
   const o = prog(t, from, 0.25) * sale(t, to);
@@ -418,19 +414,19 @@ export const TituloFijo: React.FC<{ lineas: string[]; to: number; from?: number;
 
 // =====================================================================  CIERRES
 /** K5 · Botón que brilla: pantalla oscura, ondas que salen del centro y un botón con brillo que se «presiona». Anuncios: «toca el botón». */
-export const BotonBrillo: React.FC<{ from: number; to: number; texto: string; color?: string; top?: number }> = ({ from, to, texto, color = "#8B5CF6", top = 900 }) => {
+export const BotonBrillo: React.FC<{ from: number; to: number; texto: string; color?: string; top?: number }> = ({ from, to, texto, color = C.violet, top = 900 }) => {
   const t = useT();
   if (!en(t, from, to, 0.2)) return null;
   const p = pop(t, from + 0.2, 0.45);
   const press = t > from + 1.1 && t < from + 1.3 ? 0.94 : 1;
   return (
-    <AbsoluteFill style={{ background: `radial-gradient(60% 40% at 50% ${(top + 60) / 19.2}%, ${color}55 0%, #07060c 70%)`, opacity: prog(t, from, 0.2) * sale(t, to, 0.2) }}>
+    <AbsoluteFill style={{ background: `radial-gradient(60% 40% at 50% ${(top + 60) / 19.2}%, ${color}55 0%, ${C.bg} 70%)`, opacity: prog(t, from, 0.2) * sale(t, to, 0.2) }}>
       {[0, 1, 2].map((i) => {
         const k = ((t - from) * 0.6 + i / 3) % 1;
         return <div key={i} style={{ position: "absolute", left: 540 - 150 - 500 * k, top: top + 60 - 60 - 200 * k, width: 300 + 1000 * k, height: 120 + 400 * k, borderRadius: 999, border: `2px solid ${color}`, opacity: 0.6 * (1 - k) }} />;
       })}
       <div style={{ position: "absolute", top, left: 0, right: 0, display: "flex", justifyContent: "center" }}>
-        <div style={{ fontFamily: BODY, fontWeight: 800, fontSize: 48, color: "#fff", padding: "26px 70px", borderRadius: 999, background: `linear-gradient(180deg, ${color}, #3b1d8f)`,
+        <div style={{ fontFamily: BODY, fontWeight: 800, fontSize: 48, color: "#fff", padding: "26px 70px", borderRadius: 999, background: `linear-gradient(180deg, ${color}, ${color}cc)`,
           boxShadow: `0 0 40px 10px ${color}88, inset 0 2px 0 rgba(255,255,255,.4)`, transform: `scale(${p * press})` }}>{texto} ›</div>
       </div>
     </AbsoluteFill>
@@ -458,7 +454,7 @@ export const ComentaDestellos: React.FC<{ from: number; to: number; palabra: str
 };
 
 // =====================================================================  INSERTOS A PANTALLA COMPLETA (I)
-const CALIDO = "radial-gradient(90% 70% at 50% 35%, #8a5a2e 0%, #3b2414 55%, #1a0f08 100%)";
+const CALIDO = `radial-gradient(90% 70% at 50% 35%, ${C.cardSolid} 0%, ${C.bg} 100%)`; // fondo de la marca
 const ICONOS: Record<string, string[]> = {
   monitor: ["M3 4h18v12H3z", "M9 20h6", "M12 16v4", "M6 13c2-3 4-3 6-1s4 2 6-1"],
   silla: ["M6 3v18", "M18 3v18", "M6 9h12", "M6 14h12", "M6 14l12 7", "M18 14L6 21"],
@@ -495,7 +491,7 @@ export const Pictograma: React.FC<{ from: number; to: number; icono: keyof typeo
 
 /** I2 · Cifra con gráfica: pantalla oscura, un número enorme que sube y una línea que se dispara al final con su etiqueta. Solo datos reales. */
 export const CifraGrafica: React.FC<{ from: number; to: number; valor: number; prefijo?: string; sufijo?: string; etiqueta: string; nota?: string; puntos?: number[]; color?: string; decimales?: number }> = ({
-  from, to, valor, prefijo = "$", sufijo = "", etiqueta, nota, puntos = [5, 6, 6, 8, 9, 12, 18, 35, 60, 100], color = "#F26B2A", decimales = 1,
+  from, to, valor, prefijo = "$", sufijo = "", etiqueta, nota, puntos = [5, 6, 6, 8, 9, 12, 18, 35, 60, 100], color = C.violet, decimales = 1,
 }) => {
   const t = useT();
   if (!en(t, from, to, 0.15)) return null;
@@ -537,7 +533,7 @@ export const ArticuloResaltado: React.FC<{ from: number; to: number; medio: stri
         <div style={{ fontFamily: SERIF_G, fontSize: 64, borderBottom: "2px solid #141414", paddingBottom: 10 }}>{medio}</div>
         <div style={{ fontFamily: SERIF_G, fontSize: 64, lineHeight: 1.05, margin: "22px 0 18px" }}>{titular}</div>
         <div style={{ fontFamily: SERIF_G, fontSize: 36, lineHeight: 1.35 }}>
-          {a}{b !== undefined && texto.includes(resaltar) && <span style={{ backgroundImage: "linear-gradient(#E9F25A,#E9F25A)", backgroundRepeat: "no-repeat", backgroundSize: `${r * 100}% 100%` }}>{resaltar}</span>}{b}
+          {a}{b !== undefined && texto.includes(resaltar) && <span style={{ backgroundImage: `linear-gradient(${C.lime},${C.lime})`, backgroundRepeat: "no-repeat", backgroundSize: `${r * 100}% 100%` }}>{resaltar}</span>}{b}
         </div>
       </div>
     </AbsoluteFill>
@@ -554,7 +550,7 @@ export const PalabraPantalla: React.FC<{ from: number; to: number; modo: "conteo
 }) => {
   const t = useT();
   if (!en(t, from, to, 0.1)) return null;
-  const fondo = "radial-gradient(90% 60% at 50% 30%, #6b3417 0%, #2a130a 55%, #0e0705 100%)";
+  const fondo = `radial-gradient(90% 60% at 50% 30%, ${C.cardSolid} 0%, ${C.bg} 100%)`;
   let cont: React.ReactNode = null;
   if (modo === "conteo") {
     const act = [...numeros].reverse().find((x) => t >= x.at) ?? numeros[0];

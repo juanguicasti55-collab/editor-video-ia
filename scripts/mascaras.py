@@ -9,7 +9,7 @@ Lee remotion/public/cam.mp4 (o cut.mp4) y escribe:
                                    borra las anteriores: pasar siempre todos los tramos.
   remotion/src/mascaras.ts         ULTIMA_MASCARA y TOPS (la coronilla en px por cuadro: para poner el texto de atrás
                                    justo encima de la cabeza).
---tramos: esos segundos, que deben cubrir todo lo que Cam2 muestra recortado (`on`, `vertigo` y `shrink` hasta el final):
+--tramos: esos segundos, que deben cubrir todo lo que Cam2 muestra recortado (`on` y `shrink` hasta el final):
           un cuadro sin recorte hace fallar el render. Sin --tramos hace todo el video, que es lento y pesa mucho.
 --con-pelo: OBLIGATORIO si la persona tiene pelo: sin esta opción el pelo desaparece del recorte, sin ningún error. Por
           defecto va sin la clase pelo porque en una cabeza calva el modelo confunde nubes o paredes con pelo.

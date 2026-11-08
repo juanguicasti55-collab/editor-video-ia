@@ -27,7 +27,7 @@ música y clips de otra persona no se usan.
   1 fotograma por segundo (`fps=1,…,tile=8x4`): en estos estilos cambia algo cada 1–2 s y cada 3 s se pierde la mitad.
 - Si la cuenta muestra una **lista de efectos con nombre** (anuncios de «20 efectos»), leerla en la hoja: es el mapa más
   rápido de qué falta en el menú. Lo que ya existe se mapea a su código y lo nuevo se arma como pieza propia (nunca su código
-  ni su marca). Así salieron C10, H7, A12–A15, D8–D10 y G5–G7, y después H8–H9, C11–C12, D11–D13, T10, A16–A23,
+  ni su marca). Así salieron C10, H7, A12–A15, D8 y D10 (D9 y G5–G7 se retiraron después), y después H8–H9, C11–C12, D11–D13, T10, A16–A23,
   K5–K6 e I1–I4 (7-nov-2026).
 - Reels de 7–10 s de una cuenta de anuncios suelen ser la misma idea en varias versiones: con 2–3 basta. Para reels
   cortos usar 3 fotogramas por segundo en la hoja (`fps=3`), si no se pierden los efectos.

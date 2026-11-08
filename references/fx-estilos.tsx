@@ -3,21 +3,16 @@
 // Agregados el 2026-11-06 a partir de un catálogo de estilos de creadora (Brand Nat Style Pack): se tomó la idea de cada
 // estilo, no su código ni sus textos. Probados en un reel vertical 1080×1920 (anuncio BBE Black R5).
 //
-// Necesita de theme.ts: C, TITLE, BODY, HAND. Carga sus propias fuentes (Instrument Serif y Oswald).
+// Necesita de theme.ts: C, TITLE, BODY, HAND, FINA, ANGOSTA (las letras salen de la marca de cada video, nunca de aquí).
 // Lo que dice «detrás» (CifraDetras, GraficaDetras, Look en la capa de atrás) va en el `behind` de Cam2 (fx.tsx) y necesita
 // el recorte de scripts/mascaras.py en esos tramos.
 import React from "react";
 import { AbsoluteFill, Freeze, OffthreadVideo, staticFile } from "remotion";
-import { loadFont as loadInstrumentSerif } from "@remotion/google-fonts/InstrumentSerif";
-import { loadFont as loadOswald } from "@remotion/google-fonts/Oswald";
-import { C, TITLE, BODY, HAND } from "./theme";
+import { C, TITLE, BODY, HAND, FINA, ANGOSTA } from "./theme";
 import { WORDS } from "./words";
 import { useT, prog, pop } from "./lib";
 import { CamKeyV } from "./reel";
 
-const { fontFamily: FINA } = loadInstrumentSerif("normal", { weights: ["400"], subsets: ["latin"] });
-loadInstrumentSerif("italic", { weights: ["400"], subsets: ["latin"] });
-const { fontFamily: ANGOSTA } = loadOswald("normal", { weights: ["300", "700"], subsets: ["latin"] });
 
 const SOMBRA = "0 3px 12px rgba(0,0,0,.6), 0 0 30px rgba(0,0,0,.35)";
 const limpia = (w: string) => w.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[.,;:¿?¡!«»"“”…]/g, "");
@@ -161,14 +156,14 @@ export const SubsEstilo: React.FC<{ estilo: EstiloSubs; claves: string[]; oculta
 };
 
 // ---------- ganchos (visibles desde el cuadro 0) ----------
-export type EstiloGancho = "h3" | "h4" | "h5" | "h6";
+export type EstiloGancho = "h3" | "h4" | "h6";
 /**
  * h3 mayúsculas crema con borde café + línea caramelo · h4 recorte (serif cursiva fina sobre palabra gruesa en minúscula)
- * · h5 etiqueta a mano en mayúsculas sobre título grueso en minúscula (con `fondo`, sobre una banda de color) · h6 dos pesos
+ * · h6 dos pesos
  * (mayúsculas gruesas sobre mayúsculas finas angostas), sube y se va al terminar. (H1 = HookTitle de reel.tsx, H2 = BehindText.) `chica` = línea de arriba, `grande` = la que manda.
  */
-export const GanchoEstilo: React.FC<{ estilo: EstiloGancho; chica: string; grande: string; to: number; from?: number; top?: number; color?: string; fondo?: string }> = ({
-  estilo, chica, grande, to, from = 0, top = 260, color = C.lime, fondo,
+export const GanchoEstilo: React.FC<{ estilo: EstiloGancho; chica: string; grande: string; to: number; from?: number; top?: number; color?: string }> = ({
+  estilo, chica, grande, to, from = 0, top = 260, color = C.lime,
 }) => {
   const t = useT();
   if (t < from || t > to + 0.4) return null;
@@ -176,7 +171,6 @@ export const GanchoEstilo: React.FC<{ estilo: EstiloGancho; chica: string; grand
   const sale = prog(t, to, 0.35);
   const base: React.CSSProperties = { position: "absolute", top, left: 50, right: 50, textAlign: "center", opacity: (1 - sale) * Math.min(1, p * 2),
     transform: `translateY(${-sale * 60 + (1 - p) * 30}px)` };
-  const caja = fondo ? { background: fondo, borderRadius: 30, padding: "26px 34px 32px" } : {};
   if (estilo === "h6") {
     return (
       <div style={base}>
@@ -190,14 +184,6 @@ export const GanchoEstilo: React.FC<{ estilo: EstiloGancho; chica: string; grand
       <div style={base}>
         <div style={{ fontFamily: FINA, fontStyle: "italic", fontSize: 68, color: "#fff", textShadow: SOMBRA, lineHeight: 1 }}>{chica}</div>
         <div style={{ fontFamily: TITLE, fontWeight: 900, fontSize: Math.min(140, Math.floor(1500 / grande.length)), letterSpacing: -4, lineHeight: 0.95, color, textShadow: SOMBRA, textTransform: "lowercase" }}>{grande}</div>
-      </div>
-    );
-  }
-  if (estilo === "h5") {
-    return (
-      <div style={{ ...base, ...caja }}>
-        <div style={{ fontFamily: HAND, fontWeight: 700, fontSize: 58, letterSpacing: 2, textTransform: "uppercase", color: fondo ? "#2a2116" : color, textShadow: fondo ? "none" : SOMBRA }}>{chica}</div>
-        <div style={{ fontFamily: TITLE, fontWeight: 900, fontSize: Math.min(110, Math.floor(1500 / grande.length)), letterSpacing: -3, lineHeight: 1, color: fondo ? "#111" : "#fff", textShadow: fondo ? "none" : SOMBRA, textTransform: "lowercase" }}>{grande}</div>
       </div>
     );
   }

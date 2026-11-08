@@ -12,12 +12,21 @@ Cada pieza tiene un **código** para pedirla corto: «edita mi video con H6 C9 D
   con este video. Si la persona dio una sensación («que se sienta tranquilo y caro»), se proponen 4–6 códigos y se espera su sí.
 - **Presupuesto: 5–6 estilos por video. Mismo trabajo, mismo tratamiento**: si una cifra va detrás de la cabeza una vez,
   todas las cifras van detrás de la cabeza. Dejar respiros solo con la cara.
+- **Colores y letras: se preguntan antes de cada video** (regla de Juan, 8-nov-2026: «los colores siempre veo ese verde, eso
+  cambia siempre según la marca, pregunta antes»). Se piden los colores (fondo, acento, segundo color) y las letras (título,
+  texto, serif fina, condensada) de la marca de ESE video y se escriben en `theme.ts`. Nunca se reusan los del video anterior,
+  los de otra marca ni los del catálogo. Si la persona no tiene, se le proponen 2–3 combinaciones y se espera su sí. Las
+  piezas toman los colores de `C` (`C.lime` = acento, `C.violet` = segundo) y las letras de `theme.ts`; si una pieza trae un
+  color fijo, se cambia por los de la marca antes de usarla.
+- **Retirados el 8-nov-2026 a pedido de Juan, no se vuelven a ofrecer ni a construir:** H5 (etiqueta a mano), D9 (cuerpo
+  de texto), T2 (vertigo), G5 (portada de periódico), G6 (billete) y G7 (impacto). Sus códigos quedan vacíos para no
+  confundir videos viejos.
 
 Piezas (se copian al proyecto): `fx-efectos.tsx` → `src/fx.tsx` · `fx-estilos.tsx` → `src/estilos.tsx` · `mg.tsx` →
-`src/mg.tsx` · `fx-documental.tsx` → `src/doc.tsx` · `fx-apoyo-visual.tsx` → `src/apoyo.tsx` · `fx-editorial.tsx` → `src/editorial.tsx` (C10, H7, A12–A15, D8–D10, G5–G7). · `fx-graficos.tsx` → `src/graficos.tsx` (H8–H9, C11–C12, D11–D13, T10, A16–A23, K5–K6, I1–I4).
+`src/mg.tsx` · `fx-documental.tsx` → `src/doc.tsx` · `fx-apoyo-visual.tsx` → `src/apoyo.tsx` · `fx-editorial.tsx` → `src/editorial.tsx` (C10, H7, A12–A15, D8, D10). · `fx-graficos.tsx` → `src/graficos.tsx` (H8–H9, C11–C12, D11–D13, T10, A16–A23, K5–K6, I1–I4).
 Lo que va **detrás** de la persona necesita su recorte: `scripts/mascaras.py <reel> --tramos "a-b,…" --con-pelo` escribe
 `public/fg/00000.webp…` y `src/mascaras.ts` (con `TOPS`, la coronilla por cuadro). Los tramos deben cubrir todo lo que
-Cam2 muestra recortado (`on`, `vertigo` y `shrink` hasta el final) y cada corrida borra la anterior: pasar todos.
+Cam2 muestra recortado (`on` y `shrink` hasta el final) y cada corrida borra la anterior: pasar todos.
 **Si la persona tiene pelo, `--con-pelo`**: sin esa opción el pelo desaparece del recorte y no sale ningún error.
 
 ## Regla fija: nada sobre la cara
@@ -35,7 +44,6 @@ Ningún subtítulo, tarjeta ni gráfico entre los ojos y el mentón (corrección
 | H2 | Gancho detrás de la cabeza | Línea chica + título gigante detrás, la persona recortada delante | `BehindText` (mg.tsx) |
 | H3 | Mayúsculas cálidas | Mayúsculas crema con borde café grueso y una línea a mano color caramelo. Cercano | `GanchoEstilo estilo="h3"` |
 | H4 | Recorte | Serif cursiva fina sobre una palabra gruesa en minúscula. Suave, editorial | `GanchoEstilo estilo="h4"` |
-| H5 | Etiqueta a mano | Mayúsculas a mano chiquitas («el truco para») sobre título grueso en minúscula; con `fondo` va en una banda de color | `GanchoEstilo estilo="h5"` |
 | H6 | Dos pesos | Mayúsculas gruesas sobre mayúsculas finas angostas, centrado; sube y se va a los ~3 s | `GanchoEstilo estilo="h6"` |
 | H7 | Gancho en estudio | El fondo se vuelve un color plano de la marca y detrás de la cabeza pasan 2–3 frases, cada una en otra letra (serif · gruesa · cursiva de acento). Recorte | `GanchoEstudio` (editorial) en `behind` |
 | H8 | Frase que se arma | El gancho aparece línea por línea arriba y se queda armado; lo clave en serif cursiva amarilla | `FraseQueSeArma` (graficos) |
@@ -68,7 +76,6 @@ Ningún subtítulo, tarjeta ni gráfico entre los ojos y el mentón (corrección
 | D6 | Gráfica que crece | Línea con brillo que se dibuja en la pared y se dispara al final. Datos reales o forma sin números | `GraficaDetras` |
 | D7 | Apagón | La sala se oscurece y la persona queda iluminada, con la palabra detrás (anuncio Black) | `Look estilo="g3"` en `behind` + `BehindText` |
 | D8 | Palabra ventana | Pantalla de un color con UNA palabra gigante; el video se ve solo dentro de las letras. 0,8–1,5 s en un remate. Sin recorte | `PalabraVentana` (editorial) |
-| D9 | Cuerpo de texto | El fondo se apaga y la silueta de la persona se llena de palabras del guion. 0,8–1,5 s | `CuerpoTexto` (editorial) |
 | D10 | Clones | Copias de la persona aparecen a los lados, detrás de ella: «todas hacen lo mismo», «otra vez» | `Clones` (editorial) en `behind` |
 | D11 | Número de sección | Número dorado gigante en serif cursiva a un costado, la cabeza le tapa una parte: «1», «2», «3» al empezar cada punto | `NumeroSeccion` (graficos) en `behind` |
 | D12 | Vidrio acanalado | El fondo se vuelve un panel oscuro de vidrio estriado con una palabra condensada gigante | `VidrioAcanalado` (graficos) en `behind` |
@@ -78,7 +85,6 @@ Ningún subtítulo, tarjeta ni gráfico entre los ojos y el mentón (corrección
 | Código | Efecto | Qué se ve | Pieza |
 |---|---|---|---|
 | T1 | Fondo que cambia | El fondo se pone blanco y la persona queda delante. Cambios de tema | `WhiteOut` (recorte) |
-| T2 | Vertigo | El fondo se aleja y la persona queda del mismo tamaño. La frase de tensión | `Cam2 vertigo` (recorte) |
 | T3 | Zoom que atraviesa | La cámara se mete en el plano y sale en el siguiente. Máximo 2–3 por video | `Cam2 zt` |
 | T4 | Marco de reel | El video se encoge a un marco de reel con íconos y la persona se sale del borde. Llamado final | `Cam2 shrink` (recorte) |
 | T5 | Zoom digital | Salto seco a la cara en la palabra clave (sin desenfoque) con viñeta, y vuelta | `conZoomDigital` + `Vineta` |
@@ -132,9 +138,6 @@ Ningún subtítulo, tarjeta ni gráfico entre los ojos y el mentón (corrección
 | G2 | Sepia suave | Sepia cálido, texto crema; va con la órbita y una línea en serif cursiva | `Look estilo="g2"` |
 | G3 | Editorial oscuro | Sala oscurecida, tono petróleo, viñeta; en `behind` la persona queda iluminada | `Look estilo="g3"` |
 | G4 | Documental cálido | Grano, franjas de cine, capítulos en serif, ficha de nombre, cita grande. Testimonios e historias reales | `Pelicula`, `Franjas`, `Capitulo`, `Rotulo`, `CitaGrande`, `Recuadro`, `TachaSerif`, `Destello`, `CierreDoc` (fx-documental) + `CoverStory` |
-| G5 | Portada de periódico | Entra girando una primera página con titular gigante y la foto de la persona en semitono; columnas en líneas grises (nunca texto inventado). 1,2–2 s | `Periodico` (editorial) |
-| G6 | Billete | La persona grabada en el óvalo de un billete inventado, con el título y una cifra. Hablar de dinero o precio. 1–1,5 s | `Billete` (editorial) |
-| G7 | Impacto | Cuadro congelado en blanco y negro puro tipo cómic, líneas de velocidad y una palabra gruesa. 0,6–1 s en el golpe | `Impacto` (editorial; mejor con `recorte`) |
 
 ## I · Insertos a pantalla completa (reemplazan la cámara 1–3 s; la voz sigue)
 | Código | Inserto | Qué se ve | Pieza |
@@ -169,7 +172,7 @@ ver antes de elegir. Tarda: recorte de todo el video (~17 min por minuto de grab
 - (7-nov-2026, 13 reels de 4 cuentas) El reel con más vistas de la muestra (952 mil) no tiene casi efectos: título fijo en serif
   y una palabra a la vez (A23 + C11). Los efectos suben la retención, pero el gancho y el tema mandan: en piezas de historia
   personal o testimonio, menos efectos. Los de muchos efectos (pantallas, nodos, vidrio) funcionan en anuncios de producto.
-- Las piezas de pantalla completa (G5, G6, G7, D8, D9) tapan la cara: máximo 1,5 s cada una, como golpe y no como escena, y
+- Las piezas de pantalla completa (I1–I4, A17, K5, D8) tapan la cara: máximo 1,5 s cada una, como golpe y no como escena, y
   no más de 2–3 por video. La voz sigue debajo. Ocultar los subtítulos en esos tramos.
 - Persona recortada: va como imagen WEBP por cuadro con `<Img>`. Un segundo `OffthreadVideo` con máscara CSS hizo que
   la persona desapareciera o parpadeara en render (43 de 171 cuadros en un tramo).

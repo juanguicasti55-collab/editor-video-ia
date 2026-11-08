@@ -1,27 +1,24 @@
-// Piezas «editoriales» del menú (references/menu-efectos.md): C10 · H7 · A12–A15 · D8–D10 · G5–G7.
+// Piezas «editoriales» del menú (references/menu-efectos.md): C10 · H7 · A12–A15 · D8 · D10. (D9 y G5–G7 se retiraron el 8-nov-2026.)
 // Salen del análisis de reels de un creador de edición con IA (7-nov-2026): se tomó la idea de cada efecto, no su código,
 // sus textos ni su marca. Probadas en un reel vertical 1080×1920. Copiar a remotion/src/editorial.tsx del reel.
 //
-// Necesita de theme.ts: C, TITLE, BODY. Carga su propia serif (Instrument Serif, normal y cursiva).
-// D9 (CuerpoTexto), D10 (Clones) y G7 con `recorte` usan el recorte de scripts/mascaras.py (public/fg/… y src/mascaras.ts).
+// Necesita de theme.ts: C, TITLE, BODY, FINA (las letras y los colores salen de la marca de cada video, nunca de aquí).
+// D10 (Clones) usa el recorte de scripts/mascaras.py (public/fg/… y src/mascaras.ts).
 // Si el reel no tiene recorte y usas otras piezas: crea src/mascaras.ts con
 //   export const ULTIMA_MASCARA = 0; export const TOPS: number[] = [];
 //
 // Dónde va cada una:
 // · en el `behind` de Cam2 (detrás de la persona): GanchoEstudio (H7), Clones (D10)
-// · encima de la cámara, debajo de los textos: PalabraVentana (D8), CuerpoTexto (D9)
-// · pantalla completa (tapan la cámara 0,8–1,5 s; la voz sigue): Periodico (G5), Billete (G6), Impacto (G7)
+// · encima de la cámara, debajo de los textos: PalabraVentana (D8)
 // · encima de todo: SubsKaraoke (C10), BarraPedido (A12), RelojMaterial (A13), ListaLateral (A14), CursorVivo (A15)
 import React from "react";
-import { AbsoluteFill, Freeze, Img, OffthreadVideo, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
-import { loadFont as loadInstrumentSerif } from "@remotion/google-fonts/InstrumentSerif";
-import { C, TITLE, BODY } from "./theme";
+import { AbsoluteFill, Img, staticFile, useCurrentFrame } from "remotion";
+import { C, TITLE, BODY, FINA } from "./theme";
 import { WORDS } from "./words";
 import { useT, prog, pop } from "./lib";
 import { ULTIMA_MASCARA } from "./mascaras";
 
-const { fontFamily: SERIF_ED } = loadInstrumentSerif("normal", { weights: ["400"], subsets: ["latin"] });
-loadInstrumentSerif("italic", { weights: ["400"], subsets: ["latin"] });
+const SERIF_ED = FINA;
 
 const CREMA = "#F4EEDF";
 const TINTA = "#16130F";
@@ -278,36 +275,6 @@ export const PalabraVentana: React.FC<{ from: number; to: number; palabra: strin
   );
 };
 
-// ---------- D9 · cuerpo de texto ----------
-/**
- * D9 · Cuerpo de texto: el fondo se apaga y la silueta de la persona se llena de palabras (las del guion o una frase que
- * se repite). 0,8–1,5 s. Necesita el recorte en ese tramo. `texto` vacío = usa las palabras del guion desde ese segundo.
- * Se arma con mezclas de capas (sin máscara CSS, que en render parpadea).
- */
-export const CuerpoTexto: React.FC<{ from: number; to: number; texto?: string; fondo?: string; color?: string; size?: number }> = ({
-  from, to, texto, fondo = C.bg, color = CREMA, size = 30,
-}) => {
-  const t = useT();
-  const f = useCurrentFrame();
-  if (!dentroDe(t, from, to, 0.1)) return null;
-  const base = texto && texto.trim() ? texto : WORDS.filter((w) => w.s >= from - 2).slice(0, 80).map((w) => w.w).join(" ");
-  const relleno = Array(40).fill(base).join(" · ");
-  const o = prog(t, from, 0.15) * sale(t, to, 0.15);
-  return (
-    <AbsoluteFill style={{ opacity: o }}>
-      <AbsoluteFill style={{ background: fondo }} />
-      <AbsoluteFill style={{ mixBlendMode: "screen", isolation: "isolate" }}>
-        <AbsoluteFill style={{ background: "#000" }} />
-        <Img src={fgSrc(f)} style={{ position: "absolute", width: "100%", height: "100%", objectFit: "cover", filter: "brightness(0) invert(1)" }} />
-        <AbsoluteFill style={{ background: "#000", mixBlendMode: "multiply", overflow: "hidden" }}>
-          <div style={{ fontFamily: "Courier New, monospace", fontWeight: 700, fontSize: size, lineHeight: 1.0, color, wordBreak: "break-all", padding: 0,
-            transform: `translateY(${-(t - from) * 60}px)` }}>{relleno}</div>
-        </AbsoluteFill>
-      </AbsoluteFill>
-    </AbsoluteFill>
-  );
-};
-
 // ---------- D10 · clones ----------
 /**
  * D10 · Clones en fila: copias de la persona aparecen a los lados (detrás de ella), para «todos hacen lo mismo», «otra vez»,
@@ -328,120 +295,6 @@ export const Clones: React.FC<{ from: number; to: number; n?: number; sep?: numb
             transform: `translateX(${c.dx * p}px) scale(${c.k})`, opacity: Math.min(1, p * 1.5) * sale(t, to, 0.2), filter: `brightness(${1 - 0.18 * c.i}) saturate(.9)` }} />
         );
       })}
-    </AbsoluteFill>
-  );
-};
-
-// ---------- G5–G7 · portadas de pantalla completa ----------
-const Foto: React.FC<{ at: number; filtro: string; recorte?: boolean; pos?: string }> = ({ at, filtro, recorte, pos = "50% 25%" }) => {
-  const { fps } = useVideoConfig();
-  const fr = Math.round(at * fps);
-  const st: React.CSSProperties = { width: "100%", height: "100%", objectFit: "cover", objectPosition: pos, filter: filtro };
-  return recorte
-    ? <Img src={fgSrc(fr)} style={st} />
-    : <Freeze frame={fr}><OffthreadVideo src={staticFile("cam.mp4")} muted style={st} /></Freeze>;
-};
-const PUNTOS = "radial-gradient(circle, rgba(0,0,0,.9) 0 32%, rgba(0,0,0,0) 36%)";
-const Lineas: React.FC<{ n: number; ancho?: number }> = ({ n, ancho = 100 }) => (
-  <div>{Array.from({ length: n }).map((_, i) => <div key={i} style={{ height: 7, margin: "7px 0", width: `${i % 5 === 4 ? 60 : ancho}%`, background: "rgba(22,19,15,.28)" }} />)}</div>
-);
-const entraGirando = (t: number, from: number) => { const p = prog(t, from, 0.55); return `rotate(${(1 - p) * -540}deg) scale(${0.1 + 0.9 * p})`; };
-
-/**
- * G5 · Portada de periódico: entra girando una primera página con cabecera, titular gigante, bajada y la foto de la persona
- * (el cuadro del segundo `foto`) en semitono. Las columnas son líneas grises: nunca texto inventado. `cita` = el llamado o la
- * frase clave. Remates y anuncios («20 efectos en 20 segundos»). 1,2–2 s.
- */
-export const Periodico: React.FC<{ from: number; to: number; nombre: string; fecha?: string; titular: string; bajada?: string; cita?: string; foto: number; recorte?: boolean }> = ({
-  from, to, nombre, fecha = "", titular, bajada, cita, foto, recorte,
-}) => {
-  const t = useT();
-  if (!dentroDe(t, from, to, 0.15)) return null;
-  return (
-    <AbsoluteFill style={{ background: "rgba(0,0,0,.6)", opacity: sale(t, to, 0.15) }}>
-      <AbsoluteFill style={{ background: "#F1ECDF", transform: entraGirando(t, from), padding: "70px 60px", color: TINTA }}>
-        <div style={{ borderBottom: `3px solid ${TINTA}`, paddingBottom: 10, textAlign: "center", fontFamily: SERIF_ED, fontSize: 110, lineHeight: 1 }}>{nombre}</div>
-        <div style={{ display: "flex", justifyContent: "space-between", fontFamily: BODY, fontWeight: 700, fontSize: 20, letterSpacing: 3, textTransform: "uppercase", borderBottom: `1px solid ${TINTA}`, padding: "8px 0" }}>
-          <span>{fecha}</span><span>Edición especial</span>
-        </div>
-        <div style={{ fontFamily: SERIF_ED, fontSize: 132, lineHeight: 0.95, textAlign: "center", textTransform: "uppercase", marginTop: 26, letterSpacing: -2 }}>{titular}</div>
-        {bajada && <div style={{ fontFamily: SERIF_ED, fontStyle: "italic", fontSize: 56, textAlign: "center", marginTop: 10 }}>{bajada}</div>}
-        <div style={{ display: "flex", gap: 28, marginTop: 30 }}>
-          <div style={{ width: 200 }}><Lineas n={22} /></div>
-          <div style={{ flex: 1 }}>
-            <div style={{ height: 760, position: "relative", overflow: "hidden", border: `2px solid ${TINTA}`, background: "#fff" }}>
-              <Foto at={foto} recorte={recorte} filtro="grayscale(1) contrast(1.45) brightness(1.05)" />
-              <AbsoluteFill style={{ backgroundImage: PUNTOS, backgroundSize: "7px 7px", mixBlendMode: "screen", opacity: 0.55 }} />
-            </div>
-            {cita && <div style={{ fontFamily: SERIF_ED, fontStyle: "italic", fontSize: 50, lineHeight: 1.1, textAlign: "center", marginTop: 20 }}>«{cita}»</div>}
-          </div>
-          <div style={{ width: 200 }}><Lineas n={22} /></div>
-        </div>
-      </AbsoluteFill>
-    </AbsoluteFill>
-  );
-};
-
-/**
- * G6 · Billete: la persona queda grabada en el óvalo de un billete inventado (tinta verde, marco de guilloches), con el
- * título del producto y una cifra en las esquinas. Para hablar de dinero, de precio o de «esto vale». 1–1,5 s.
- * Es una pieza decorativa: nunca imitar un billete real (sin escudos, firmas ni bancos reales).
- */
-export const Billete: React.FC<{ from: number; to: number; titulo: string; cifra: string; foto: number; recorte?: boolean; tinta?: string; firma?: string }> = ({
-  from, to, titulo, cifra, foto, recorte, tinta = "#2F5D46", firma,
-}) => {
-  const t = useT();
-  if (!dentroDe(t, from, to, 0.15)) return null;
-  const p = pop(t, from, 0.5);
-  const guilloche = `repeating-radial-gradient(circle at 50% 50%, ${tinta}22 0 2px, transparent 2px 9px)`;
-  return (
-    <AbsoluteFill style={{ background: "rgba(0,0,0,.6)", opacity: sale(t, to, 0.15) }}>
-      <div style={{ position: "absolute", left: 50, right: 50, top: 70, bottom: 70, background: "#E8ECE0", border: `14px double ${tinta}`, borderRadius: 18, color: tinta, overflow: "hidden",
-        transform: `translateY(${(1 - p) * 900}px) rotate(${(1 - p) * 12}deg)`, boxShadow: "0 40px 90px rgba(0,0,0,.6)" }}>
-        <AbsoluteFill style={{ backgroundImage: guilloche, opacity: 0.9 }} />
-        {[[30, 24], [null, 24], [30, null], [null, null]].map(([l, tp], i) => (
-          <div key={i} style={{ position: "absolute", left: l ?? undefined, right: l === null ? 30 : undefined, top: tp ?? undefined, bottom: tp === null ? 20 : undefined, fontFamily: SERIF_ED, fontSize: 92, lineHeight: 1 }}>{cifra}</div>
-        ))}
-        <div style={{ position: "absolute", left: "50%", top: 190, width: 640, height: 860, marginLeft: -320, borderRadius: "50%", border: `10px solid ${tinta}`, overflow: "hidden", background: "#E8ECE0" }}>
-          <Foto at={foto} recorte={recorte} filtro="grayscale(1) contrast(1.5) brightness(1.08)" />
-          <AbsoluteFill style={{ background: tinta, mixBlendMode: "screen", opacity: 0.55 }} />
-          <AbsoluteFill style={{ backgroundImage: `repeating-linear-gradient(0deg, ${tinta}55 0 2px, transparent 2px 6px)`, mixBlendMode: "multiply" }} />
-        </div>
-        <div style={{ position: "absolute", left: 60, right: 60, top: 1110, textAlign: "center", fontFamily: SERIF_ED, fontSize: 62, letterSpacing: 4, textTransform: "uppercase", lineHeight: 1.05 }}>{titulo}</div>
-        {firma && <div style={{ position: "absolute", left: 0, right: 0, top: 1300, textAlign: "center", fontFamily: SERIF_ED, fontStyle: "italic", fontSize: 54 }}>{firma}</div>}
-      </div>
-    </AbsoluteFill>
-  );
-};
-
-/**
- * G7 · Impacto: la imagen se congela en blanco y negro puro, como viñeta de cómic, con líneas de velocidad y una palabra
- * gruesa abajo («IMPACTO», «BOOM», «CAMBIO»). 0,6–1 s en el golpe de la frase. Con `recorte` (el cuadro tiene recorte) la
- * persona queda sola sobre blanco, que es lo que mejor se ve.
- */
-export const Impacto: React.FC<{ from: number; to: number; palabra: string; foto: number; recorte?: boolean; umbral?: number }> = ({
-  from, to, palabra, foto, recorte, umbral = 0.35,
-}) => {
-  const t = useT();
-  if (!dentroDe(t, from, to, 0.1)) return null;
-  const p = pop(t, from, 0.35);
-  const id = `umbral-${Math.round(foto * 100)}`;
-  const tabla = Array.from({ length: 20 }, (_, i) => (i / 20 < umbral ? 0 : 1)).join(" ");
-  return (
-    <AbsoluteFill style={{ background: "#fff", opacity: sale(t, to, 0.1) }}>
-      <svg width={0} height={0} style={{ position: "absolute" }}>
-        <filter id={id}>
-          <feColorMatrix type="saturate" values="0" />
-          <feComponentTransfer><feFuncR type="discrete" tableValues={tabla} /><feFuncG type="discrete" tableValues={tabla} /><feFuncB type="discrete" tableValues={tabla} /></feComponentTransfer>
-        </filter>
-      </svg>
-      <AbsoluteFill style={{ background: "repeating-conic-gradient(from 0deg at 50% 32%, #000 0deg 1.3deg, transparent 1.3deg 6deg)", opacity: 0.9,
-        WebkitMaskImage: "radial-gradient(circle at 50% 32%, transparent 0 330px, #000 520px)", maskImage: "radial-gradient(circle at 50% 32%, transparent 0 330px, #000 520px)" }} />
-      <AbsoluteFill style={{ transform: `scale(${1.15 - 0.15 * p})` }}>
-        <Foto at={foto} recorte={recorte} filtro={`url(#${id})`} />
-      </AbsoluteFill>
-      <div style={{ position: "absolute", left: 0, right: 0, bottom: 300, textAlign: "center", fontFamily: TITLE, fontWeight: 900, fontSize: Math.min(230, 1300 / palabra.length), letterSpacing: -6, color: "#000",
-        WebkitTextStroke: "10px #fff", paintOrder: "stroke fill", textTransform: "uppercase", transform: `scale(${0.6 + 0.4 * p})` }}>{palabra}</div>
     </AbsoluteFill>
   );
 };

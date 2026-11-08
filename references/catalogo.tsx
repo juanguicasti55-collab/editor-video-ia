@@ -9,6 +9,8 @@
 //  2. Recorte de TODO el video: .venv-matte/bin/python scripts/mascaras.py <reel> --tramos "0-<duración>" [--con-pelo]  (~17 min por minuto)
 //  3. En Root.tsx registrar Cat1–Cat5 (durationInFrames = Math.ceil(durCat(PARTES[i]) * 30)), renderizar cada una y unirlas con ffmpeg concat.
 // Los textos son de muestra (marcados así en el testimonio y el rótulo): nunca se publican como datos reales.
+// Colores y letras: los del theme.ts del proyecto donde se arma. Antes de renderizar se le pregunta a la persona con qué
+// marca lo quiere ver (o neutro); no se reusan los de otro video.
 import React from "react";
 import { AbsoluteFill } from "remotion";
 import { C, TITLE, BODY } from "./theme";
@@ -21,16 +23,16 @@ import { Checklist, Headline, ChatMock, Terminal, FileCard, Folders, DayStrip, C
 import { SubsEstilo, GanchoEstilo, ComentaCTA, ComentarioEnVivo, Notificacion, AnilloCuenta, Calendario, BannerFijo, Serie, NotaFlecha, CifraDetras, GraficaDetras, conZoomDigital, Vineta, CirculoWipe, Look, Congelar, BarridoColor, Ranking, EstiloSubs, EstiloGancho } from "./estilos";
 import { Pelicula, Franjas, Capitulo, Rotulo, SubsDoc } from "./doc";
 import { SubsPalabra, SubsCorchetes, FraseQueSeArma, RespuestaComentario, NumeroSeccion, VidrioAcanalado, CintaDeLuz, CamaraSaltos, ContadorRueda, AntesDespues, CaminoNodos, TarjetasVistas, FichaMarca, CitaEstudio, TiraVideo, TituloFijo, BotonBrillo, ComentaDestellos, Pictograma, CifraGrafica, ArticuloResaltado, PalabraPantalla } from "./graficos";
-import { SubsKaraoke, GanchoEstudio, BarraPedido, RelojMaterial, ListaLateral, CursorVivo, PalabraVentana, CuerpoTexto, Clones, Periodico, Billete, Impacto } from "./editorial";
+import { SubsKaraoke, GanchoEstudio, BarraPedido, RelojMaterial, ListaLateral, CursorVivo, PalabraVentana, Clones } from "./editorial";
 
 type N = React.ReactNode;
 type Slot = { c: string; n: string; d: number; front?: (a: number, b: number) => N; behind?: (a: number, b: number) => N;
-  zt?: boolean; vertigo?: boolean; saltos?: boolean; digital?: boolean; shrink?: boolean };
+  zt?: boolean; saltos?: boolean; digital?: boolean; shrink?: boolean };
 const Win: React.FC<{ a: number; b: number; children: N }> = ({ a, b, children }) => { const t = useT(); return t >= a && t < b ? <>{children}</> : null; };
 const CLAVES = ["inversion", "gasto", "dinero", "celular", "capacitacion", "black", "experience", "noviembre", "cuotas", "intereses", "invertir", "ofertas"];
 const HEAD = TOPS.length ? [...TOPS].sort((x, y) => x - y)[Math.floor(TOPS.length / 2)] : 380; // coronilla típica de la grabación
 
-const ganchoE = (e: EstiloGancho, chica: string, grande: string, fondo?: string): Slot["front"] => (a, b) => <GanchoEstilo estilo={e} chica={chica} grande={grande} from={a + 0.05} to={b - 0.4} fondo={fondo} />;
+const ganchoE = (e: EstiloGancho, chica: string, grande: string): Slot["front"] => (a, b) => <GanchoEstilo estilo={e} chica={chica} grande={grande} from={a + 0.05} to={b - 0.4} />;
 const subE = (e: EstiloSubs): Slot["front"] => (a, b) => <Win a={a} b={b}><SubsEstilo estilo={e} claves={CLAVES} ocultar={[]} y={e === "c9" ? 300 : e === "c8" ? 1250 : 1380} x={e === "c9" ? 640 : 90} /></Win>;
 
 const P1: Slot[] = [
@@ -38,7 +40,6 @@ const P1: Slot[] = [
   { c: "H2", n: "Gancho detrás de la cabeza", d: 2.6, behind: (a, b) => <BehindText from={a} to={b - 0.2} top={HEAD - 170} size={250} lines={[{ at: a + 0.1, t: "GASTO" }]} /> },
   { c: "H3", n: "Mayúsculas cálidas", d: 2.6, front: ganchoE("h3", "lo que nadie", "te dice") },
   { c: "H4", n: "Recorte", d: 2.6, front: ganchoE("h4", "no es un", "gasto") },
-  { c: "H5", n: "Etiqueta a mano", d: 2.6, front: ganchoE("h5", "el truco para", "invertir bien", C.bg) },
   { c: "H6", n: "Dos pesos", d: 2.6, front: ganchoE("h6", "GASTO O", "INVERSIÓN") },
   { c: "H7", n: "Gancho en estudio", d: 2.8, behind: (a, b) => <GanchoEstudio from={a} to={b - 0.3} top={130} lineas={[{ at: a, t: "No es", estilo: "serif" }, { at: a + 0.8, t: "un gasto", estilo: "gruesa" }, { at: a + 1.6, t: "es inversión.", estilo: "cursiva" }]} /> },
   { c: "H8", n: "Frase que se arma", d: 2.8, front: (a, b) => <FraseQueSeArma from={a} to={b - 0.3} lineas={[{ at: a, t: "vamos a ver" }, { at: a + 0.5, t: "por qué no es" }, { at: a + 1, t: "un gasto", cursiva: true }]} /> },
@@ -65,13 +66,11 @@ const P2: Slot[] = [
   { c: "D6", n: "Gráfica que crece", d: 2.5, behind: (a, b) => <GraficaDetras from={a + 0.1} to={b - 0.2} top={180} /> },
   { c: "D7", n: "Apagón", d: 2.5, behind: (a, b) => <><Look estilo="g3" from={a} until={b} /><BehindText from={a + 0.2} to={b - 0.2} top={HEAD - 170} size={260} lines={[{ at: a + 0.3, t: "BLACK" }]} /></> },
   { c: "D8", n: "Palabra ventana", d: 2.2, front: (a, b) => <PalabraVentana from={a + 0.2} to={b - 0.3} palabra="salta." /> },
-  { c: "D9", n: "Cuerpo de texto", d: 2.3, front: (a, b) => <CuerpoTexto from={a + 0.2} to={b - 0.3} /> },
   { c: "D10", n: "Clones", d: 2.5, behind: (a, b) => <Clones from={a + 0.1} to={b - 0.3} /> },
   { c: "D11", n: "Número de sección", d: 2.5, behind: (a, b) => <NumeroSeccion from={a + 0.1} to={b - 0.2} n="1" top={60} /> },
   { c: "D12", n: "Vidrio acanalado", d: 2.5, behind: (a, b) => <VidrioAcanalado from={a + 0.1} to={b - 0.2} palabra="Gasto" top={HEAD - 200} /> },
   { c: "D13", n: "Cinta de luz", d: 2.5, behind: (a, b) => <CintaDeLuz from={a + 0.1} to={b - 0.2} /> },
   { c: "T1", n: "Fondo que cambia", d: 2.5, behind: (a, b) => <WhiteOut from={a + 0.1} to={b - 0.2} word="GASTO" top={HEAD - 150} /> },
-  { c: "T2", n: "Vertigo", d: 2.5, vertigo: true },
   { c: "T3", n: "Zoom que atraviesa", d: 2.3, zt: true },
   { c: "T5", n: "Zoom digital", d: 2.5, digital: true, front: (a, b) => <Vineta golpes={[{ at: a + 0.5, to: a + 1.9 }]} /> },
   { c: "T6", n: "Barrido circular", d: 2.3, front: (a) => <CirculoWipe at={a + 0.6} /> },
@@ -103,7 +102,7 @@ const P3: Slot[] = [
   { c: "A17", n: "Antes y después", d: 2.5, front: (a, b) => <AntesDespues from={a} to={b - 0.2} /> },
   { c: "A18", n: "Camino de nodos", d: 2.5, front: (a, b) => <CaminoNodos from={a} to={b - 0.2} nodos={[{ at: a + 0.2, t: "Dudas", x: 300, y: 420 }, { at: a + 0.8, t: "Taller", x: 620, y: 700 }, { at: a + 1.4, t: "Atiendes", x: 360, y: 1000 }]} /> },
   { c: "A19", n: "Tarjetas de vistas", d: 2.5, front: (a, b) => <TarjetasVistas from={a} to={b - 0.2} items={[{ at: a + 0.2, valor: "317", etiqueta: "vistas", titulo: "Antes" }, { at: a + 0.8, valor: "71.973", etiqueta: "vistas", titulo: "Después" }]} /> },
-  { c: "A20", n: "Ficha de marca", d: 2.5, front: (a, b) => <FichaMarca from={a} to={b - 0.2} colores={["#0b2e2c", "#2fd6c6", "#f47c8c", "#F4EEDF"]} nombre="Instrument Serif" /> },
+  { c: "A20", n: "Ficha de marca", d: 2.5, front: (a, b) => <FichaMarca from={a} to={b - 0.2} colores={[C.bg, C.lime, C.violet, C.text]} nombre="Letra de la marca" /> },
   { c: "A21", n: "Cita de estudio", d: 2.5, front: (a, b) => <CitaEstudio from={a} to={b - 0.2} revista="Nombre de la revista, año" titulo="Título real del estudio" autores="Autores del estudio" frase="la frase clave" /> },
   { c: "A22", n: "Tira de video", d: 2.5, front: (a, b) => <TiraVideo from={a} to={b - 0.2} desde={5} hasta={40} /> },
   { c: "A23", n: "Título fijo en serif", d: 2.4, front: (a, b) => <TituloFijo from={a} to={b} lineas={["Gasto o inversión", "en tu carrera"]} /> },
@@ -120,9 +119,6 @@ const P4: Slot[] = [
   { c: "G2", n: "Sepia suave", d: 2.6, front: (a, b) => <Look estilo="g2" from={a} until={b} /> },
   { c: "G3", n: "Editorial oscuro", d: 2.6, front: (a, b) => <Look estilo="g3" from={a} until={b} /> },
   { c: "G4", n: "Documental cálido", d: 3.4, front: (a, b) => <Win a={a} b={b}><Pelicula until={b} /><Franjas until={b} /><Capitulo from={a + 0.1} to={a + 1.6} n="01" t="El gasto" /><Rotulo from={a + 1.7} to={b - 0.1} top={1250} nombre="Nombre Apellido" detalle="Profesión · ciudad" /></Win> },
-  { c: "G5", n: "Portada de periódico", d: 2.6, front: (a, b) => <Periodico from={a + 0.1} to={b - 0.2} nombre="El Diario del Reel" fecha="Noviembre" titular="Gasto o inversión" bajada="lo que nadie te dice" cita="Comenta GUIA" foto={a + 1} /> },
-  { c: "G6", n: "Billete", d: 2.6, front: (a, b) => <Billete from={a + 0.1} to={b - 0.2} titulo="Taller en vivo" cifra="27" foto={a + 1} /> },
-  { c: "G7", n: "Impacto", d: 2.2, front: (a, b) => <Impacto from={a + 0.1} to={b - 0.3} palabra="Impacto" foto={a + 0.6} recorte /> },
   { c: "I1", n: "Pictograma", d: 2.6, front: (a, b) => <Pictograma from={a} to={b - 0.2} icono="silla" chica="todo se reduce a" cursiva="dirigir" /> },
   { c: "I2", n: "Cifra con gráfica", d: 2.8, front: (a, b) => <CifraGrafica from={a} to={b - 0.2} valor={4.1} sufijo="M" etiqueta="Ejemplo (solo datos reales)" nota="Dato real aquí" /> },
   { c: "I3", n: "Artículo resaltado", d: 3, front: (a, b) => <ArticuloResaltado from={a} to={b - 0.2} medio="Nombre del medio" titular="Aquí va el titular real del artículo" texto="Aquí va el párrafo real del artículo, tal cual, y el resaltador marca la frase que importa para el video." resaltar="la frase que importa" /> },
@@ -182,12 +178,11 @@ const Parte: React.FC<{ slots: Slot[] }> = ({ slots }) => {
   const items = tiempos(slots);
   const fin = durCat(slots);
   let keys: CamKeyV[] = [{ at: 0, box: CAM_FULL, zoom: 1, fy: 30 }];
-  const on: [number, number][] = [], zt: number[] = [], vertigo: [number, number, number][] = [];
+  const on: [number, number][] = [], zt: number[] = [];
   let shrink: Shrink | undefined;
   for (const { s, a, b } of items) {
     if (s.behind) on.push([a, b]);
     if (s.zt) zt.push(a + 1.1);
-    if (s.vertigo) vertigo.push([a + 0.2, b - 0.3, 0.25]);
     if (s.saltos) { keys.push({ at: a, box: CAM_FULL, zoom: 1, fy: 30 }); [0.7, 1.4, 2.1].forEach((d, i) => keys.push({ at: a + d, box: CAM_FULL, zoom: i % 2 ? 1 : 1.13, fy: 30 })); keys.push({ at: b, box: CAM_FULL, zoom: 1, fy: 30 }); }
     if (s.shrink) shrink = { from: a + 0.3, s: 0.82 };
   }
@@ -195,7 +190,7 @@ const Parte: React.FC<{ slots: Slot[] }> = ({ slots }) => {
   for (const { s, a } of items) if (s.digital) keys = conZoomDigital(keys, [{ at: a + 0.5, to: a + 1.9, zoom: 1.6, fy: 22 }]);
   return (
     <AbsoluteFill style={{ background: "#000" }}>
-      <Cam2 keys={keys} until={fin + 1} on={on} zt={zt} vertigo={vertigo} shrink={shrink} behind={<>{items.map(({ s, a, b }, i) => s.behind ? <React.Fragment key={i}>{s.behind(a, b)}</React.Fragment> : null)}</>} />
+      <Cam2 keys={keys} until={fin + 1} on={on} zt={zt} shrink={shrink} behind={<>{items.map(({ s, a, b }, i) => s.behind ? <React.Fragment key={i}>{s.behind(a, b)}</React.Fragment> : null)}</>} />
       {items.map(({ s, a, b }, i) => s.front ? <React.Fragment key={i}>{s.front(a, b)}</React.Fragment> : null)}
       <Etiqueta items={items} />
     </AbsoluteFill>

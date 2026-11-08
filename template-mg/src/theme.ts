@@ -15,33 +15,35 @@ if (typeof document !== "undefined") {
   ).then(() => continueRender(h), () => continueRender(h));
 }
 
-// Familias por defecto (las de scripts/fuentes.py sin argumentos). Si cambias de fuente, cambia también estos nombres.
+// LETRAS: se preguntan en cada video. Estas son las de scripts/fuentes.py sin argumentos; con las de la marca, baja
+// las suyas con fuentes.py y cambia también estos nombres.
 export const SERIF = "Cormorant Garamond"; // títulos editoriales
 export const SERIF_I = "Cormorant Garamond"; // la misma en cursiva (fontStyle italic)
 export const TITLE = "Jost"; // cifras, palabras grandes, subtítulos
 export const BODY = TITLE;
 export const MONO = "JetBrains Mono"; // rótulos técnicos en mayúsculas
 
-// Paleta: fondo oscuro + un acento principal (lime) + un acento de alerta/CTA (violet). Los nombres lime/violet
-// quedan por compatibilidad con lib.tsx; pon aquí los colores de la marca.
+// COLORES: se preguntan en cada video (entrevista) y se reemplazan aquí con los de la marca. Estos valores neutros
+// solo sirven para que el proyecto compile; nunca se reusa la paleta de otro video ni la del catálogo.
+// lime = acento principal · violet = acento secundario (tachados, alertas, botón del CTA). Los nombres quedan por compatibilidad.
 export const C = {
-  bg: "#060A17",
-  bg2: "#0F1A36", // centro del degradado del fondo
-  grid: "rgba(150,220,215,0.16)",
-  gridSoft: "rgba(150,220,215,0.06)",
-  bracket: "rgba(150,220,215,.45)",
-  card: "rgba(14,22,44,0.86)",
-  cardSolid: "#0E162C",
-  line: "rgba(150,220,215,0.16)",
-  text: "#F2F6F7",
-  muted: "#8C97AD",
-  dim: "#C9D2DC",
-  lime: "#4FC3C0", // acento principal
-  violet: "#F7931E", // acento secundario: tachados, alertas, botón del CTA
-  onViolet: "#1A0E00", // texto sobre el botón
-  mint: "#A8E0D6",
-  paper: "#EEF7F6", // fondo de las tarjetas con ilustraciones claras
-  red: "#F7931E",
+  bg: "#0A0A0A",
+  bg2: "#1A1A1A", // centro del degradado del fondo
+  grid: "rgba(255,255,255,0.10)",
+  gridSoft: "rgba(255,255,255,0.04)",
+  bracket: "rgba(255,255,255,.35)",
+  card: "rgba(20,20,20,0.88)",
+  cardSolid: "#141414",
+  line: "rgba(255,255,255,0.12)",
+  text: "#F5F5F5",
+  muted: "#9A9A9A",
+  dim: "#CFCFCF",
+  lime: "#FFFFFF", // acento principal → el de la marca
+  violet: "#FFFFFF", // acento secundario → el de la marca
+  onViolet: "#111111", // texto sobre el botón
+  mint: "#DDDDDD",
+  paper: "#F4F4F4", // fondo de las tarjetas con ilustraciones claras
+  red: "#FF5A5A",
 };
 
 export const MARCA = {

@@ -8,7 +8,7 @@
 //   export const { fontFamily: TYPE } = loadCourier("normal", { weights: ["700"], subsets: ["latin"] });
 // Lo que va DETRÁS de la persona usa el recorte de scripts/mascaras.py (public/fg/00000.webp… y src/mascaras.ts).
 //
-// Cam2 = cámara → `behind` → persona recortada. Además: zoom-through (zt), vertigo y frame break (shrink).
+// Cam2 = cámara → `behind` → persona recortada. Además: zoom-through (zt) y frame break (shrink). (El vertigo, T2, se retiró el 8-nov-2026.)
 // Capa de atrás: CoverStory, PaperWall, ThumbWall, WhiteOut, Orbit layer="back".
 // Capa de adelante: GlassChecklist, FocusWord, ChatTestimonio, Orbit layer="front".
 import React from "react";
@@ -72,11 +72,11 @@ export type Shrink = { from: number; s: number };
 /**
  * Cámara: video → `behind` → persona recortada (WEBP con transparencia por cuadro) → resto.
  * No usar aquí un segundo OffthreadVideo con máscara CSS: en render la persona desaparece o parpadea.
- * zt = cortes con zoom-through (la cámara atraviesa la toma); vertigo = [desde, hasta, cuánto] (solo el fondo crece);
+ * zt = cortes con zoom-through (la cámara atraviesa la toma);
  * shrink = el plano se encoge a un marco y la persona se sale del borde (frame break).
  */
-export const Cam2: React.FC<{ keys: CamKeyV[]; until: number; on: [number, number][]; behind: React.ReactNode; zt?: number[]; vertigo?: [number, number, number][]; shrink?: Shrink }> = ({
-  keys, until, on, behind, zt = [], vertigo = [], shrink,
+export const Cam2: React.FC<{ keys: CamKeyV[]; until: number; on: [number, number][]; behind: React.ReactNode; zt?: number[]; shrink?: Shrink }> = ({
+  keys, until, on, behind, zt = [], shrink,
 }) => {
   const t = useT();
   const f = useCurrentFrame();
@@ -88,19 +88,17 @@ export const Cam2: React.FC<{ keys: CamKeyV[]; until: number; on: [number, numbe
     if (t >= c - 0.22 && t < c) { const p = (t - (c - 0.22)) / 0.22; zs = 1 + 2.6 * p * p; blur = 14 * p; }
     if (t >= c && t < c + 0.22) { const p = 1 - (t - c) / 0.22; zs = 1 + 1.3 * p * p; blur = 10 * p; }
   }
-  let vz = 1;
-  for (const [a, b, amt] of vertigo) if (t >= a && t < b + 0.3) vz = 1 + amt * prog(t, a, b - a);
   const sh = shrink && t >= shrink.from ? 1 - (1 - shrink.s) * prog(t, shrink.from, 0.5) : 1;
   const shrinking = shrink && t >= shrink.from;
-  const showFg = inR(t, on) || shrinking || vertigo.some(([a, b]) => t >= a && t < b + 0.3);
+  const showFg = inR(t, on) || shrinking;
   const base: React.CSSProperties = { position: "absolute", width: "100%", height: "100%", objectFit: "cover", transformOrigin: `50% ${k.fy ?? 40}%` };
-  const camSt: React.CSSProperties = { ...base, transform: `scale(${(k.zoom ?? 1) * drift * vz})` };
+  const camSt: React.CSSProperties = { ...base, transform: `scale(${(k.zoom ?? 1) * drift})` };
   const fgSt: React.CSSProperties = { ...base, transform: `scale(${(k.zoom ?? 1) * drift})` };
   const mf = Math.min(LAST_MASK, f);
   const cp = shrinking ? prog(t, shrink!.from, 0.5) : 0;
   if (t >= until) return null;
   return (
-    <AbsoluteFill style={{ background: "radial-gradient(120% 80% at 50% 30%, #12383A 0%, #081315 70%)" }}>
+    <AbsoluteFill style={{ background: `radial-gradient(120% 80% at 50% 30%, ${C.cardSolid} 0%, ${C.bg} 70%)` }}>
       <AbsoluteFill style={{ transform: `scale(${sh})`, transformOrigin: "50% 62%" }}>
         <AbsoluteFill style={{ transform: `scale(${zs})`, transformOrigin: "50% 68%", filter: blur ? `blur(${blur}px)` : undefined }}>
           <AbsoluteFill style={{ clipPath: cp ? `inset(${4 * cp}% ${7 * cp}% ${3 * cp}% ${7 * cp}% round ${48 * cp}px)` : undefined }}>
