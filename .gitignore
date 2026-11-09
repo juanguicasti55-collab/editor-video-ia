@@ -4,3 +4,4 @@ __pycache__/
 .venv-matte/
 node_modules/
 assets/models/selfie_multiclass_256x256.tflite
+entregas/
