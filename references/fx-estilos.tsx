@@ -251,13 +251,13 @@ export const ComentarioEnVivo: React.FC<{ from: number; palabra: string; usuario
       <div style={{ textAlign: "center", fontFamily: BODY, fontWeight: 700, fontSize: 30, color: "rgba(255,255,255,.75)", marginBottom: 18 }}>Comentarios</div>
       {pub && (
         <div style={{ display: "flex", alignItems: "center", gap: 18, marginBottom: 20, opacity: Math.min(1, cp * 2), transform: `translateY(${(1 - cp) * 30}px)` }}>
-          <div style={{ width: 64, height: 64, borderRadius: 32, background: ARO, flexShrink: 0 }} />
+          <div style={{ width: 64, height: 64, borderRadius: 32, background: `linear-gradient(135deg, ${C.lime}, ${C.violet})`, flexShrink: 0 }} />
           <div style={{ flex: 1 }}>
             <div style={{ fontFamily: BODY, fontWeight: 700, fontSize: 28, color: "rgba(255,255,255,.6)" }}>{usuario} · ahora</div>
             <div style={{ fontFamily: TITLE, fontWeight: 900, fontSize: 52, color: "#fff" }}>{palabra}</div>
           </div>
           <svg width={54} height={54} viewBox="0 0 24 24" style={{ transform: `scale(${corazon ? 0.8 + 0.4 * pop(t, publicado + 0.6, 0.4) : 1})` }}>
-            <path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z" fill={corazon ? "#ff3b5c" : "none"} stroke={corazon ? "#ff3b5c" : "#fff"} strokeWidth={2} />
+            <path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z" fill={corazon ? C.lime : "none"} stroke={corazon ? C.lime : "#fff"} strokeWidth={2} />
           </svg>
         </div>
       )}
@@ -275,7 +275,7 @@ export const ComentarioEnVivo: React.FC<{ from: number; palabra: string; usuario
         <div style={{ flex: 1, fontFamily: BODY, fontWeight: 600, fontSize: 40, color: pub ? "rgba(255,255,255,.4)" : "#fff" }}>
           {pub ? "Agrega un comentario…" : <>{escribe(palabra, t, tw, 10)}<span style={{ opacity: Math.floor(t * 3) % 2 ? 1 : 0 }}>|</span></>}
         </div>
-        <div style={{ fontFamily: BODY, fontWeight: 700, fontSize: 34, color: "#4f8cff", opacity: pub ? 0.4 : 1 }}>Publicar</div>
+        <div style={{ fontFamily: BODY, fontWeight: 700, fontSize: 34, color: C.lime, opacity: pub ? 0.4 : 1 }}>Publicar</div>
       </div>
     </div>
   );

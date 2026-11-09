@@ -51,7 +51,7 @@ export const SubsPalabra: React.FC<{ claves: string[]; ocultar?: [number, number
     <div style={{ position: "absolute", top: y, left: 40, right: 40, textAlign: "center", transform: `scale(${0.88 + 0.12 * p})` }}>
       <span style={clave
         ? { fontFamily: SERIF_G, fontStyle: "italic", fontSize: size * 1.25, color, textShadow: SOMBRA }
-        : { fontFamily: TITLE, fontWeight: 800, fontSize: size, color: "#fff", letterSpacing: -2, textShadow: SOMBRA }}>{w.w.replace(/[,;:]$/, "")}</span>
+        : { fontFamily: TITLE, fontWeight: 800, fontSize: size, color: "#fff", letterSpacing: -2, textShadow: SOMBRA }}>{w.w.replace(/[¿¡]/g, "").replace(/[,;:.?!…]+$/, "")}</span>
     </div>
   );
 };

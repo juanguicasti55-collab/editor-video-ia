@@ -164,7 +164,7 @@ export const CoverStory: React.FC<{ from: number; to: number; top: number; lines
 };
 
 /** Notas de papel pegadas en la pared (detrás de la persona), una por una. */
-export const PaperWall: React.FC<{ to: number; notes: { at: number; t: string; x: number; y: number; rot: number; w?: number; tape?: string }[] }> = ({ to, notes }) => {
+export const PaperWall: React.FC<{ to: number; notes: { at: number; t: string; x: number; y: number; rot: number; w?: number; tape?: string }[]; papel?: string; tinta?: string }> = ({ to, notes, papel = "#FBF7EE", tinta = "#1C2120" }) => {
   const t = useT();
   if (t < notes[0].at - 0.05 || t > to) return null;
   const o = 1 - prog(t, to - 0.18, 0.18);
@@ -174,8 +174,8 @@ export const PaperWall: React.FC<{ to: number; notes: { at: number; t: string; x
         const p = pop(t, n.at, 0.4);
         if (t < n.at) return null;
         return (
-          <div key={i} style={{ position: "absolute", left: n.x, top: n.y, width: n.w ?? 360, padding: "34px 30px 30px", background: "#FBF7EE", boxShadow: "0 18px 40px rgba(0,0,0,.35)",
-            transform: `rotate(${n.rot}deg) scale(${0.6 + 0.4 * p})`, opacity: Math.min(1, p * 2), fontFamily: TYPE, fontWeight: 700, fontSize: 48, lineHeight: 1.05, color: "#1C2120", textAlign: "center" }}>
+          <div key={i} style={{ position: "absolute", left: n.x, top: n.y, width: n.w ?? 360, padding: "34px 30px 30px", background: papel, boxShadow: "0 18px 40px rgba(0,0,0,.35)",
+            transform: `rotate(${n.rot}deg) scale(${0.6 + 0.4 * p})`, opacity: Math.min(1, p * 2), fontFamily: TYPE, fontWeight: 700, fontSize: 48, lineHeight: 1.05, color: tinta, textAlign: "center" }}>
             <div style={{ position: "absolute", top: -18, left: "50%", width: 120, height: 36, marginLeft: -60, background: n.tape ?? `${C.lime}AA`, transform: "rotate(-4deg)" }} />
             {n.t}
           </div>
