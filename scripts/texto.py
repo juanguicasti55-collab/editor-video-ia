@@ -40,15 +40,18 @@ def mapa_original(base):
                 break
     if not segs:
         return None
-    segs = [(float(a), float(b)) for a, b in segs]
+    # [inicio, fin] o [inicio, fin, desplazamiento REAL en el corte] (corte_h.py): si viene, manda sobre la suma.
+    acc, tramos = 0.0, []
+    for sg in segs:
+        a, b = float(sg[0]), float(sg[1])
+        o = float(sg[2]) if len(sg) > 2 else acc
+        tramos.append((a, b, o)); acc = o + (b - a)
 
     def f(t):
-        acc = 0.0
-        for a, b in segs:
-            if t <= acc + (b - a):
-                return a + (t - acc)
-            acc += b - a
-        return segs[-1][1]
+        for a, b, o in tramos:
+            if t <= o + (b - a):
+                return a + max(0.0, t - o)
+        return tramos[-1][1]
     return f
 
 
