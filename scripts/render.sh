@@ -6,6 +6,7 @@ set -e
 WORK="$(cd "$1" && pwd)"; OUT="$2"; MUSIC="${3:-}"; MVOL="${4:-0.16}"
 cd "$WORK/remotion"
 PROPS=(); [ -n "${VARIANTE:-}" ] && PROPS=(--props "{\"variante\":\"$VARIANTE\"}")
+rm -f out/render.mp4   # si Remotion falla, que el script se detenga en vez de reusar el render anterior
 npx remotion render src/index.ts Main out/render.mp4 "${PROPS[@]}" --crf=18 --log=error 2>&1 | grep -v "network requests" || true
 D=$(ffprobe -v error -show_entries format=duration -of csv=p=0 out/render.mp4)
 ffmpeg -v error -y -i out/render.mp4 -vn -af "loudnorm=I=-14:TP=-1.5:LRA=11" -ar 48000 "$WORK/voz_sfx.wav"
