@@ -92,12 +92,14 @@ export const TarjetasPerfil: React.FC<{ from: number; to: number; top: number; i
 
 // =====================================================================  P2 · CHICO, DELANTE
 /**
- * P2 · Palabra suelta al costado: subtítulo de UNA palabra, chico, sans gruesa blanca, al lado de la cabeza (a la altura de
- * la oreja o el hombro, nunca sobre la cara). Las claves cambian a serif cursiva del acento. Discreto: deja que mande la
- * cara y lo grande de atrás. `x` = borde izquierdo de la columna libre (con `alinear="der"`, es el borde derecho).
+ * P2 · Palabra suelta al costado: subtítulo de UNA palabra, chico, sans gruesa blanca, al lado de la cabeza a la altura de
+ * los ojos o la mejilla (como «either» en la referencia), nunca sobre la cara. Las claves cambian a serif cursiva del acento.
+ * Lado: con `caras` (FACES de scripts/caras.py) se pone sola en el lado libre de cada toma; si la cara está al centro, cambia
+ * de lado cada frase. Sin `caras`, usa `alinear` y `x` fijos (x = borde izquierdo, o el derecho con alinear="der").
  */
-export const PalabraSuelta: React.FC<{ claves?: string[]; ocultar?: [number, number][]; x?: number; y?: number; alinear?: "izq" | "der"; size?: number }> = ({
-  claves = [], ocultar = [], x = 120, y = 640, alinear = "izq", size = 64,
+export const PalabraSuelta: React.FC<{ claves?: string[]; ocultar?: [number, number][]; caras?: { at: number; top: number; bottom: number; cx: number }[];
+  x?: number; y?: number; alinear?: "izq" | "der"; size?: number; separacion?: number }> = ({
+  claves = [], ocultar = [], caras, x = 120, y = 640, alinear = "izq", size = 64, separacion = 310,
 }) => {
   const t = useT();
   if (fuera(t, ocultar)) return null;
@@ -106,12 +108,24 @@ export const PalabraSuelta: React.FC<{ claves?: string[]; ocultar?: [number, num
   const w = WORDS[i];
   const clave = claves.includes(limpia(w.w));
   const p = pop(t, w.s - 0.03, 0.2);
+  let lado = alinear, borde = x, top = y;
+  if (caras && caras.length) {
+    const c = [...caras].reverse().find((f) => t >= f.at) ?? caras[0];
+    // frase actual = cuántos puntos o comas hubo antes: sirve para alternar cuando la cara está al centro
+    const frase = WORDS.slice(0, i).filter((q) => /[.,;:?!]$/.test(q.w)).length;
+    lado = c.cx > 600 ? "der" : c.cx < 480 ? "izq" : frase % 2 ? "der" : "izq";
+    top = c.top + (c.bottom - c.top) * 0.35;
+    borde = lado === "izq" ? c.cx - separacion : c.cx + separacion; // borde del texto que mira a la cara
+  }
+  const libre = lado === "izq" ? borde - 40 : 1040 - borde;
+  const txt = sinPunto(w.w);
+  const fs = Math.max(34, Math.min(clave ? size * 1.3 : size, Math.floor(libre / (txt.length * (clave ? 0.42 : 0.5)))));
+  const st: React.CSSProperties = caras ? (lado === "izq" ? { right: 1080 - borde } : { left: borde }) : (lado === "izq" ? { left: borde } : { right: 1080 - borde });
   return (
-    <div style={{ position: "absolute", top: y, ...(alinear === "izq" ? { left: x } : { right: 1080 - x }), transform: `scale(${0.9 + 0.1 * p})`,
-      transformOrigin: alinear === "izq" ? "0 50%" : "100% 50%", opacity: Math.min(1, p * 2) }}>
+    <div style={{ position: "absolute", top, ...st, transform: `scale(${0.9 + 0.1 * p})`, transformOrigin: lado === "izq" ? "100% 50%" : "0 50%", opacity: Math.min(1, p * 2) }}>
       <span style={clave
-        ? { fontFamily: FINA, fontStyle: "italic", fontSize: size * 1.3, color: C.lime, textShadow: SOMBRA }
-        : { fontFamily: TITLE, fontWeight: 800, fontSize: size, color: "#fff", letterSpacing: -size * 0.04, textShadow: SOMBRA }}>{sinPunto(w.w)}</span>
+        ? { fontFamily: FINA, fontStyle: "italic", fontSize: fs, color: C.lime, textShadow: SOMBRA }
+        : { fontFamily: TITLE, fontWeight: 800, fontSize: fs, color: "#fff", letterSpacing: -fs * 0.04, textShadow: SOMBRA }}>{txt}</span>
     </div>
   );
 };
@@ -122,8 +136,8 @@ export const PalabraSuelta: React.FC<{ claves?: string[]; ocultar?: [number, num
  * sola de izquierda a derecha («1. test for demand»). Para listas y pasos que se dicen. Bajo el mentón, nunca sobre la cara.
  * Con varios pasos: mismo `titulo` fijo y una pieza por paso con su `nota`, o `notas` con su `at` cada una.
  */
-export const TituloNota: React.FC<{ from: number; to: number; top: number; titulo: string; notas: { at: number; t: string }[]; size?: number }> = ({
-  from, to, top, titulo, notas, size = 86,
+export const TituloNota: React.FC<{ from: number; to: number; top: number; titulo: string; notas: { at: number; t: string }[]; size?: number; fuente?: string }> = ({
+  from, to, top, titulo, notas, size = 86, fuente = HAND,
 }) => {
   const t = useT();
   if (t < from || t > to + 0.3) return null;
@@ -135,7 +149,7 @@ export const TituloNota: React.FC<{ from: number; to: number; top: number; titul
         letterSpacing: -size * 0.05, lineHeight: 1, textShadow: SOMBRA, opacity: p, transform: `translateY(${(1 - p) * 24}px)` }}>{titulo}</div>
       {nota && (() => {
         const q = prog(t, nota.at, Math.min(0.9, 0.06 * nota.t.length));
-        return <div key={nota.t} style={{ fontFamily: HAND, fontSize: size * 1.05, color: "#fff", marginTop: 6, textShadow: SOMBRA, letterSpacing: 2,
+        return <div key={nota.t} style={{ fontFamily: fuente, fontSize: size * 0.8, color: "#fff", marginTop: 10, textShadow: SOMBRA, letterSpacing: size * 0.1,
           display: "inline-block", clipPath: `inset(-20% ${100 - q * 100}% -20% 0)`, transform: "rotate(-1.5deg)" }}>{nota.t}</div>;
       })()}
     </div>
@@ -147,8 +161,8 @@ export const TituloNota: React.FC<{ from: number; to: number; top: number; titul
  * P4 · Nota a mano suelta: 1–3 líneas en letra a mano blanca, un poco inclinadas, que se escriben solas línea por línea.
  * Para un comentario aparte («y esta es mi primera vez haciendo esto :)»). Sobre el pecho o a un costado, nunca la cara.
  */
-export const NotaMano: React.FC<{ from: number; to: number; lineas: string[]; top: number; left?: number; right?: number; rot?: number; size?: number; color?: string }> = ({
-  from, to, lineas, top, left = 90, right = 90, rot = -4, size = 66, color = "#fff",
+export const NotaMano: React.FC<{ from: number; to: number; lineas: string[]; top: number; left?: number; right?: number; rot?: number; size?: number; color?: string; fuente?: string }> = ({
+  from, to, lineas, top, left = 90, right = 90, rot = -4, size = 66, color = "#fff", fuente = HAND,
 }) => {
   const t = useT();
   if (t < from || t > to + 0.3) return null;
@@ -156,8 +170,8 @@ export const NotaMano: React.FC<{ from: number; to: number; lineas: string[]; to
   const dur = Math.min(1.6, 0.05 * total);
   let acum = 0;
   return (
-    <div style={{ position: "absolute", top, left, right, transform: `rotate(${rot}deg)`, opacity: sale(t, to + 0.3), fontFamily: HAND, fontSize: size,
-      color, lineHeight: 1.15, letterSpacing: size * 0.06, textShadow: SOMBRA }}>
+    <div style={{ position: "absolute", top, left, right, transform: `rotate(${rot}deg)`, opacity: sale(t, to + 0.3), fontFamily: fuente, fontSize: size,
+      color, lineHeight: 1.25, letterSpacing: size * 0.14, textShadow: SOMBRA }}>
       {lineas.map((l, i) => {
         const a = from + (acum / total) * dur;
         acum += l.length;
