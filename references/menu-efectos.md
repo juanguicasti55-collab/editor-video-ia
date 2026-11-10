@@ -43,15 +43,21 @@ siempre»*. Son los textos que se usan por defecto en cada video (se proponen pr
 grupos se suman encima. Colores y letras siguen saliendo de la marca de cada video (se preguntan antes). Piezas:
 `fx-principales.tsx` → `src/principales.tsx`.
 
+**Letra a mano = refuerzo** (Juan, 9-nov-2026): 4 letras de marcador para notas y para jugar en algunos subtítulos:
+**A** Coming Soon (delgada, la de por defecto) · **B** Gochi Hand (de plumón) · **C** Shadows Into Light (fina y alta) ·
+**D** Gaegu (redonda, separada). Se piden con `mano="a"`…`"d"`; en P2 también por tramos: `mano={[[12.0, 15.5, "b"]]}`.
+**Color:** el acento NO es amarillo fijo. Va el color de la marca de ese video o el que la persona pida (`color`, `colorClave`,
+`colorNota` en cada pieza).
+
 🔴 **Lo grande va SIEMPRE detrás de la persona** (en el `behind` de Cam2, con recorte de `mascaras.py`). Lo mediano y lo
 chico va delante, al costado de la cabeza o bajo el mentón, nunca sobre la cara.
 
 | Código | Estilo | Tamaño · dónde | Qué se ve | Pieza |
 |---|---|---|---|---|
 | P1 | Título en dos letras | Grande · **detrás** | Línea en sans gruesa blanca en minúsculas + línea en serif cursiva del acento, más grande y montada encima; la cabeza tapa la base. Gancho y frases clave | `TituloDetras` |
-| P2 | Palabra suelta al costado | Chico · delante, al lado de la cabeza | Subtítulo de una palabra en sans gruesa blanca a la altura de los ojos; las claves en serif cursiva del acento. Con `caras={FACES}` (de `caras.py`) se pone sola en el lado libre y, si la cara está al centro, cambia de lado cada frase | `PalabraSuelta` |
+| P2 | Palabra suelta al costado | Chico · delante, al lado de la cabeza | Subtítulo de una palabra en sans gruesa blanca a la altura de los ojos; las claves en serif cursiva del acento. Con `caras={FACES}` (de `caras.py`) se pone sola en el lado libre y, si la cara está al centro, cambia de lado cada frase. Algunos tramos pueden ir en letra a mano (`mano`) | `PalabraSuelta` |
 | P3 | Título con nota a mano | Mediano · bajo el mentón | Línea en sans gruesa + debajo una línea en letra a mano que se escribe sola («1. pon a prueba la demanda»). Pasos y listas | `TituloNota` |
-| P4 | Nota a mano | Mediano · pecho o costado | 1–3 líneas en letra a mano de marcador (trazo parejo, letras separadas, no cursiva), inclinadas, que se escriben solas. Comentarios aparte. La letra se cambia con `fuente` | `NotaMano` |
+| P4 | Nota a mano | Mediano · pecho o costado | 1–3 líneas en letra a mano de marcador (trazo parejo, letras separadas, no cursiva), inclinadas, que se escriben solas. Comentarios aparte. La letra se elige con `mano` (A–D) | `NotaMano` |
 | P5 | Serif con destellos | Mediano · pecho | Frases en serif fina; la frase con palabra clave en serif cursiva con dos destellos ✦ | `SubsSerif` |
 | P6 | Tarjetas de perfil | Grande · **detrás**, encima de la cabeza | 2–4 tarjetas blancas en abanico: inicial en círculo, @cuenta, cifra, «seguidores», botón «Seguir». Solo cuentas y cifras reales | `TarjetasPerfil` |
 
