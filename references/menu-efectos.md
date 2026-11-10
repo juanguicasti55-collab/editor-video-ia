@@ -61,6 +61,9 @@ chico va delante, al costado de la cabeza o bajo el mentón, nunca sobre la cara
 | P5 | Serif con destellos | Mediano · pecho | Frases en serif fina; la frase con palabra clave en serif cursiva con dos destellos ✦ | `SubsSerif` |
 | P6 | Tarjetas de perfil | Grande · **detrás**, encima de la cabeza | 2–4 tarjetas blancas en abanico: inicial en círculo, @cuenta, cifra, «seguidores», botón «Seguir». Solo cuentas y cifras reales | `TarjetasPerfil` |
 
+**Estilo listo «Lanzamiento»** (`references/estilos/lanzamiento/`): P1 + P2 + P4 con las letras y los lugares de la captura
+de referencia de Juan (Inter Tight + Instrument Serif cursiva + letra a mano A). Para pedirlo: «estilo Lanzamiento».
+
 Cómo se combinan: P1 en el gancho y en las 2–4 frases que cargan la idea; P2 o P5 como subtítulo del resto (uno solo por
 video); P3/P4 cuando se dice un paso o un comentario aparte; P6 cuando se habla de cuentas, creadores o resultados reales.
 Mientras P1 está en pantalla se ocultan P2/P5 (`ocultar`) para no montar textos.

@@ -45,8 +45,9 @@ type W = (typeof WORDS)[number];
  * Va en el `behind` de Cam2. `top` ≈ coronilla (TOPS) − 230 para que la cabeza tape la parte baja de la cursiva.
  * lineas: [{ at, t: "exposing my" }, { at, t: "viral launch", cursiva: true }]
  */
-export const TituloDetras: React.FC<{ from: number; to: number; top: number; lineas: { at: number; t: string; cursiva?: boolean; color?: string }[]; size?: number; ancho?: number }> = ({
-  from, to, top, lineas, size = 230, ancho = 1000,
+export const TituloDetras: React.FC<{ from: number; to: number; top: number; lineas: { at: number; t: string; cursiva?: boolean; color?: string; size?: number }[]; size?: number; ancho?: number;
+  fuenteSans?: string; pesoSans?: number; fuenteCursiva?: string; tracking?: number }> = ({
+  from, to, top, lineas, size = 230, ancho = 1000, fuenteSans = TITLE, pesoSans = 800, fuenteCursiva = FINA, tracking = -0.055,
 }) => {
   const t = useT();
   if (t < from || t > to + 0.3) return null;
@@ -55,12 +56,12 @@ export const TituloDetras: React.FC<{ from: number; to: number; top: number; lin
       {lineas.map((l, i) => {
         const cur = !!l.cursiva;
         // ajusta el tamaño al ancho (medido en render): la sans gruesa ocupa ~0,44 em por letra, la serif cursiva ~0,38 em
-        const fs = Math.min(cur ? size * 1.12 : size, Math.floor(ancho / (l.t.length * (cur ? 0.38 : 0.44))));
+        const fs = l.size ?? Math.min(cur ? size * 1.12 : size, Math.floor(ancho / (l.t.length * (cur ? 0.38 : 0.44))));
         const p = prog(t, l.at, 0.5);
         return (
           <div key={i} style={{ whiteSpace: "nowrap", lineHeight: cur ? 0.9 : 0.95, marginTop: i ? -fs * 0.12 : 0,
-            fontFamily: cur ? FINA : TITLE, fontStyle: cur ? "italic" : "normal", fontWeight: cur ? 400 : 800, fontSize: fs,
-            letterSpacing: cur ? -fs * 0.01 : -fs * 0.055, color: l.color ?? (cur ? C.lime : "#fff"), textShadow: "0 6px 34px rgba(0,0,0,.28)",
+            fontFamily: cur ? fuenteCursiva : fuenteSans, fontStyle: cur ? "italic" : "normal", fontWeight: cur ? 400 : pesoSans, fontSize: fs,
+            letterSpacing: cur ? -fs * 0.01 : fs * tracking, color: l.color ?? (cur ? C.lime : "#fff"), textShadow: "0 6px 34px rgba(0,0,0,.28)",
             opacity: t < l.at ? 0 : p, filter: `blur(${(1 - p) * 10}px)`, transform: `translateY(${(1 - p) * 40}px)` }}>{l.t}</div>
         );
       })}
@@ -114,8 +115,10 @@ export const TarjetasPerfil: React.FC<{ from: number; to: number; top: number; i
  * de lado cada frase. Sin `caras`, usa `alinear` y `x` fijos (x = borde izquierdo, o el derecho con alinear="der").
  */
 export const PalabraSuelta: React.FC<{ claves?: string[]; ocultar?: [number, number][]; caras?: { at: number; top: number; bottom: number; cx: number }[];
-  x?: number; y?: number; alinear?: "izq" | "der"; size?: number; separacion?: number; mano?: Mano | [number, number, Mano][]; color?: string; colorClave?: string }> = ({
+  x?: number; y?: number; alinear?: "izq" | "der"; size?: number; separacion?: number; mano?: Mano | [number, number, Mano][]; color?: string; colorClave?: string;
+  fuente?: string; peso?: number; altura?: number }> = ({
   claves = [], ocultar = [], caras, x = 120, y = 640, alinear = "izq", size = 64, separacion = 310, mano, color = "#fff", colorClave = C.lime,
+  fuente = TITLE, peso = 800, altura = 0.35,
 }) => {
   const t = useT();
   if (fuera(t, ocultar)) return null;
@@ -130,7 +133,7 @@ export const PalabraSuelta: React.FC<{ claves?: string[]; ocultar?: [number, num
     // frase actual = cuántos puntos o comas hubo antes: sirve para alternar cuando la cara está al centro
     const frase = WORDS.slice(0, i).filter((q) => /[.,;:?!]$/.test(q.w)).length;
     lado = c.cx > 600 ? "der" : c.cx < 480 ? "izq" : frase % 2 ? "der" : "izq";
-    top = c.top + (c.bottom - c.top) * 0.35;
+    top = c.top + (c.bottom - c.top) * altura; // 0 = frente, 1 = mentón
     borde = lado === "izq" ? c.cx - separacion : c.cx + separacion; // borde del texto que mira a la cara
   }
   const libre = lado === "izq" ? borde - 40 : 1040 - borde;
@@ -145,7 +148,7 @@ export const PalabraSuelta: React.FC<{ claves?: string[]; ocultar?: [number, num
       <span style={clave
         ? { fontFamily: FINA, fontStyle: "italic", fontSize: fs, color: colorClave, textShadow: SOMBRA }
         : m ? { fontFamily: MANO[m], fontSize: fs * 0.95, color, letterSpacing: fs * 0.1, textShadow: SOMBRA }
-        : { fontFamily: TITLE, fontWeight: 800, fontSize: fs, color, letterSpacing: -fs * 0.04, textShadow: SOMBRA }}>{txt}</span>
+        : { fontFamily: fuente, fontWeight: peso, fontSize: fs, color, letterSpacing: -fs * 0.04, textShadow: SOMBRA }}>{txt}</span>
     </div>
   );
 };
@@ -181,8 +184,8 @@ export const TituloNota: React.FC<{ from: number; to: number; top: number; titul
  * P4 · Nota a mano suelta: 1–3 líneas en letra a mano blanca, un poco inclinadas, que se escriben solas línea por línea.
  * Para un comentario aparte («y esta es mi primera vez haciendo esto :)»). Sobre el pecho o a un costado, nunca la cara.
  */
-export const NotaMano: React.FC<{ from: number; to: number; lineas: string[]; top: number; left?: number; right?: number; rot?: number; size?: number; color?: string; mano?: Mano }> = ({
-  from, to, lineas, top, left = 90, right = 90, rot = -4, size = 66, color = "#fff", mano = "a",
+export const NotaMano: React.FC<{ from: number; to: number; lineas: string[]; top: number; left?: number; right?: number; rot?: number; size?: number; color?: string; mano?: Mano; espacio?: number }> = ({
+  from, to, lineas, top, left = 90, right = 90, rot = -4, size = 66, color = "#fff", mano = "a", espacio = 0.14,
 }) => {
   const t = useT();
   if (t < from || t > to + 0.3) return null;
@@ -191,7 +194,7 @@ export const NotaMano: React.FC<{ from: number; to: number; lineas: string[]; to
   let acum = 0;
   return (
     <div style={{ position: "absolute", top, left, right, transform: `rotate(${rot}deg)`, opacity: sale(t, to + 0.3), fontFamily: MANO[mano], fontSize: size,
-      color, lineHeight: 1.25, letterSpacing: size * 0.14, textShadow: SOMBRA }}>
+      color, lineHeight: 1.25, letterSpacing: size * espacio, textShadow: SOMBRA }}>
       {lineas.map((l, i) => {
         const a = from + (acum / total) * dur;
         acum += l.length;
