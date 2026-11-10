@@ -22,7 +22,7 @@ Cada pieza tiene un **código** para pedirla corto: «edita mi video con H6 C9 D
   de texto), T2 (vertigo), G5 (portada de periódico), G6 (billete) y G7 (impacto). Sus códigos quedan vacíos para no
   confundir videos viejos.
 
-Piezas (se copian al proyecto): `fx-efectos.tsx` → `src/fx.tsx` · `fx-estilos.tsx` → `src/estilos.tsx` · `mg.tsx` →
+Piezas (se copian al proyecto): `fx-principales.tsx` → `src/principales.tsx` (P1–P6) · `fx-efectos.tsx` → `src/fx.tsx` · `fx-estilos.tsx` → `src/estilos.tsx` · `mg.tsx` →
 `src/mg.tsx` · `fx-documental.tsx` → `src/doc.tsx` · `fx-apoyo-visual.tsx` → `src/apoyo.tsx` · `fx-editorial.tsx` → `src/editorial.tsx` (C10, H7, A12–A15, D8, D10). · `fx-graficos.tsx` → `src/graficos.tsx` (H8–H9, C11–C12, D11–D13, T10, A16–A23, K5–K6, I1–I4).
 Lo que va **detrás** de la persona necesita su recorte: `scripts/mascaras.py <reel> --tramos "a-b,…" --con-pelo` escribe
 `public/fg/00000.webp…` y `src/mascaras.ts` (con `TOPS`, la coronilla por cuadro). Los tramos deben cubrir todo lo que
@@ -36,6 +36,31 @@ Ningún subtítulo, tarjeta ni gráfico entre los ojos y el mentón (corrección
 2. **Debajo del mentón**: tarjetas que hay que leer completas. `scripts/caras.py` da el mentón por toma; con zoom
    1,13 baja ~30 px. En planos de cintura para arriba suele quedar en y≈900–950.
 3. **Encima de la cabeza**: solo si hay aire entre la coronilla (`TOPS`) y y≈220.
+
+## P · Textos principales (los de base de todo video)
+Regla de Juan, 9-nov-2026: *«tengas estos textos como principales y estilos los que son grandes que queden por detrás
+siempre»*. Son los textos que se usan por defecto en cada video (se proponen primero en la ficha de estilo); los demás
+grupos se suman encima. Colores y letras siguen saliendo de la marca de cada video (se preguntan antes). Piezas:
+`fx-principales.tsx` → `src/principales.tsx`.
+
+🔴 **Lo grande va SIEMPRE detrás de la persona** (en el `behind` de Cam2, con recorte de `mascaras.py`). Lo mediano y lo
+chico va delante, al costado de la cabeza o bajo el mentón, nunca sobre la cara.
+
+| Código | Estilo | Tamaño · dónde | Qué se ve | Pieza |
+|---|---|---|---|---|
+| P1 | Título en dos letras | Grande · **detrás** | Línea en sans gruesa blanca en minúsculas + línea en serif cursiva del acento, más grande y montada encima; la cabeza tapa la base. Gancho y frases clave | `TituloDetras` |
+| P2 | Palabra suelta al costado | Chico · delante, al lado de la cabeza | Subtítulo de una palabra en sans gruesa blanca; las claves en serif cursiva del acento | `PalabraSuelta` |
+| P3 | Título con nota a mano | Mediano · bajo el mentón | Línea en sans gruesa + debajo una línea en letra a mano que se escribe sola («1. pon a prueba la demanda»). Pasos y listas | `TituloNota` |
+| P4 | Nota a mano | Mediano · pecho o costado | 1–3 líneas en letra a mano, inclinadas, que se escriben solas. Comentarios aparte | `NotaMano` |
+| P5 | Serif con destellos | Mediano · pecho | Frases en serif fina; la frase con palabra clave en serif cursiva con dos destellos ✦ | `SubsSerif` |
+| P6 | Tarjetas de perfil | Grande · **detrás**, encima de la cabeza | 2–4 tarjetas blancas en abanico: inicial en círculo, @cuenta, cifra, «seguidores», botón «Seguir». Solo cuentas y cifras reales | `TarjetasPerfil` |
+
+Cómo se combinan: P1 en el gancho y en las 2–4 frases que cargan la idea; P2 o P5 como subtítulo del resto (uno solo por
+video); P3/P4 cuando se dice un paso o un comentario aparte; P6 cuando se habla de cuentas, creadores o resultados reales.
+Mientras P1 está en pantalla se ocultan P2/P5 (`ocultar`) para no montar textos.
+Medidas que funcionaron (prueba en un reel de Eli, 9-nov-2026): P1 con `size` 230 y `top` ≈ coronilla (`TOPS`) − 230, la
+cursiva queda a la altura de la coronilla y la cabeza la tapa a medias; P6 con `top` ≈ coronilla − 330 (nunca arriba de
+y≈210, la barra de Instagram); P3 y P5 desde el mentón para abajo (`caras.py`), en esa toma y≈1150.
 
 ## H · Ganchos (visibles desde el cuadro 0, 1–3 s)
 | Código | Estilo | Qué se ve | Pieza |
@@ -153,7 +178,7 @@ Ningún subtítulo, tarjeta ni gráfico entre los ojos y el mentón (corrección
 | V1 | Versiones para pauta: 3–5 MP4 del mismo anuncio que solo cambian los primeros 3 s | `references/variantes.md` + `scripts/variantes.sh` |
 | V2 | Voz limpia: quita ruido de fondo, retumbe y eses que silban (suave o fuerte) | `scripts/limpiar_voz.sh <reel> [suave\|fuerte]` antes del render |
 
-Siempre disponibles sin preguntar (son la base): subtítulos, saltos de encuadre (T7), el texto grande debajo del mentón
+Siempre disponibles sin preguntar (son la base): los textos principales (P1–P6), subtítulos, saltos de encuadre (T7), el texto grande debajo del mentón
 (`Kin` de mg.tsx, ubicado con `caras.py`) y el gancho textual de los reels (H1 o el que se elija).
 
 ## Verlos en movimiento

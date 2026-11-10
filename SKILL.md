@@ -1,6 +1,6 @@
 ---
 name: editor-video-ia
-description: Edita videos grabados a cámara (talking head) y saca reels verticales, con cortes sin pausas, subtítulos palabra por palabra con palabras clave resaltadas, los efectos que la persona elige de un menú (texto detrás de la cabeza, portada de revista, notas en la pared, zoom que atraviesa, checklist, testimonio en chat, look documental…), tomas de apoyo, sonidos y música con ducking, render a MP4 con Remotion. No trae una edición predeterminada. También hace motion graphics sin cámara (gráficos y voz en off, incluso con la voz clonada de la persona) a partir de un carrusel, un guion o un texto. Antes de editar SIEMPRE entrevista a la persona sobre el tipo de video, los efectos, el estilo de referencia y su marca. Úsala cuando alguien pase un video (.mp4/.mov) y pida "edita este video", "ponle subtítulos y animaciones", "quítale las pausas", "sácame reels o shorts", "quiero que se vea como los videos de [creador]", "convierte este carrusel en video" o "motion graphics", aunque no mencione la skill.
+description: Edita videos grabados a cámara (talking head) y saca reels verticales, con cortes sin pausas, subtítulos palabra por palabra con palabras clave resaltadas, los efectos que la persona elige de un menú (texto detrás de la cabeza, portada de revista, notas en la pared, zoom que atraviesa, checklist, testimonio en chat, look documental…), tomas de apoyo, sonidos y música con ducking, render a MP4 con Remotion. No trae una edición predeterminada, salvo los textos principales (título en dos letras detrás de la cabeza, nota a mano, serif con destellos, tarjetas de perfil). También hace motion graphics sin cámara (gráficos y voz en off, incluso con la voz clonada de la persona) a partir de un carrusel, un guion o un texto. Antes de editar SIEMPRE entrevista a la persona sobre el tipo de video, los efectos, el estilo de referencia y su marca. Úsala cuando alguien pase un video (.mp4/.mov) y pida "edita este video", "ponle subtítulos y animaciones", "quítale las pausas", "sácame reels o shorts", "quiero que se vea como los videos de [creador]", "convierte este carrusel en video" o "motion graphics", aunque no mencione la skill.
 ---
 
 # Editor de video con IA (videos largos y reels)
@@ -10,7 +10,8 @@ está en `scripts/`; lo que requiere criterio es **la entrevista inicial** y **d
 
 **Sin edición predeterminada.** La skill no trae un look propio (ni tarjetas, ni paleta, ni pantalla dividida): las
 plantillas arrancan con la cámara, los subtítulos, el gancho y el cierre, y todo lo demás sale de los efectos que la
-persona elige en el menú (`references/menu-efectos.md`) y de los colores de su marca.
+persona elige en el menú (`references/menu-efectos.md`) y de los colores de su marca. Excepción: los textos principales
+(grupo P: título en dos letras detrás, nota a mano, serif con destellos, tarjetas de perfil) van por defecto desde el 9-nov-2026.
 
 Rutas: `SKILL` = carpeta de esta skill (donde está este archivo). Python de la skill: `$SKILL/.venv/bin/python`.
 Habla siempre en español neutro, con "tú", y explica en simple: la persona probablemente no es editora ni programadora.
@@ -40,7 +41,10 @@ No preguntar lo que la persona ya dijo. Preguntas:
    - **Ambos** (primero el largo, después los reels del mismo material)
    - **Motion graphics con voz en off** (vertical, sin cámara): de un carrusel, un guion o un texto →
      seguir `references/motion-graphics.md` (tiene su propia entrevista: de dónde sale el contenido y quién pone la voz)
-2. **¿Qué efectos y estilos quieres? (SIEMPRE se pregunta: no hay estilo por defecto)** Mostrar el menú con código de
+2. **¿Qué efectos y estilos quieres?** Los **textos principales (grupo P del menú)** van en todo video salvo que la persona
+   pida otros (regla de Juan, 9-nov-2026): título en dos letras y tarjetas de perfil **detrás de la cabeza** (lo grande va
+   SIEMPRE detrás), palabra suelta al costado, título con nota a mano, nota a mano y serif con destellos. Piezas en
+   `references/fx-principales.tsx`. **El resto del menú SIEMPRE se pregunta:** Mostrar el menú con código de
    `references/menu-efectos.md`: ganchos (H), subtítulos (C), detrás de la persona (D), cámara (T), tarjetas (A),
    cierres (K) y look (G). La persona puede pedir por código («H6 C9 D1 T4 K2»). Con la herramienta de preguntas: una
    pregunta de selección múltiple por grupo. **Si no elige o dice «elige tú», elegir 5–6 y decir cuáles: nunca entregar
