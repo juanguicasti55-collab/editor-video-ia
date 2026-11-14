@@ -34,3 +34,4 @@ otro). **Letras:** sans gruesa apretada en minúscula (Inter Tight 700) + serif 
   «no los edites, solo guárdalo para los otros» y «esto es para los míos por ahora».
 - 2026-11-13 · «y también van la letra que parece escrita a mano y a veces los subtítulos a los lados» → C11 ganó `mano` (tramos en letra a mano) y `lado` (tramos al costado de la cabeza, con sombra más fuerte porque suele caer sobre fondo claro).
 - 2026-11-13 · «como la opción B» → toda la letra a mano del estilo en B (Gochi Hand), también la nota con flecha (estaba en A).
+- 2026-11-13 · «sí, y algunas frases como la opción B y las que son solas como se ve el "llena"» → confirmado: frases enteras a veces en letra a mano B; las palabras clave sueltas en serif cursiva amarilla (como «llena» en la prueba).
