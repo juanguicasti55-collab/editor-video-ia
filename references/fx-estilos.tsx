@@ -380,7 +380,10 @@ export const Serie: React.FC<{ titulo: string; items: { at: number; t: string }[
 };
 
 /** A10 · Nota a mano con flecha dibujada que apunta a algo (x,y de la nota; ax,ay a dónde apunta). */
-export const NotaFlecha: React.FC<{ from: number; to: number; texto: string; x: number; y: number; ax: number; ay: number; color?: string }> = ({ from, to, texto, x, y, ax, ay, color = "#fff" }) => {
+// `fuente`/`mayus`/`size`: para la nota delgada en minúscula (estilo «Palabra grande»: fuente={MANO.a} mayus={false} size={44}).
+export const NotaFlecha: React.FC<{ from: number; to: number; texto: string; x: number; y: number; ax: number; ay: number; color?: string; fuente?: string; mayus?: boolean; size?: number }> = ({
+  from, to, texto, x, y, ax, ay, color = "#fff", fuente, mayus = true, size = 60,
+}) => {
   const t = useT();
   if (t < from || t > to + 0.3) return null;
   const p = pop(t, from, 0.35);
@@ -392,7 +395,7 @@ export const NotaFlecha: React.FC<{ from: number; to: number; texto: string; x: 
   const o = 1 - prog(t, to, 0.3);
   return (
     <AbsoluteFill style={{ opacity: o }}>
-      <div style={{ position: "absolute", left: x, top: y, fontFamily: HAND, fontWeight: 700, fontSize: 60, color, textTransform: "uppercase", textShadow: SOMBRA,
+      <div style={{ position: "absolute", left: x, top: y, fontFamily: fuente ?? HAND, fontWeight: fuente ? 400 : 700, fontSize: size, color, textTransform: mayus ? "uppercase" : "none", letterSpacing: fuente ? size * 0.08 : 0, textShadow: SOMBRA,
         transform: `rotate(-4deg) scale(${0.7 + 0.3 * p})`, opacity: Math.min(1, p * 2), whiteSpace: "nowrap" }}>{texto}</div>
       <svg width={1080} height={1920} style={{ position: "absolute", inset: 0, filter: "drop-shadow(0 2px 6px rgba(0,0,0,.5))" }}>
         <path d={`M${sx},${sy} Q${mx},${my} ${ax},${ay}`} fill="none" stroke={color} strokeWidth={7} strokeLinecap="round" pathLength={1} strokeDasharray={1} strokeDashoffset={1 - d} />
