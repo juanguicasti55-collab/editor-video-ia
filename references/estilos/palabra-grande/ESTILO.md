@@ -14,7 +14,7 @@ Receta con piezas que YA están en el menú (no trae código propio). Para la ma
 |---|---|---|
 | Gancho grande al centro-arriba en 2–4 líneas que alternan sans gruesa blanca y serif cursiva amarilla; a veces la cabeza tapa una parte | H8 (o P1 detrás de la cabeza) | `FraseQueSeArma` / `TituloDetras` |
 | Subtítulo: UNA palabra a la vez, grande, blanca, en minúscula, al centro del pecho; las claves en serif cursiva amarilla | C11 | `SubsPalabra` (`size` ~110–120) |
-| Algunas frases en letra a mano (amarilla), centradas en el pecho | C11 con `mano` | `SubsPalabra mano={[[a, b, MANO.b]]}` |
+| Algunas frases CORTAS (3–5 palabras) en letra a mano (amarilla), centradas en el pecho; se arman enteras palabra por palabra | C11 con `mano` | `SubsPalabra mano={[[a, b, MANO.b]]}` |
 | A veces la palabra se va al costado de la cabeza (lado libre, a la altura de la sien) | C11 con `lado` (o P2) | `SubsPalabra lado={[[a, b, "der"]]} yLado={…}` |
 | En tramos largos, la frase entera chica en una línea con 1 palabra en cursiva amarilla | P5 sin destellos | `SubsSerif` |
 | Nota a mano delgada al costado de la cabeza con flecha que apunta a la persona («solo soy una mamá») | A10 (+ letra a mano B) | `NotaFlecha` |

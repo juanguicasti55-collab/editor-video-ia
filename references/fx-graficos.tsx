@@ -60,6 +60,17 @@ export const SubsPalabra: React.FC<{ claves: string[]; ocultar?: [number, number
     ? { top: yLado, ...(l[2] === "izq" ? { left: 60, textAlign: "left" as const } : { right: 60, textAlign: "right" as const }), width: 420 }
     : { top: y, left: 40, right: 40, textAlign: "center" };
   const sh = l ? "0 2px 6px rgba(0,0,0,.7), 0 0 26px rgba(0,0,0,.55), 0 0 60px rgba(0,0,0,.35)" : SOMBRA; // al costado suele caer sobre fondo claro
+  if (m && !l) {
+    // tramo a mano: la frase completa se va armando palabra por palabra (como «edits app on desktop» de la referencia). Tramos CORTOS: 3–5 palabras (con 10 queda chiquita)
+    const frase = WORDS.filter((q) => q.s >= m[0] && q.s < m[1] && q.s <= t + 0.03).map((q) => q.w.replace(/[¿¡]/g, "").replace(/[,;:.?!…]+$/, "").toLowerCase()).join(" ");
+    const total = WORDS.filter((q) => q.s >= m[0] && q.s < m[1]).map((q) => q.w).join(" ").length;
+    const fsM = Math.min(size * 0.95, Math.floor(1800 / (Math.max(total, 10) * 0.55)));
+    return (
+      <div style={{ position: "absolute", top: y - fsM * 0.3, left: 70, right: 70, textAlign: "center", lineHeight: 1.05 }}>
+        <span style={{ fontFamily: m[2], fontSize: fsM, color: m[3] ?? color, letterSpacing: fsM * 0.05, textShadow: SOMBRA, display: "inline-block", transform: "rotate(-2deg)" }}>{frase}</span>
+      </div>
+    );
+  }
   return (
     <div style={{ position: "absolute", ...pos, transform: `scale(${0.88 + 0.12 * p})`, transformOrigin: l ? (l[2] === "izq" ? "0 50%" : "100% 50%") : "50% 50%" }}>
       <span style={clave
