@@ -17,13 +17,13 @@ Receta con piezas que YA están en el menú (no trae código propio). Para la ma
 | Algunas frases en letra a mano (amarilla), centradas en el pecho | C11 con `mano` | `SubsPalabra mano={[[a, b, MANO.b]]}` |
 | A veces la palabra se va al costado de la cabeza (lado libre, a la altura de la sien) | C11 con `lado` (o P2) | `SubsPalabra lado={[[a, b, "der"]]} yLado={…}` |
 | En tramos largos, la frase entera chica en una línea con 1 palabra en cursiva amarilla | P5 sin destellos | `SubsSerif` |
-| Nota a mano delgada al costado de la cabeza con flecha que apunta a la persona («solo soy una mamá») | A10 (+ letra a mano A) | `NotaFlecha` |
+| Nota a mano delgada al costado de la cabeza con flecha que apunta a la persona («solo soy una mamá») | A10 (+ letra a mano B) | `NotaFlecha` |
 | Apoyos que se dicen: tarjetas con números reales, ficha «Aa» de marca, cursor, capturas flotando | A19 · A20 · A15 · `Cutaway` | según se diga |
 | Encuadre: tomas largas, pocos cortes (0–6 por minuto); cambia el plano (sofá abierto / cara cerca) entre tramos | T7 suave | zoom 1 / 1,08 |
 | Video viejo de la cuenta: título fijo en serif blanca con borde arriba + subtítulo amarillo nativo de una palabra | A23 + C11 | `TituloFijo` |
 
 **Colores:** solo dos, blanco + un amarillo (la referencia usa un amarillo pálido ~#F6E7A1; en Juan va su acento si él no dice
-otro). **Letras:** sans gruesa apretada en minúscula (Inter Tight 700) + serif cursiva (Instrument Serif). La nota a mano en A; las frases a mano de los subtítulos en B (la que eligió Juan).
+otro). **Letras:** sans gruesa apretada en minúscula (Inter Tight 700) + serif cursiva (Instrument Serif). Toda la letra a mano en B (Gochi Hand), la que eligió Juan: nota con flecha y frases de subtítulo.
 
 ## Lo que nunca va
 - Textos, cifras, capturas o testimonios de la cuenta de referencia.
@@ -33,3 +33,4 @@ otro). **Letras:** sans gruesa apretada en minúscula (Inter Tight 700) + serif 
 - 2026-11-13 · «quiero mis videos editados como los de» la cuenta de referencia → receta con H8/P1 + C11 + A10 + A19/A20/A15;
   «no los edites, solo guárdalo para los otros» y «esto es para los míos por ahora».
 - 2026-11-13 · «y también van la letra que parece escrita a mano y a veces los subtítulos a los lados» → C11 ganó `mano` (tramos en letra a mano) y `lado` (tramos al costado de la cabeza, con sombra más fuerte porque suele caer sobre fondo claro).
+- 2026-11-13 · «como la opción B» → toda la letra a mano del estilo en B (Gochi Hand), también la nota con flecha (estaba en A).
