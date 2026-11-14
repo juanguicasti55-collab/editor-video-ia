@@ -25,3 +25,4 @@ de `scripts/mascaras.py`). Es la forma rápida de usar los textos principales P1
 
 ## Historial de correcciones
 - 2026-11-09 · «quiero que quede una en este estilo fuentes y ubicaciones» → se creó este estilo con las medidas de la captura.
+- 2026-11-13 · «cuando te pida la mezcla de letras, solo es la letra que es como entre cursivita y a mano, no la que es cursiva… juega solo con dos colores» → «la mezcla» = letra normal + letra a mano A (Coming Soon, delgada), nunca la serif cursiva ni la a mano gruesa; solo blanco + un acento.
