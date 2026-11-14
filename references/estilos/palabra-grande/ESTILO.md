@@ -12,11 +12,11 @@ Receta con piezas que YA están en el menú (no trae código propio). Para la ma
 ## La receta
 | Qué se ve en la referencia | Código | Pieza |
 |---|---|---|
-| Gancho grande al centro-arriba en 2–4 líneas que alternan sans gruesa blanca y serif cursiva amarilla; a veces la cabeza tapa una parte | H8 (o P1 detrás de la cabeza) | `FraseQueSeArma` / `TituloDetras` |
+| 🔴 Gancho grande al centro-arriba (SIEMPRE lo que más se lee: grande, sombra fuerte, velo oscuro si el fondo es claro) en 2–4 líneas que alternan sans gruesa blanca y serif cursiva amarilla; a veces la cabeza tapa una parte | H8 (o P1 detrás de la cabeza) | `FraseQueSeArma` / `TituloDetras` |
 | Subtítulo: UNA palabra a la vez, grande, blanca, en minúscula, al centro del pecho; las claves en serif cursiva amarilla | C11 | `SubsPalabra` (`size` ~110–120) |
 | Algunas frases CORTAS (3–5 palabras) en letra a mano (amarilla), centradas en el pecho; se arman enteras palabra por palabra | C11 con `mano` | `SubsPalabra mano={[[a, b, MANO.b]]}` |
 | A veces la palabra se va al costado de la cabeza (lado libre, a la altura de la sien) | C11 con `lado` (o P2) | `SubsPalabra lado={[[a, b, "der"]]} yLado={…}` |
-| En tramos largos, la frase entera chica en una línea con 1 palabra en cursiva amarilla | P5 sin destellos | `SubsSerif` |
+| Frases largas que se arman completas: toda en serif cursiva amarilla, o mezcla en la misma línea de gruesa blanca + claves en cursiva + alguna palabra en letra a mano B | C11 con `frase` | `SubsPalabra frase={[[a, b, "serif"], [c, d, "mezcla"]]} palabrasMano={[…]} manoFuente={MANO.b}` |
 | Nota a mano delgada al costado de la cabeza con flecha que apunta a la persona («solo soy una mamá») | A10 (+ letra a mano B) | `NotaFlecha` |
 | Apoyos que se dicen: tarjetas con números reales, ficha «Aa» de marca, cursor, capturas flotando | A19 · A20 · A15 · `Cutaway` | según se diga |
 | Encuadre: tomas largas, pocos cortes (0–6 por minuto); cambia el plano (sofá abierto / cara cerca) entre tramos | T7 suave | zoom 1 / 1,08 |
@@ -35,3 +35,4 @@ otro). **Letras:** sans gruesa apretada en minúscula (Inter Tight 700) + serif 
 - 2026-11-13 · «y también van la letra que parece escrita a mano y a veces los subtítulos a los lados» → C11 ganó `mano` (tramos en letra a mano) y `lado` (tramos al costado de la cabeza, con sombra más fuerte porque suele caer sobre fondo claro).
 - 2026-11-13 · «como la opción B» → toda la letra a mano del estilo en B (Gochi Hand), también la nota con flecha (estaba en A).
 - 2026-11-13 · «sí, y algunas frases como la opción B y las que son solas como se ve el "llena"» → confirmado: frases enteras a veces en letra a mano B; las palabras clave sueltas en serif cursiva amarilla (como «llena» en la prueba).
+- 2026-11-13 · «ojo con los títulos, deben ser sí o sí lo que más se lea» (la cursiva amarilla del gancho se perdía en las nubes) → H8 más grande con velo y sombra fuerte por defecto; regla fija en menu-efectos. «No me mostraste la frase más larga» → C11 ganó `frase` ("serif" y "mezcla").

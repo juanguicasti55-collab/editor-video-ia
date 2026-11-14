@@ -14,6 +14,7 @@ exactamente de qué trata el video. Funciona como el título del video.
 - **Desde el primer fotograma:** visible en el fotograma 0, sin fundido de entrada (`HookTitle from={0}`, que ya es el valor
   por defecto). Se lee aunque el primer segundo de la toma esté desenfocado o la mano tape la cámara.
 - **Mínimo hasta el segundo 3** (`to >= 3`). Puede quedarse más si la toma sigue siendo la misma.
+- 🔴 **Es lo que más se lee del video** (Juan, 13-nov-2026): más grande que los subtítulos, sombra fuerte y velo oscuro si el fondo es claro; revisar el cuadro 0 sobre el fondo real.
 - **Arriba, en zona segura:** entre y=230 y y≈450, centrado, con sombra para que se lea sobre cualquier fondo.
   Que no tape los ojos (si la cámara es muy cerrada, bajar el encuadre con `fy` o achicar el texto).
 - **Opcional `sub`:** una línea chica debajo que se escribe letra por letra (en la referencia: "versión Edits").

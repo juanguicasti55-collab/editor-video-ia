@@ -39,11 +39,14 @@ const CamFoto: React.FC<{ at: number; style?: React.CSSProperties }> = ({ at, st
  * Opcional (estilo «Palabra grande», 13-nov-2026):
  *  · `mano`: tramos en letra a mano → [[desde, hasta, MANO.b, "#color"?], …] (la frase sale en esa letra, por defecto en el acento).
  *  · `lado`: tramos en que la palabra se va al costado de la cabeza → [[desde, hasta, "izq" | "der"], …], a la altura `yLado`.
+ *  · `frase`: tramos en que sale la frase completa armándose → "serif" (toda en cursiva del acento) o "mezcla" (blanca + claves
+ *    en cursiva + `palabrasMano` en letra a mano `manoFuente`). Para frases largas.
  *    Elegir el lado libre de la cara (scripts/caras.py) y nunca encima de la cara.
  */
 export const SubsPalabra: React.FC<{ claves: string[]; ocultar?: [number, number][]; y?: number; color?: string; size?: number;
-  mano?: [number, number, string, string?][]; lado?: [number, number, "izq" | "der"][]; yLado?: number }> = ({
-  claves, ocultar = [], y = 1180, color = AMARILLO, size = 96, mano = [], lado = [], yLado = 760,
+  mano?: [number, number, string, string?][]; lado?: [number, number, "izq" | "der"][]; yLado?: number;
+  frase?: [number, number, "serif" | "mezcla"][]; palabrasMano?: string[]; manoFuente?: string }> = ({
+  claves, ocultar = [], y = 1180, color = AMARILLO, size = 96, mano = [], lado = [], yLado = 760, frase = [], palabrasMano = [], manoFuente,
 }) => {
   const t = useT();
   if (fuera(t, ocultar)) return null;
@@ -60,6 +63,29 @@ export const SubsPalabra: React.FC<{ claves: string[]; ocultar?: [number, number
     ? { top: yLado, ...(l[2] === "izq" ? { left: 60, textAlign: "left" as const } : { right: 60, textAlign: "right" as const }), width: 420 }
     : { top: y, left: 40, right: 40, textAlign: "center" };
   const sh = l ? "0 2px 6px rgba(0,0,0,.7), 0 0 26px rgba(0,0,0,.55), 0 0 60px rgba(0,0,0,.35)" : SOMBRA; // al costado suele caer sobre fondo claro
+  const fr = frase.find(([a, b]) => w.s >= a && w.s < b);
+  if (fr) {
+    // frase larga que se arma completa: "serif" = toda en serif cursiva del acento · "mezcla" = sans blanca + claves en cursiva +
+    // `palabrasMano` en letra a mano (`manoFuente`). Hasta 2 líneas.
+    const ws = WORDS.filter((q) => q.s >= fr[0] && q.s < fr[1]);
+    const total = ws.map((q) => q.w).join(" ").length;
+    const base = fr[2] === "serif" ? Math.min(size * 0.95, Math.floor(1900 / (total * 0.4))) : Math.min(size * 0.7, Math.floor(1800 / (total * 0.5)));
+    return (
+      <div style={{ position: "absolute", top: y - base * 0.2, left: 60, right: 60, textAlign: "center", lineHeight: 1.08 }}>
+        {ws.map((q, k) => {
+          const vis = q.s <= t + 0.03;
+          const tx = q.w.replace(/[¿¡]/g, "").replace(/[,;:.?!…]+$/, "");
+          const lq = limpia(q.w);
+          const st: React.CSSProperties = fr[2] === "serif" || claves.includes(lq)
+            ? { fontFamily: SERIF_G, fontStyle: "italic", fontSize: fr[2] === "serif" ? base : base * 1.3, color }
+            : palabrasMano.includes(lq) && manoFuente
+              ? { fontFamily: manoFuente, fontSize: base * 1.05, color, letterSpacing: base * 0.05 }
+              : { fontFamily: TITLE, fontWeight: 800, fontSize: base, color: "#fff", letterSpacing: -base * 0.03 };
+          return <span key={k} style={{ ...st, textShadow: SOMBRA, opacity: vis ? 1 : 0 }}>{fr[2] === "serif" ? tx : tx.toLowerCase()}{k < ws.length - 1 ? " " : ""}</span>;
+        })}
+      </div>
+    );
+  }
   if (m && !l) {
     // tramo a mano: la frase completa se va armando palabra por palabra (como «edits app on desktop» de la referencia). Tramos CORTOS: 3–5 palabras (con 10 queda chiquita)
     const frase = WORDS.filter((q) => q.s >= m[0] && q.s < m[1] && q.s <= t + 0.03).map((q) => q.w.replace(/[¿¡]/g, "").replace(/[,;:.?!…]+$/, "").toLowerCase()).join(" ");
@@ -121,19 +147,23 @@ export const SubsCorchetes: React.FC<{ claves: string[]; ocultar?: [number, numb
 /**
  * H8 · Frase que se arma: el gancho aparece línea por línea arriba y se queda armado (3–5 líneas cortas). Las líneas con
  * `cursiva` van en serif cursiva amarilla y más grandes: lo que importa. Visible desde el cuadro 0.
+ * 🔴 Regla de Juan (13-nov-2026): el título es SÍ O SÍ lo que más se lee. Por eso va grande (se ajusta al ancho), con sombra
+ * fuerte y un velo oscuro detrás del bloque (`velo`, 0–1). Revisar el cuadro 0 sobre el fondo real (cielo, paredes claras).
  */
-export const FraseQueSeArma: React.FC<{ from?: number; to: number; lineas: { at: number; t: string; cursiva?: boolean }[]; top?: number; color?: string }> = ({
-  from = 0, to, lineas, top = 240, color = AMARILLO,
+export const FraseQueSeArma: React.FC<{ from?: number; to: number; lineas: { at: number; t: string; cursiva?: boolean }[]; top?: number; color?: string; escala?: number; velo?: number }> = ({
+  from = 0, to, lineas, top = 240, color = AMARILLO, escala = 1.25, velo = 0.6,
 }) => {
   const t = useT();
   if (!en(t, from, to)) return null;
+  const SH = "0 4px 14px rgba(0,0,0,.75), 0 0 34px rgba(0,0,0,.55), 0 0 2px rgba(0,0,0,.8)";
   return (
-    <div style={{ position: "absolute", top, left: 50, right: 50, textAlign: "center", opacity: sale(t, to + 0.3), lineHeight: 0.98 }}>
+    <div style={{ position: "absolute", top, left: 30, right: 30, textAlign: "center", opacity: sale(t, to + 0.3), lineHeight: 0.98 }}>
+      <div style={{ position: "absolute", inset: "-90px -40px", background: `radial-gradient(ellipse 60% 55% at 50% 50%, rgba(0,0,0,${velo}) 0%, rgba(0,0,0,${velo * 0.55}) 55%, rgba(0,0,0,0) 100%)`, zIndex: 0 }} />
       {lineas.filter((l) => t >= l.at - 0.02).map((l, i) => {
         const p = pop(t, l.at, 0.3);
-        return <div key={i} style={{ transform: `translateY(${(1 - p) * 20}px)`, opacity: Math.min(1, p * 2),
-          ...(l.cursiva ? { fontFamily: SERIF_G, fontStyle: "italic", fontSize: 110, color } : { fontFamily: TITLE, fontWeight: 700, fontSize: 84, color: "#fff", letterSpacing: -2 }),
-          textShadow: SOMBRA }}>{l.t}</div>;
+        const fs = l.cursiva ? Math.min(110 * escala, Math.floor(1000 / (l.t.length * 0.36))) : Math.min(84 * escala, Math.floor(1000 / (l.t.length * 0.47)));
+        return <div key={i} style={{ position: "relative", zIndex: 1, transform: `translateY(${(1 - p) * 20}px)`, opacity: Math.min(1, p * 2), textShadow: SH, whiteSpace: "nowrap",
+          ...(l.cursiva ? { fontFamily: SERIF_G, fontStyle: "italic", fontSize: fs, color, lineHeight: 0.9 } : { fontFamily: TITLE, fontWeight: 700, fontSize: fs, color: "#fff", letterSpacing: -fs * 0.03 }) }}>{l.t}</div>;
       })}
     </div>
   );

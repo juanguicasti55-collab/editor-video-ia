@@ -29,6 +29,12 @@ Lo que va **detrás** de la persona necesita su recorte: `scripts/mascaras.py <r
 Cam2 muestra recortado (`on` y `shrink` hasta el final) y cada corrida borra la anterior: pasar todos.
 **Si la persona tiene pelo, `--con-pelo`**: sin esa opción el pelo desaparece del recorte y no sale ningún error.
 
+## Regla fija: el título es lo que más se lee
+Corrección de Juan, 13-nov-2026: *«ojo con los títulos, porque deben ser sí o sí lo que más se lea»*. El gancho/título va más
+grande que cualquier subtítulo, con sombra fuerte y velo oscuro detrás si el fondo es claro (cielo, nubes, paredes, cortinas).
+Antes de renderizar, mirar el cuadro 0 sobre el fondo real: si una línea (sobre todo la cursiva de color) se pierde, se agranda,
+se oscurece el velo o se cambia esa línea a blanco. H8 (`FraseQueSeArma`) ya trae `escala` 1,25 y `velo` 0,6 por defecto.
+
 ## Regla fija: nada sobre la cara
 Ningún subtítulo, tarjeta ni gráfico entre los ojos y el mentón (corrección de Juan, 6-nov-2026). Hay tres lugares:
 1. **Detrás de ella** (grupo D, con recorte): la palabra clave gigante, la cabeza tapa una parte y la cara queda libre.
