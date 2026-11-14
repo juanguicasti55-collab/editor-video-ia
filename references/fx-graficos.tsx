@@ -36,9 +36,14 @@ const CamFoto: React.FC<{ at: number; style?: React.CSSProperties }> = ({ at, st
 /**
  * C11 · Palabra a palabra con cursiva: una sola palabra a la vez, blanca y gruesa; las palabras clave cambian a serif
  * cursiva amarilla más grande. Simple y muy legible (el estilo de los reels con más vistas de la muestra).
+ * Opcional (estilo «Palabra grande», 13-nov-2026):
+ *  · `mano`: tramos en letra a mano → [[desde, hasta, MANO.b, "#color"?], …] (la frase sale en esa letra, por defecto en el acento).
+ *  · `lado`: tramos en que la palabra se va al costado de la cabeza → [[desde, hasta, "izq" | "der"], …], a la altura `yLado`.
+ *    Elegir el lado libre de la cara (scripts/caras.py) y nunca encima de la cara.
  */
-export const SubsPalabra: React.FC<{ claves: string[]; ocultar?: [number, number][]; y?: number; color?: string; size?: number }> = ({
-  claves, ocultar = [], y = 1180, color = AMARILLO, size = 96,
+export const SubsPalabra: React.FC<{ claves: string[]; ocultar?: [number, number][]; y?: number; color?: string; size?: number;
+  mano?: [number, number, string, string?][]; lado?: [number, number, "izq" | "der"][]; yLado?: number }> = ({
+  claves, ocultar = [], y = 1180, color = AMARILLO, size = 96, mano = [], lado = [], yLado = 760,
 }) => {
   const t = useT();
   if (fuera(t, ocultar)) return null;
@@ -47,11 +52,20 @@ export const SubsPalabra: React.FC<{ claves: string[]; ocultar?: [number, number
   const w = WORDS[i];
   const clave = claves.includes(limpia(w.w));
   const p = pop(t, w.s - 0.03, 0.22);
+  const m = mano.find(([a, b]) => w.s >= a && w.s < b);
+  const l = lado.find(([a, b]) => w.s >= a && w.s < b);
+  const txt = w.w.replace(/[¿¡]/g, "").replace(/[,;:.?!…]+$/, "");
+  const fs = l ? Math.min(size * 0.75, Math.floor(400 / (txt.length * 0.5))) : size;
+  const pos: React.CSSProperties = l
+    ? { top: yLado, ...(l[2] === "izq" ? { left: 60, textAlign: "left" as const } : { right: 60, textAlign: "right" as const }), width: 420 }
+    : { top: y, left: 40, right: 40, textAlign: "center" };
+  const sh = l ? "0 2px 6px rgba(0,0,0,.7), 0 0 26px rgba(0,0,0,.55), 0 0 60px rgba(0,0,0,.35)" : SOMBRA; // al costado suele caer sobre fondo claro
   return (
-    <div style={{ position: "absolute", top: y, left: 40, right: 40, textAlign: "center", transform: `scale(${0.88 + 0.12 * p})` }}>
+    <div style={{ position: "absolute", ...pos, transform: `scale(${0.88 + 0.12 * p})`, transformOrigin: l ? (l[2] === "izq" ? "0 50%" : "100% 50%") : "50% 50%" }}>
       <span style={clave
-        ? { fontFamily: SERIF_G, fontStyle: "italic", fontSize: size * 1.25, color, textShadow: SOMBRA }
-        : { fontFamily: TITLE, fontWeight: 800, fontSize: size, color: "#fff", letterSpacing: -2, textShadow: SOMBRA }}>{w.w.replace(/[¿¡]/g, "").replace(/[,;:.?!…]+$/, "")}</span>
+        ? { fontFamily: SERIF_G, fontStyle: "italic", fontSize: fs * 1.25, color, textShadow: sh }
+        : m ? { fontFamily: m[2], fontSize: fs * 0.95, color: m[3] ?? color, letterSpacing: fs * 0.06, textShadow: sh, display: "inline-block", transform: "rotate(-2deg)" }
+        : { fontFamily: TITLE, fontWeight: 800, fontSize: fs, color: "#fff", letterSpacing: -2, textShadow: sh }}>{m ? txt.toLowerCase() : txt}</span>
     </div>
   );
 };
